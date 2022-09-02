@@ -56,97 +56,173 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
+    path: '/kubernetes',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    redirect: '/kubernetes/node',
+    name: 'Kubernetes',
+    meta: { title: 'Kubernetes', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
+        path: 'master',
+        name: 'Master',
         component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
-
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
-
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        meta: { title: 'Master', icon: 'tree' }
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Menu2',
-        meta: { title: 'menu2' }
+        path: 'yaml',
+        name: 'Yaml',
+        component: () => import('@/views/tree/index'),
+        meta: { title: 'Yaml', icon: 'tree' }
+      },
+      {
+        path: 'node',
+        name: 'Node',
+        component: () => import('@/views/table/index'),
+        meta: { title: 'Node', icon: 'table' }
+      },
+      {
+        path: 'namespace',
+        name: 'Namespace',
+        component: () => import('@/views/table/index'),
+        meta: { title: 'Namespace', icon: 'table' }
+      },
+      {
+        path: 'deploy',
+        name: 'Deploy',
+        component: () => import('@/views/tree/index'),
+        meta: { title: 'Deploy', icon: 'tree' }
+      },
+      {
+        path: 'service',
+        name: 'Service',
+        component: () => import('@/views/table/index'),
+        meta: { title: 'Service', icon: 'table' }
+      },
+      {
+        path: 'pod',
+        name: 'Pod',
+        component: () => import('@/views/table/index'),
+        meta: { title: 'Pod', icon: 'table' }
       }
     ]
+  },
+
+  {
+    path: '/user',
+    component: Layout,
+    // redirect: '/user',
+    children: [{
+      path: 'index',
+      name: 'User',
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: 'User', icon: 'user' }
+    }]
+  },
+  // {
+  //   path: '/form',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'Form',
+  //       component: () => import('@/views/form/index'),
+  //       meta: { title: 'Form', icon: 'form' }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/nested',
+  //   component: Layout,
+  //   redirect: '/nested/menu1',
+  //   name: 'Nested',
+  //   meta: {
+  //     title: 'Nested',
+  //     icon: 'nested'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'menu1',
+  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
+  //       name: 'Menu1',
+  //       meta: { title: 'Menu1' },
+  //       children: [
+  //         {
+  //           path: 'menu1-1',
+  //           component: () => import('@/views/nested/menu1/menu1-1'),
+  //           name: 'Menu1-1',
+  //           meta: { title: 'Menu1-1' }
+  //         },
+  //         {
+  //           path: 'menu1-2',
+  //           component: () => import('@/views/nested/menu1/menu1-2'),
+  //           name: 'Menu1-2',
+  //           meta: { title: 'Menu1-2' },
+  //           children: [
+  //             {
+  //               path: 'menu1-2-1',
+  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
+  //               name: 'Menu1-2-1',
+  //               meta: { title: 'Menu1-2-1' }
+  //             },
+  //             {
+  //               path: 'menu1-2-2',
+  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
+  //               name: 'Menu1-2-2',
+  //               meta: { title: 'Menu1-2-2' }
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           path: 'menu1-3',
+  //           component: () => import('@/views/nested/menu1/menu1-3'),
+  //           name: 'Menu1-3',
+  //           meta: { title: 'Menu1-3' }
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       path: 'menu2',
+  //       component: () => import('@/views/nested/menu2/index'),
+  //       name: 'Menu2',
+  //       meta: { title: 'menu2' }
+  //     }
+  //   ]
+  // },
+  {
+    path: '/spark',
+    component: Layout,
+    // redirect: '/user',
+    children: [{
+      path: 'index',
+      name: 'Spark',
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: 'Spark', icon: 'dashboard' }
+    }]
+  },
+
+  {
+    path: '/hadoop',
+    component: Layout,
+    // redirect: '/user',
+    children: [{
+      path: 'index',
+      name: 'Hadoop',
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: 'Hadoop', icon: 'dashboard' }
+    }]
+  },
+
+  {
+    path: '/linux',
+    component: Layout,
+    // redirect: '/user',
+    children: [{
+      path: 'index',
+      name: 'Linux',
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: 'Linux', icon: 'dashboard' }
+    }]
   },
 
   {
@@ -154,8 +230,8 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        path: 'https://github.com/fanb129',
+        meta: { title: 'about', icon: 'link' }
       }
     ]
   },
