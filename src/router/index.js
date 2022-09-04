@@ -38,6 +38,12 @@ export const constantRoutes = [
   },
 
   {
+    path: '/register',
+    component: () => import('@/views/login/register'),
+    hidden: true
+  },
+
+  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
@@ -51,7 +57,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: 'Dashboard', icon: 'el-icon-s-home' }
     }]
   },
 
@@ -60,49 +66,49 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/kubernetes/node',
     name: 'Kubernetes',
-    meta: { title: 'Kubernetes', icon: 'el-icon-s-help' },
+    meta: { title: 'Kubernetes', icon: 'tree' },
     children: [
       {
         path: 'master',
         name: 'Master',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Master', icon: 'tree' }
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: 'Master', icon: 'dashboard' }
       },
       {
         path: 'yaml',
         name: 'Yaml',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Yaml', icon: 'tree' }
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: 'Yaml', icon: 'el-icon-upload' }
       },
       {
         path: 'node',
         name: 'Node',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Node', icon: 'table' }
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: 'Node', icon: 'dashboard' }
       },
       {
         path: 'namespace',
         name: 'Namespace',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Namespace', icon: 'table' }
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: 'Namespace', icon: 'dashboard' }
       },
       {
         path: 'deploy',
         name: 'Deploy',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Deploy', icon: 'tree' }
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: 'Deploy', icon: 'dashboard' }
       },
       {
         path: 'service',
         name: 'Service',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Service', icon: 'table' }
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: 'Service', icon: 'dashboard' }
       },
       {
         path: 'pod',
         name: 'Pod',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Pod', icon: 'table' }
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: 'Pod', icon: 'dashboard' }
       }
     ]
   },
@@ -114,7 +120,7 @@ export const constantRoutes = [
     children: [{
       path: 'index',
       name: 'User',
-      component: () => import('@/views/dashboard/index'),
+      component: () => import('@/views/user/index'),
       meta: { title: 'User', icon: 'user' }
     }]
   },
@@ -228,10 +234,16 @@ export const constantRoutes = [
   {
     path: 'external-link',
     component: Layout,
+    name: 'ExternalLink',
+    meta: { title: 'About', icon: 'link' },
     children: [
       {
-        path: 'https://github.com/fanb129',
-        meta: { title: 'about', icon: 'link' }
+        path: 'https://github.com/fanb129/k8s_deploy_gin',
+        meta: { title: 'k8s_deploy_gin', icon: 'link' }
+      },
+      {
+        path: 'https://github.com/fanb129/k8s_deploy_vue',
+        meta: { title: 'k8s_deploy_vue', icon: 'link' }
       }
     ]
   },
@@ -241,7 +253,7 @@ export const constantRoutes = [
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

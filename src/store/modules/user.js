@@ -1,13 +1,13 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
+import {login, logout, getInfo} from '@/api/user'
+import {getToken, setToken, removeToken} from '@/utils/auth'
+import {resetRouter} from '@/router'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    role: 1
+    role: 0
   }
 }
 
@@ -33,11 +33,11 @@ const mutations = {
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
-    const { username, password } = userInfo
+  login({commit}, userInfo) {
+    const {username, password} = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { token } = response
+      login({username: username.trim(), password: password}).then(response => {
+        const {token} = response
         commit('SET_TOKEN', token)
         setToken(token)
         resolve()
@@ -49,34 +49,18 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({commit, state}) {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
-        const res = response
-
-        if (!res) {
+        if (!response) {
           return reject('Verification failed, please Login again.')
         }
 
-        const { nickname, avatar, role } = res
-
+        const {nickname, avatar, role} = response.user_info
         commit('SET_NAME', nickname)
-        commit('SET_AVATAR', avatar)
+        // 暂时用统一指定头像
+        // commit('SET_AVATAR', avatar)
         commit('SET_ROLE', role)
-        resolve(res)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-
-  // user logout
-  logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        removeToken() // must remove  token  first
-        resetRouter()
-        commit('RESET_STATE')
         resolve()
       }).catch(error => {
         reject(error)
@@ -84,8 +68,23 @@ const actions = {
     })
   },
 
+  // user logout
+  logout({commit, state}) {
+    return new Promise((resolve, reject) => {
+      logout(state.token).then(() => {
+        removeToken() // must remove  token  first
+        resetRouter()
+        commit('RESET_STATE')
+        resolve()
+      }).catch(error => {
+        console.log('err')
+        reject(error)
+      })
+    })
+  },
+
   // remove token
-  resetToken({ commit }) {
+  resetToken({commit}) {
     return new Promise(resolve => {
       removeToken() // must remove  token  first
       commit('RESET_STATE')

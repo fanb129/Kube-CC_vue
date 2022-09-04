@@ -32,11 +32,30 @@ export function logout() {
 
 export function getUserList(page) {
   return request({
-    url: '/' + page,
+    url: '/user/' + page,
     method: 'get'
   })
 }
 
 export function deleteUser(id) {
-  return
+  return request({
+    url: '/user/delete/' + id,
+    method: 'get'
+  })
+}
+
+export function editUser(id,data) {
+  return request({
+    url: '/user/edit/' + id,
+    method: 'post',
+    data
+  })
+}
+
+export function resetPass(id, data) {
+  return request({
+    url: '/user/resetpass/' + id,
+    method: 'post',
+    data
+  })
 }

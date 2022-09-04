@@ -13,17 +13,24 @@
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>
-              Home
+              <el-tag v-if="role === 1">普通用户</el-tag>
+              <el-tag v-else-if="role === 2" type="success">管理员</el-tag>
+              <el-tag v-else-if="role === 3" type="danger">超级管理员</el-tag>
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
+          <router-link to="/">
+            <el-dropdown-item>
+              <el-icon class="el-icon-user"></el-icon>  {{ name }}
+            </el-dropdown-item>
+          </router-link>
+<!--          <a target="_blank" href="https://github.com/fanb129/k8s_deploy_gin">-->
+<!--            <el-dropdown-item>k8s_deploy_gin</el-dropdown-item>-->
+<!--          </a>-->
+<!--          <a target="_blank" href="https://github.com/fanb129/k8s_deploy_vue">-->
+<!--            <el-dropdown-item>k8s_deploy_vue</el-dropdown-item>-->
+<!--          </a>-->
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+            <span style="display:block;"><el-icon class="el-icon-close"></el-icon>Log Out</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -41,10 +48,17 @@ export default {
     Breadcrumb,
     Hamburger
   },
+  data() {
+    return {
+      rolelist: ['普通用户', '管理员', '超级管理员'],
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'name',
+      'role'
     ])
   },
   methods: {

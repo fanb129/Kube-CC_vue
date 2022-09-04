@@ -41,33 +41,29 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
-      </div>
-
+      <el-button :loading="loading" type="primary" style="width: 30%" @click.native.prevent="handleLogin">登录</el-button>
+      <el-button type="primary" style="width: 30%; float: right" @click="register">注册</el-button>
     </el-form>
   </div>
 </template>
 
 <script>
 import { validUsername } from '@/utils/validate'
+import {Message} from "element-ui";
 
 export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (value.length < 3) {
-        callback(new Error('The password can not be less than 3 digits'))
+      if (value.length < 3 || value.length > 16) {
+        callback(new Error('T用户名长度必须在3~16字符之间'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 3) {
-        callback(new Error('The password can not be less than 6 digits'))
+      if (value.length < 6 || value.length > 16) {
+        callback(new Error('密码长度必须在6~16字符之间'))
       } else {
         callback()
       }
@@ -75,7 +71,7 @@ export default {
     return {
       loginForm: {
         username: 'zhangsan',
-        password: '123'
+        password: '123456'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -110,6 +106,11 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
+            Message({
+              message: '登陆成功',
+              type: 'success',
+              duration: 1000
+            })
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           }).catch(() => {
@@ -120,6 +121,9 @@ export default {
           return false
         }
       })
+    },
+    register() {
+      this.$router.push({ path: '/register' })
     }
   }
 }
