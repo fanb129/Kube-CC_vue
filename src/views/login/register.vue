@@ -81,7 +81,7 @@
 
 <script>
 import { register } from '@/api/user'
-import {Message} from "element-ui";
+import {Message} from 'element-ui'
 
 export default {
   name: 'Register',
@@ -161,7 +161,7 @@ export default {
             Message({
               message: '注册成功',
               type: 'success',
-              duration: 1000
+              duration: 3 * 1000
             })
             this.$router.push({ path: '/login' })
             this.loading = false

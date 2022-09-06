@@ -81,7 +81,7 @@
 <script>
 
 import { deleteUser, editUser, getUserList, resetPass } from '@/api/user'
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 var new_id
 
 export default {
@@ -212,7 +212,7 @@ export default {
         this.page = res.page
         this.total = res.total
         this.tableData = res.user_list
-        console.log(res)
+        // console.log(res)
       })
     }
   }

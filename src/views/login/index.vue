@@ -109,7 +109,7 @@ export default {
             Message({
               message: '登陆成功',
               type: 'success',
-              duration: 1000
+              duration: 3 * 1000
             })
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
