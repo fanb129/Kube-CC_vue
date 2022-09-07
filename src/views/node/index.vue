@@ -55,8 +55,8 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <!--          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' @click='Resetpsd(scope.row)'>terminal</el-button>-->
-          <el-button :disabled="role <= 2 " size="mini"> terminal</el-button>
+          <!--          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' @click='Resetpsd(scope.row)'>Terminal</el-button>-->
+          <el-button :disabled="role <= 2 " size="mini" type="success" @click="pushTerminal(scope.row)"> terminal</el-button>
           <!--          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' type='danger' @click='handleDelete(scope.row)'>删除</el-button>-->
         </template>
       </el-table-column>
@@ -86,8 +86,6 @@ export default {
       page: 1,
       total: 0,
       pagesize: 10,
-      formLabelWidth: '120px',
-      statusDialogVisible: false,
       tableData: [
         {
           name: '',
@@ -111,7 +109,16 @@ export default {
       getNodeList().then((res) => {
         this.total = res.length
         this.tableData = res.node_list
-        // console.log(res)
+        // Terminal.log(res)
+      })
+    },
+    pushTerminal: function(row) {
+      this.$router.push({
+        name: 'Terminal',
+        query: {
+          type: 'node',
+          name: row['name']
+        }
       })
     }
   }

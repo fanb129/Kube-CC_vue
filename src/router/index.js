@@ -32,6 +32,17 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
+    path: '/terminal',
+    component: Layout,
+    // hidden: true,
+    children: [{
+      path: 'index',
+      name: 'Terminal',
+      component: () => import('@/components/Terminal/index')
+      // meta: { title: 'Terminal', icon: 'dashboard' }
+    }]
+  },
+  {
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
@@ -69,12 +80,6 @@ export const constantRoutes = [
     meta: { title: 'Kubernetes', icon: 'tree' },
     children: [
       {
-        path: 'master',
-        name: 'Master',
-        component: () => import('@/views/dashboard/index'),
-        meta: { title: 'Master', icon: 'dashboard' }
-      },
-      {
         path: 'yaml',
         name: 'Yaml',
         component: () => import('@/views/dashboard/index'),
@@ -89,7 +94,7 @@ export const constantRoutes = [
       {
         path: 'namespace',
         name: 'Namespace',
-        component: () => import('@/views/dashboard/index'),
+        component: () => import('@/views/namespace/index'),
         meta: { title: 'Namespace', icon: 'dashboard' }
       },
       {

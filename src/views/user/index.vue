@@ -98,7 +98,7 @@ export default {
       value: '',
       page: 1,
       total: 0,
-      formLabelWidth: '120px',
+      formLabelWidth: '100px',
       statusDialogVisible: false,
       rolelist: ['普通用户', '管理员', '超级管理员'],
       tableData: [
@@ -156,7 +156,7 @@ export default {
       new_id = id
     },
     Resetlev(value) {
-      // console.log('2222222222222222')
+      // Terminal.log('2222222222222222')
       editUser(new_id, { role: parseInt(value) }).then((res) => {
         if (res.code === 1) {
           this.$message({
@@ -212,7 +212,7 @@ export default {
         this.page = res.page
         this.total = res.total
         this.tableData = res.user_list
-        // console.log(res)
+        // Terminal.log(res)
       })
     }
   }
