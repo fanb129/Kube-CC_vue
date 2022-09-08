@@ -100,13 +100,13 @@ export const constantRoutes = [
       {
         path: 'deploy',
         name: 'Deploy',
-        component: () => import('@/views/dashboard/index'),
+        component: () => import('@/views/deploy/index'),
         meta: { title: 'Deploy', icon: 'dashboard' }
       },
       {
         path: 'service',
         name: 'Service',
-        component: () => import('@/views/dashboard/index'),
+        component: () => import('@/views/service/index'),
         meta: { title: 'Service', icon: 'dashboard' }
       },
       {

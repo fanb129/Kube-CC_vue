@@ -1,26 +1,32 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%">
-      <span>所属用户：</span>
-      <el-select v-model="value" filterable placeholder="请选择" @change="change">
+      <span>Namespace：</span>
+      <el-select v-model="ns" filterable placeholder="请选择" @change="change">
         <el-option
-          v-for="item,index in options"
+          v-for="item, index in options.slice((userPage - 1) * pagesize, userPage * pagesize).concat([{name: '', nickname: 'All Namespace'}])"
           :key="index"
-          :label="item.nickname"
-          :value="item.id">
-        </el-option>
-        <el-pagination background layout="prev, pager, next" :current-page="userPage" :page-size="1" :total="userTotal"
-                       @current-change="changeUserPageNum"></el-pagination>
+          :label="item.name + '\t' + item.nickname"
+          :value="item.name"
+        />
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :current-page="userPage"
+          :page-size="pagesize"
+          :total="userTotal"
+          @current-change="changeUserPageNum"
+        />
       </el-select>
       <el-button :disabled="role < 3" style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addNs">Add
-        Namespace
+        Deploy
       </el-button>
     </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
       <!-- <el-table :data='tableData' style='width: 100%'> -->
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="ID" width="100">
+      <el-table-column label="ID" width="80">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>
@@ -34,10 +40,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="Status" width="100">
+      <el-table-column label="Namespace" width="250">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.status }}</span>
+          <span>{{ scope.row.namespace }}</span>
         </template>
       </el-table-column>
 
@@ -48,34 +54,46 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="username" width="150">
+      <el-table-column label="Replicas" width="80">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.username }}</span>
+          <span>{{ scope.row.replicas }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="nickname" width="150">
+      <el-table-column label="Updated" width="80">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.nickname }}</span>
+          <span>{{ scope.row.updated_replicas }}</span>
         </template>
       </el-table-column>
 
+      <el-table-column label="Ready" width="80">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.ready_replicas }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="Available" width="85">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.available_replicas }}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="pushTerminal(scope.row)">pod</el-button>
-          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>
-          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>
+          <el-button :disabled="role <= 2" size="mini" type="warning" @click="Resetpsd(scope.row)">编辑</el-button>
           <el-button
             :loading="loading"
             :disabled="role <= 2
-              || scope.row.name==='default'
-              || scope.row.name==='kube-node-lease'
-              || scope.row.name==='kube-public'
-              || scope.row.name==='kube-system'
-              || scope.row.name==='ingress-nginx'"
+              || scope.row.namespace==='default'
+              || scope.row.namespace==='kube-node-lease'
+              || scope.row.namespace==='kube-public'
+              || scope.row.namespace==='kube-system'
+              || scope.row.namespace==='ingress-nginx'"
             size="mini"
             type="danger"
             @click="handleDelete(scope.row)"
@@ -85,115 +103,99 @@
       </el-table-column>
     </el-table>
     <br>
-    <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="pagesize" :total="total"
-                   @current-change="changePageNum"/>
-    <AddNamespace :visible.sync="openDialog" ref="AddNamespace"/>
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :current-page="page"
+      :page-size="pagesize"
+      :total="total"
+      @current-change="changePageNum"
+    />
   </div>
 </template>
 
 <script>
-
-import {mapGetters} from 'vuex'
-import {getNsList, deleteNs} from '@/api/namespace'
-import {getUserList} from '@/api/user'
-import AddNamespace from '@/components/AddNamespace'
+import { mapGetters } from 'vuex'
+import { deleteDeploy, getDeployList } from '@/api/deploy'
+import { getNsList } from '@/api/namespace'
 
 export default {
-  components: {AddNamespace},
+  name: 'Deploy',
   computed: {
     ...mapGetters([
       'role'
     ])
   },
   created() {
+    this.getDeployList()
     this.getNsList()
-    this.getUserList()
   },
   data() {
     return {
       timer: null,
       loading: false,
       openDialog: false,
-      value: '',
+      ns: this.$route.query.ns,
       page: 1,
       total: 0,
       pagesize: 10,
       userPage: 1,
       userTotal: 0,
       options: [{
-        id: '',
+        name: '',
         nickname: ''
       }],
       tableData: [
         {
           name: '',
-          status: '',
+          namespace: '',
           created_at: '',
-          username: '',
-          nickname: ''
+          replicas: '',
+          updated_replicas: '',
+          ready_replicas: '',
+          available_replicas: ''
         }
       ]
     }
   },
   methods: {
-    push2deploy: function (row){
-      this.$router.push({
-        name: 'Deploy',
-        query: {
-          ns: row['name']
-        }
-      })
-    },
-    push2service: function (row){
-      this.$router.push({
-        name: 'Service',
-        query: {
-          ns: row['name']
-        }
-      })
-    },
-    changePageNum: function (val) {
+    changePageNum: function(val) {
       this.page = val
-      // this.getUserList()
     },
-    getNsList: function () {
-      getNsList(this.value).then((res) => {
+    getDeployList: function() {
+      getDeployList(this.ns).then((res) => {
         this.total = res.length
-        this.tableData = res.ns_list
+        this.tableData = res.deploy_list
         console.log(res)
       })
     },
-    getUserList: function () {
-      getUserList(this.userPage).then((res) => {
-        this.userPage = res.page
-        this.userTotal = res.total
-        this.options = res.user_list
-        // Terminal.log(res)
-        this.options.push({id:'',nickname:'All User'})
+    getNsList: function() {
+      getNsList('').then((res) => {
+        this.userTotal = res.length
+        this.options = res.ns_list
       })
     },
-    changeUserPageNum: function (val) {
+    changeUserPageNum: function(val) {
       this.userPage = val
-      this.getUserList()
     },
     change() {
       this.$forceUpdate()
-      this.getNsList()
+      this.getDeployList()
     },
-    addNs: function () {
+    addNs: function() {
       this.openDialog = true
       this.$nextTick(() => {
-        this.$refs.AddNamespace.init();
-      });
+        this.$refs.AddNamespace.init()
+      })
     },
-    handleDelete: function (row) {
+    handleDelete: function(row) {
       /* 提示消息*/
-      this.$confirm('确认永久删除此namespace及其所含包含资源', '提示', {
+      this.$confirm('确认永久删除此deploy及其所含pod', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteNs(row['name']).then((res) => {
+        deleteDeploy(row['namespace'], row['name']).then((res) => {
           if (res.code === 1) {
             this.$message({
               type: 'success',
@@ -204,9 +206,9 @@ export default {
             clearTimeout(this.timer)
             this.timer = setTimeout(() => {
               this.loading = false
-              this.getNsList()
+              this.getDeployList()
               // location.reload()
-            },1000)
+            }, 1000)
           } else {
             this.$message({
               type: 'error',
@@ -224,3 +226,7 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+</style>

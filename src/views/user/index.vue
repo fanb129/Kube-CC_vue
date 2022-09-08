@@ -7,7 +7,7 @@
       <el-table-column label='ID' width='100'>
         <template slot-scope='scope'>
           <!-- <i class='el-icon-time'></i> -->
-          <span style='margin-left: 10px'>{{ scope.$index + 1 }}</span>
+          <span style='margin-left: 1%'>{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
 
@@ -51,8 +51,8 @@
 
       <el-table-column label='操作'>
         <template slot-scope='scope'>
-          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' @click='Resetpsd(scope.row)'>重置密码</el-button>
-          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' @click='showDialog(scope.row["id"])'> 权限修改</el-button>
+          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' type="warning" @click='Resetpsd(scope.row)'>重置密码</el-button>
+          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' type="warning" @click='showDialog(scope.row["id"])'> 权限修改</el-button>
           <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' type='danger' @click='handleDelete(scope.row)'>删除</el-button>
         </template>
       </el-table-column>
@@ -98,7 +98,7 @@ export default {
       value: '',
       page: 1,
       total: 0,
-      formLabelWidth: '100px',
+      formLabelWidth: '10%',
       statusDialogVisible: false,
       rolelist: ['普通用户', '管理员', '超级管理员'],
       tableData: [
