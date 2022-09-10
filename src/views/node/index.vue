@@ -56,14 +56,16 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <!--          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' @click='Resetpsd(scope.row)'>Terminal</el-button>-->
-          <el-button :disabled="role <= 2 " size="mini" type="success" @click="pushTerminal(scope.row)"> terminal</el-button>
+          <el-button :disabled="role <= 2 " size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
           <!--          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' type='danger' @click='handleDelete(scope.row)'>删除</el-button>-->
         </template>
       </el-table-column>
     </el-table>
     <br>
-    <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="pagesize" :total="total" @current-change="changePageNum" />
-  </div>
+    <div style="position: absolute;bottom: 2%">
+      <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="pagesize" :total="total" @current-change="changePageNum" />
+    </div>
+    </div>
 </template>
 
 <script>

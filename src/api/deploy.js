@@ -1,11 +1,12 @@
 import request from '@/utils/request'
 
-export function getDeployList(ns) {
+export function getDeployList(u_id,ns) {
   return request({
     url: '/deploy',
     method: 'get',
     params: {
-      'ns': ns
+      'ns': ns,
+      'u_id': u_id
     }
   })
 }

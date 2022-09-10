@@ -1,46 +1,31 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%">
-      <span>Namespace：</span>
-      <el-select v-model="ns" filterable placeholder="请选择" @change="change">
-        <el-option
-          v-for="item, index in options.slice((userPage - 1) * 10, userPage * 10).concat([{name: '', nickname: 'All Namespace'}])"
-          :key="index"
-          :label="item.name + '\t' + item.nickname"
-          :value="item.name"
-        />
-        <el-pagination
-          background
-          layout="prev, pager, next"
-          :current-page="userPage"
-          :page-size="10"
-          :total="userTotal"
-          @current-change="changeUserPageNum"
-        />
-      </el-select>
+      <UserSelector :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
+      <NsSelector :default-uid="uid" :default-ns="ns" @nsList="changeNs" ref="NsSelector"></NsSelector>
       <el-button :disabled="role < 3" style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addNs">Add
         Service
       </el-button>
     </div>
-    <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
+    <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)">
       <!-- <el-table :data='tableData' style='width: 100%'> -->
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="ID" width="50">
+      <el-table-column label="ID" width="40">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Name" width="150">
+      <el-table-column label="Name" width="115">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Namespace" width="230">
+      <el-table-column label="Namespace" width="250">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.namespace }}</span>
@@ -61,37 +46,45 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="Type" width="80">
+      <el-table-column label="Type" width="85">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.type }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Ports" width="500">
+      <el-table-column label="Ports" type="expand" width="60">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
           <el-table :data="scope.row.ports">
-            <el-table-column label="Name"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
-            <el-table-column label="Protocol"><template slot-scope="scope"><span>{{ scope.row.protocol }}</span></template></el-table-column>
-            <el-table-column label="Port"><template slot-scope="scope"><span>{{ scope.row.port }}</span></template></el-table-column>
-            <el-table-column label="NodePort"><template slot-scope="scope"><span>{{ scope.row.nodePort }}</span></template></el-table-column>
-            <el-table-column label="TargetPort"><template slot-scope="scope"><span>{{ scope.row.targetPort }}</span></template></el-table-column>
+            <el-table-column label="Name" width="105"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+            <el-table-column label="Protocol" width="105"><template slot-scope="scope"><span>{{ scope.row.protocol }}</span></template></el-table-column>
+            <el-table-column label="Port" width="105"><template slot-scope="scope"><span>{{ scope.row.port }}</span></template></el-table-column>
+            <el-table-column label="NodePort" width="105"><template slot-scope="scope"><span>{{ scope.row.nodePort }}</span></template></el-table-column>
+            <el-table-column label="TargetPort" width="105"><template slot-scope="scope"><span>{{ scope.row.targetPort }}</span></template></el-table-column>
           </el-table>
         </template>
       </el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button :disabled="role <= 2" size="mini" type="warning" @click="Resetpsd(scope.row)">编辑</el-button>
           <el-button
-            :loading="loading"
-            :disabled="role <= 2
+            :disabled="(role <= 2
               || scope.row.namespace==='default'
               || scope.row.namespace==='kube-node-lease'
               || scope.row.namespace==='kube-public'
               || scope.row.namespace==='kube-system'
-              || scope.row.namespace==='ingress-nginx'"
+              || scope.row.namespace==='ingress-nginx')
+              && u_id !== scope.row.u_id"
+            size="mini" type="warning" @click="Resetpsd(scope.row)">编辑</el-button>
+          <el-button
+            :loading="loading"
+            :disabled="(role <= 2
+              || scope.row.namespace==='default'
+              || scope.row.namespace==='kube-node-lease'
+              || scope.row.namespace==='kube-public'
+              || scope.row.namespace==='kube-system'
+              || scope.row.namespace==='ingress-nginx')
+              && u_id !== scope.row.u_id"
             size="mini"
             type="danger"
             @click="handleDelete(scope.row)"
@@ -100,15 +93,16 @@
         </template>
       </el-table-column>
     </el-table>
-    <br>
-    <el-pagination
-      background
-      layout="prev, pager, next"
-      :current-page="page"
-      :page-size="pagesize"
-      :total="total"
-      @current-change="changePageNum"
-    />
+    <div style="position: absolute;bottom: 2%">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :current-page="page"
+        :page-size="pagesize"
+        :total="total"
+        @current-change="changePageNum"
+      />
+    </div>
   </div>
 </template>
 
@@ -116,17 +110,20 @@
 import { mapGetters } from 'vuex'
 import { deleteService, getServiceList } from '@/api/service'
 import { getNsList } from '@/api/namespace'
+import UserSelector from "@/components/Selector/UserSelector";
+import NsSelector from "@/components/Selector/NsSelector";
 
 export default {
   name: 'Service',
+  components: { NsSelector, UserSelector},
   computed: {
     ...mapGetters([
-      'role'
+      'role',
+      'u_id'
     ])
   },
   created() {
     this.getServiceList()
-    this.getNsList()
   },
   data() {
     return {
@@ -134,15 +131,10 @@ export default {
       loading: false,
       openDialog: false,
       ns: this.$route.query.ns,
+      uid: this.$route.query.u_id,
       page: 1,
       total: 0,
-      pagesize: 5,
-      userPage: 1,
-      userTotal: 0,
-      options: [{
-        name: '',
-        nickname: ''
-      }],
+      pagesize: 10,
       tableData: [
         {
           name: '',
@@ -150,6 +142,7 @@ export default {
           created_at: '',
           type: '',
           cluster_ip: '',
+          u_id: '',
           ports: [
             {
               name: '',
@@ -164,6 +157,16 @@ export default {
     }
   },
   methods: {
+    changeUid: function (u_id){
+      this.uid = u_id
+      this.$refs.NsSelector.u_id = this.uid
+      this.$refs.NsSelector.getNsList()
+      this.getDeployList()
+    },
+    changeNs: function (ns){
+      this.ns = ns
+      this.getDeployList()
+    },
     changePageNum: function(val) {
       this.page = val
     },
@@ -173,19 +176,6 @@ export default {
         this.tableData = res.service_list
         console.log(res)
       })
-    },
-    getNsList: function() {
-      getNsList('').then((res) => {
-        this.userTotal = res.length
-        this.options = res.ns_list
-      })
-    },
-    changeUserPageNum: function(val) {
-      this.userPage = val
-    },
-    change() {
-      this.$forceUpdate()
-      this.getServiceList()
     },
     addNs: function() {
       this.openDialog = true
@@ -211,7 +201,7 @@ export default {
             clearTimeout(this.timer)
             this.timer = setTimeout(() => {
               this.loading = false
-              this.getDeployList()
+              this.getServiceList()
               // location.reload()
             }, 1000)
           } else {

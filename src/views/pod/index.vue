@@ -4,72 +4,100 @@
       <UserSelector :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
       <NsSelector :default-uid="uid" :default-ns="ns" @nsList="changeNs" ref="NsSelector"></NsSelector>
       <el-button :disabled="role < 3" style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addNs">Add
-        Deploy
+        Pod
       </el-button>
     </div>
-    <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
+    <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)">
       <!-- <el-table :data='tableData' style='width: 100%'> -->
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="ID" width="80">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="ID" width="40" type="index"></el-table-column>
 
-      <el-table-column label="Name" width="250">
+      <el-table-column label="Name" width="115">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Namespace" width="250">
+      <el-table-column label="Namespace" width="115">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.namespace }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="created_at" width="200">
+      <el-table-column label="created_at" width="95">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Replicas" width="80">
+      <el-table-column label="Phase" width="80">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.replicas }}</span>
+          <span>{{ scope.row.phase }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Updated" width="80">
+      <el-table-column label="NodeIp" width="130">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.updated_replicas }}</span>
+          <span>{{ scope.row.node_ip }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Ready" width="80">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.ready_replicas }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="ContainerStatuses">
+        <el-table-column label="Name" width="105">
+          <template slot-scope="scope">
+            <el-table :data="scope.row.container_statuses" :show-header="false">
+              <el-table-column><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+        <el-table-column label="Ready" width="105">
+          <template slot-scope="scope">
+            <el-table :data="scope.row.container_statuses" :show-header="false">
+              <el-table-column><template slot-scope="scope"><span>{{ scope.row.ready }}</span></template></el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+        <el-table-column label="Started" width="105">
+          <template slot-scope="scope">
+            <el-table :data="scope.row.container_statuses" :show-header="false">
+              <el-table-column><template slot-scope="scope"><span>{{ scope.row.started }}</span></template></el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+        <el-table-column label="RestartCount" width="110">
+          <template slot-scope="scope">
+            <el-table :data="scope.row.container_statuses" :show-header="false">
+              <el-table-column><template slot-scope="scope"><span>{{ scope.row.restartCount }}</span></template></el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+        <el-table-column label="Image" width="65" type="expand">
+          <template slot-scope="scope">
+            <el-table :data="scope.row.container_statuses" :show-header="false">
+              <el-table-column><template slot-scope="scope"><span>{{ scope.row.image }}</span></template></el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
 
-      <el-table-column label="Available" width="85">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.available_replicas }}</span>
-        </template>
       </el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-<!--          <el-button size="mini" type="primary" @click="pushTerminal(scope.row)">pod</el-button>-->
+          <el-button
+            :disabled="(role <= 2
+              || scope.row.namespace==='default'
+              || scope.row.namespace==='kube-node-lease'
+              || scope.row.namespace==='kube-public'
+              || scope.row.namespace==='kube-system'
+              || scope.row.namespace==='ingress-nginx')
+              && u_id !== scope.row.u_id"
+            size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
           <el-button
             :disabled="(role <= 2
               || scope.row.namespace==='default'
@@ -111,13 +139,13 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { deleteDeploy, getDeployList } from '@/api/deploy'
-import AddNamespace from "@/components/AddNamespace";
+import { deletePod, getPodList } from '@/api/pod'
+import { getNsList } from '@/api/namespace'
 import UserSelector from "@/components/Selector/UserSelector";
 import NsSelector from "@/components/Selector/NsSelector";
 
 export default {
-  name: 'Deploy',
+  name: 'Pod',
   components: { NsSelector, UserSelector},
   computed: {
     ...mapGetters([
@@ -126,7 +154,7 @@ export default {
     ])
   },
   created() {
-    this.getDeployList()
+    this.getPodList()
   },
   data() {
     return {
@@ -137,17 +165,25 @@ export default {
       uid: this.$route.query.u_id,
       page: 1,
       total: 0,
-      pagesize: 10,
+      pagesize: 5,
       tableData: [
         {
           name: '',
           namespace: '',
           created_at: '',
-          replicas: '',
-          updated_replicas: '',
-          ready_replicas: '',
-          available_replicas: '',
-          u_id: ''
+          phase: '',
+          node_ip: '',
+          u_id: '',
+          container_statuses: [
+            {
+              name: '',
+              // state: '',
+              ready: '',
+              restartCount: '',
+              image: '',
+              started: ''
+            }
+          ]
         }
       ]
     }
@@ -163,13 +199,22 @@ export default {
       this.ns = ns
       this.getDeployList()
     },
+    pushTerminal: function(row) {
+      this.$router.push({
+        name: 'Terminal',
+        query: {
+          type: 'pod',
+          name: row['name']
+        }
+      })
+    },
     changePageNum: function(val) {
       this.page = val
     },
-    getDeployList: function() {
-      getDeployList(this.uid,this.ns).then((res) => {
+    getPodList: function() {
+      getPodList(this.ns).then((res) => {
         this.total = res.length
-        this.tableData = res.deploy_list
+        this.tableData = res.pod_list
         console.log(res)
       })
     },
@@ -181,12 +226,12 @@ export default {
     },
     handleDelete: function(row) {
       /* 提示消息*/
-      this.$confirm('确认永久删除此deploy及其所含pod', '提示', {
+      this.$confirm('确认永久删除此pod', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteDeploy(row['namespace'], row['name']).then((res) => {
+        deletePod(row['namespace'], row['name']).then((res) => {
           if (res.code === 1) {
             this.$message({
               type: 'success',
@@ -197,7 +242,7 @@ export default {
             clearTimeout(this.timer)
             this.timer = setTimeout(() => {
               this.loading = false
-              this.getDeployList()
+              this.getPodList()
               // location.reload()
             }, 1000)
           } else {

@@ -57,9 +57,10 @@
         </template>
       </el-table-column>
     </el-table>
-    <br>
-    <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="1" :total="total" @current-change="changePageNum"></el-pagination>
-    <!--  权限修改弹窗-->
+    <div style="position: absolute;bottom: 2%">
+      <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="1" :total="total" @current-change="changePageNum"></el-pagination>
+    </div>
+      <!--  权限修改弹窗-->
     <el-dialog title='权限修改' :visible.sync='statusDialogVisible'>
       <el-form>
         <el-form-item label='权限' :label-width='formLabelWidth'>

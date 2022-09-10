@@ -111,7 +111,7 @@ export default {
               type: 'success',
               duration: 3 * 1000
             })
-            this.$router.push({ path: this.redirect || '/' })
+            this.$router.push({ path: '/' })
             this.loading = false
           }).catch(() => {
             this.loading = false

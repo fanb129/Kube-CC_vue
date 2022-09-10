@@ -112,7 +112,7 @@ export const constantRoutes = [
       {
         path: 'pod',
         name: 'Pod',
-        component: () => import('@/views/dashboard/index'),
+        component: () => import('@/views/pod/index'),
         meta: { title: 'Pod', icon: 'dashboard' }
       }
     ]
@@ -207,7 +207,7 @@ export const constantRoutes = [
     children: [{
       path: 'index',
       name: 'Spark',
-      component: () => import('@/views/dashboard/index'),
+      component: () => import('@/views/spark/index'),
       meta: { title: 'Spark', icon: 'dashboard' }
     }]
   },

@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getServiceList(u_id,ns) {
+export function getPodList(u_id,ns) {
   return request({
-    url: '/service',
+    url: '/pod',
     method: 'get',
     params: {
       'u_id': u_id,
@@ -11,9 +11,9 @@ export function getServiceList(u_id,ns) {
   })
 }
 
-export function deleteService(ns, name) {
+export function deletePod(ns, name) {
   return request({
-    url: '/service/delete',
+    url: '/pod/delete',
     method: 'get',
     params: {
       'ns': ns,

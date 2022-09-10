@@ -1,18 +1,8 @@
 <template>
   <div>
-    <div style="margin-left: 10%; margin-top: 1%">
-      <span>所属用户：</span>
-      <el-select v-model="value" filterable placeholder="请选择" @change="change">
-        <el-option
-          v-for="item,index in options"
-          :key="index"
-          :label="item.nickname"
-          :value="item.id">
-        </el-option>
-        <el-pagination background layout="prev, pager, next" :current-page="userPage" :page-size="1" :total="userTotal"
-                       @current-change="changeUserPageNum"></el-pagination>
-      </el-select>
-      <el-button :disabled="role < 3" style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addNs">Add
+    <div style="margin-left: 10%; margin-top: 1%; flex: auto">
+      <UserSelector :default-uid="uid" @nsList="changeUid"></UserSelector>
+      <el-button :disabled="role < 3" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addNs">Add
         Namespace
       </el-button>
     </div>
@@ -65,17 +55,27 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="pushTerminal(scope.row)">pod</el-button>
+          <el-button size="mini" type="primary" @click="push2pod(scope.row)">pod</el-button>
           <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>
           <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>
           <el-button
-            :loading="loading"
-            :disabled="role <= 2
+            :disabled="(role <= 2
               || scope.row.name==='default'
               || scope.row.name==='kube-node-lease'
               || scope.row.name==='kube-public'
               || scope.row.name==='kube-system'
-              || scope.row.name==='ingress-nginx'"
+              || scope.row.name==='ingress-nginx')
+              && u_id !== scope.row.u_id"
+            size="mini" type="warning" @click="Resetpsd(scope.row)">编辑</el-button>
+          <el-button
+            :loading="loading"
+            :disabled="(role <= 2
+              || scope.row.name==='default'
+              || scope.row.name==='kube-node-lease'
+              || scope.row.name==='kube-public'
+              || scope.row.name==='kube-system'
+              || scope.row.name==='ingress-nginx')
+              && u_id !== scope.row.u_id"
             size="mini"
             type="danger"
             @click="handleDelete(scope.row)"
@@ -84,9 +84,10 @@
         </template>
       </el-table-column>
     </el-table>
-    <br>
-    <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="pagesize" :total="total"
-                   @current-change="changePageNum"/>
+    <div style="position: absolute;bottom: 2%">
+      <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="pagesize" :total="total"
+                     @current-change="changePageNum"/>
+    </div>
     <AddNamespace :visible.sync="openDialog" ref="AddNamespace"/>
   </div>
 </template>
@@ -95,52 +96,52 @@
 
 import {mapGetters} from 'vuex'
 import {getNsList, deleteNs} from '@/api/namespace'
-import {getUserList} from '@/api/user'
 import AddNamespace from '@/components/AddNamespace'
+import UserSelector from "@/components/Selector/UserSelector";
 
 export default {
-  components: {AddNamespace},
+  components: {AddNamespace, UserSelector},
   computed: {
     ...mapGetters([
-      'role'
+      'role',
+      'u_id'
     ])
   },
   created() {
     this.getNsList()
-    this.getUserList()
   },
   data() {
     return {
+      uid: '',
       timer: null,
       loading: false,
       openDialog: false,
-      value: '',
       page: 1,
       total: 0,
       pagesize: 10,
-      userPage: 1,
-      userTotal: 0,
-      options: [{
-        id: '',
-        nickname: ''
-      }],
       tableData: [
         {
           name: '',
           status: '',
           created_at: '',
           username: '',
-          nickname: ''
+          nickname: '',
+          u_id: ''
         }
       ]
     }
   },
   methods: {
+    changeUid: function(u_id){
+      this.uid = u_id
+      this.getNsList()
+    },
     push2deploy: function (row){
       this.$router.push({
         name: 'Deploy',
         query: {
-          ns: row['name']
+          ns: row['name'],
+          u_id: row['u_id']
         }
       })
     },
@@ -148,7 +149,17 @@ export default {
       this.$router.push({
         name: 'Service',
         query: {
-          ns: row['name']
+          ns: row['name'],
+          u_id: row['u_id']
+        }
+      })
+    },
+    push2pod: function (row){
+      this.$router.push({
+        name: 'Pod',
+        query: {
+          ns: row['name'],
+          u_id: row['u_id']
         }
       })
     },
@@ -157,28 +168,11 @@ export default {
       // this.getUserList()
     },
     getNsList: function () {
-      getNsList(this.value).then((res) => {
+      getNsList(this.uid).then((res) => {
         this.total = res.length
         this.tableData = res.ns_list
         console.log(res)
       })
-    },
-    getUserList: function () {
-      getUserList(this.userPage).then((res) => {
-        this.userPage = res.page
-        this.userTotal = res.total
-        this.options = res.user_list
-        // Terminal.log(res)
-        this.options.push({id:'',nickname:'All User'})
-      })
-    },
-    changeUserPageNum: function (val) {
-      this.userPage = val
-      this.getUserList()
-    },
-    change() {
-      this.$forceUpdate()
-      this.getNsList()
     },
     addNs: function () {
       this.openDialog = true
