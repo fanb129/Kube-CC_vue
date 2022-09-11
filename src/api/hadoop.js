@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getSparkList(u_id) {
+export function getHadoopList(u_id) {
   return request({
-    url: '/spark',
+    url: '/hadoop',
     methd: 'get',
     params: {
       'u_id': u_id
@@ -10,16 +10,16 @@ export function getSparkList(u_id) {
   })
 }
 
-export function deleteSpark(name) {
+export function deleteHadoop(name) {
   return request({
-    url: '/spark/delete/' + name,
+    url: '/hadoop/delete/' + name,
     method: 'get'
   })
 }
 
-export function addSpark(data) {
+export function addHadoop(data) {
   return request({
-    url: '/spark/add',
+    url: '/hadoop/add',
     method: 'post',
     data
   })

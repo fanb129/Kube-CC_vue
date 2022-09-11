@@ -219,7 +219,7 @@ export const constantRoutes = [
     children: [{
       path: 'index',
       name: 'Hadoop',
-      component: () => import('@/views/dashboard/index'),
+      component: () => import('@/views/hadoop/index'),
       meta: { title: 'Hadoop', icon: 'dashboard' }
     }]
   },
@@ -231,7 +231,7 @@ export const constantRoutes = [
     children: [{
       path: 'index',
       name: 'Linux',
-      component: () => import('@/views/dashboard/index'),
+      component: () => import('@/views/linux/index'),
       meta: { title: 'Linux', icon: 'dashboard' }
     }]
   },

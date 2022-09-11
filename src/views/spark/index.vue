@@ -47,38 +47,32 @@
       <el-table-column label="Pod" type="expand" width="60">
         <template slot-scope="scope">
           <el-table :data="scope.row.pod_list">
-            <el-table-column label="Name" width="105"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+            <el-table-column label="ID" width="60" type="index"></el-table-column>
+            <el-table-column label="Name" width="150"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
             <el-table-column label="Phase" width="105"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
-            <el-table-column label="NodeIp" width="105"><template slot-scope="scope"><span>{{ scope.row.node_ip }}</span></template></el-table-column>
+            <el-table-column label="NodeIp" width="130"><template slot-scope="scope"><span>{{ scope.row.node_ip }}</span></template></el-table-column>
             <el-table-column label="Ready" width="105"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].ready }}</span></template></el-table-column>
-            <el-table-column label="Started" width="105"><template slot-scope="scope"><span>{{ scope.row.started }}</span></template></el-table-column>
-            <el-button
-              :disabled="(role <= 2
-                || scope.row.namespace==='default'
-                || scope.row.namespace==='kube-node-lease'
-                || scope.row.namespace==='kube-public'
-                || scope.row.namespace==='kube-system'
-                || scope.row.namespace==='ingress-nginx')
-                && u_id !== scope.row.u_id"
-              size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
-          </el-table>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="Ports" type="expand" width="60">
-        <template slot-scope="scope">
-          <el-table :data="scope.row.service_list">
-            <el-table-column label="Name" width="105"><template slot-scope="scope"><span>{{ scope.row.ports[0].name }}</span></template></el-table-column>
-            <el-table-column label="Protocol" width="105"><template slot-scope="scope"><span>{{ scope.ports[0].row.protocol }}</span></template></el-table-column>
-            <el-table-column label="Port" width="105"><template slot-scope="scope"><span>{{ scope.row.ports[0].port }}</span></template></el-table-column>
-            <el-table-column label="NodePort" width="105"><template slot-scope="scope"><span>{{ scope.row.ports[0].nodePort }}</span></template></el-table-column>
-            <el-table-column label="TargetPort" width="105"><template slot-scope="scope"><span>{{ scope.row.ports[0].targetPort }}</span></template></el-table-column>
+            <el-table-column label="Started" width="105"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].started }}</span></template></el-table-column>
+            <el-table-column label="RestartCount" width="110"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].restartCount }}</span></template></el-table-column>
+            <el-table-column label="操作">
+              <el-button
+                :disabled="(role <= 2
+                  || scope.row.namespace==='default'
+                  || scope.row.namespace==='kube-node-lease'
+                  || scope.row.namespace==='kube-public'
+                  || scope.row.namespace==='kube-system'
+                  || scope.row.namespace==='ingress-nginx')
+                  && u_id !== scope.row.u_id"
+                size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
+            </el-table-column>
           </el-table>
         </template>
       </el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">
+          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>
+          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>
           <el-button
             :disabled="(role < 2
               || scope.row.name==='default'
@@ -205,6 +199,24 @@ export default {
     }
   },
   methods: {
+    push2deploy: function (row){
+      this.$router.push({
+        name: 'Deploy',
+        query: {
+          ns: row['name'],
+          u_id: row['u_id']
+        }
+      })
+    },
+    push2service: function (row){
+      this.$router.push({
+        name: 'Service',
+        query: {
+          ns: row['name'],
+          u_id: row['u_id']
+        }
+      })
+    },
     changeUid: function(u_id){
       this.uid = u_id
       this.getSparkList()

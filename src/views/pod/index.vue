@@ -193,11 +193,11 @@ export default {
       this.uid = u_id
       this.$refs.NsSelector.u_id = this.uid
       this.$refs.NsSelector.getNsList()
-      this.getDeployList()
+      this.getPodList()
     },
     changeNs: function (ns){
       this.ns = ns
-      this.getDeployList()
+      this.getPodList()
     },
     pushTerminal: function(row) {
       this.$router.push({
@@ -212,7 +212,7 @@ export default {
       this.page = val
     },
     getPodList: function() {
-      getPodList(this.ns).then((res) => {
+      getPodList(this.uid,this.ns).then((res) => {
         this.total = res.length
         this.tableData = res.pod_list
         console.log(res)

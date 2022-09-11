@@ -11,11 +11,11 @@
       <!-- <el-table :data='tableData' style='width: 100%'> -->
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="ID" width="40">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>
-        </template>
+      <el-table-column label="ID" width="40" type="index">
+<!--        <template slot-scope="scope">-->
+<!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
+<!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
+<!--        </template>-->
       </el-table-column>
 
       <el-table-column label="Name" width="115">
@@ -161,17 +161,17 @@ export default {
       this.uid = u_id
       this.$refs.NsSelector.u_id = this.uid
       this.$refs.NsSelector.getNsList()
-      this.getDeployList()
+      this.getServiceList()
     },
     changeNs: function (ns){
       this.ns = ns
-      this.getDeployList()
+      this.getServiceList()
     },
     changePageNum: function(val) {
       this.page = val
     },
     getServiceList: function() {
-      getServiceList(this.ns).then((res) => {
+      getServiceList(this.uid,this.ns).then((res) => {
         this.total = res.length
         this.tableData = res.service_list
         console.log(res)
