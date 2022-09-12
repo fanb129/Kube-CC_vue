@@ -2,7 +2,7 @@
   <div>
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
       <UserSelector :default-uid="uid" @nsList="changeUid"></UserSelector>
-      <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addNs">Add
+      <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addHadoop">Add
         Hadoop
       </el-button>
     </div>
@@ -10,7 +10,7 @@
       <!-- <el-table :data='tableData' style='width: 100%'> -->
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="ID" width="100" type="index">
+      <el-table-column label="ID" width="80" type="index">
         <!--        <template slot-scope="scope">-->
         <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
         <!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
@@ -24,6 +24,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="Status" width="100">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.status }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="username" width="150">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
@@ -103,7 +109,7 @@
       <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="pagesize" :total="total"
                      @current-change="changePageNum"/>
     </div>
-    <AddNamespace :visible.sync="openDialog" ref="AddNamespace"/>
+    <AddHadoop :visible.sync="openDialog" ref="AddHadoop"/>
   </div>
 </template>
 
@@ -111,11 +117,11 @@
 
 import {mapGetters} from 'vuex'
 import {getHadoopList, deleteHadoop} from '@/api/hadoop'
-import AddNamespace from '@/components/AddNamespace'
+import AddHadoop from '@/components/AddHadoop'
 import UserSelector from "@/components/Selector/UserSelector";
 
 export default {
-  components: {AddNamespace, UserSelector},
+  components: {AddHadoop, UserSelector},
   computed: {
     ...mapGetters([
       'role',
@@ -138,6 +144,7 @@ export default {
       tableData: [
         {
           name: '',
+          status: '',
           created_at: '',
           username: '',
           nickname: '',
@@ -231,10 +238,10 @@ export default {
         console.log(res)
       })
     },
-    addNs: function () {
+    addHadoop: function () {
       this.openDialog = true
       this.$nextTick(() => {
-        this.$refs.AddNamespace.init();
+        this.$refs.AddHadoop.init();
       });
     },
     handleDelete: function (row) {

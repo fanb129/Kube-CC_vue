@@ -1,8 +1,17 @@
 <template>
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="600px">
-    <el-form ref="form" :model="form" label-width="80px">
-      <el-form-item label="名称">
-        <el-input v-model="form.name" style="width: 400px" />
+    <el-form ref="form" :model="form" label-width="100px ">
+      <el-form-item label="HdfsMaster">
+        <el-input-number v-model="form.hdfs_master_replicas" @change="change" :min="1" :max="3"></el-input-number>
+      </el-form-item>
+      <el-form-item label="Datanode">
+        <el-input-number v-model="form.datanode_replicas" @change="change" :min="2" :max="10"></el-input-number>
+      </el-form-item>
+      <el-form-item label="YarnMaster">
+        <el-input-number v-model="form.yarn_master_replicas" @change="change" :min="1" :max="3"></el-input-number>
+      </el-form-item>
+      <el-form-item label="YarnNode">
+        <el-input-number v-model="form.yarn_node_replicas" @change="change" :min="2" :max="10"></el-input-number>
       </el-form-item>
       <el-form-item label="用户">
         <el-select v-model="form.u_id" filterable placeholder="请选择分配用户" @change="change">
@@ -32,14 +41,14 @@
 
 <script>
 import { getUserList } from '@/api/user'
-import { addNs } from '@/api/namespace'
+import { addHadoop } from '@/api/hadoop'
 
 export default {
-  name: 'AddNamespace',
+  name: 'AddHadoop',
   data() {
     return {
       // 弹出层标题
-      title: 'Add Namespace',
+      title: 'Add Hadoop',
       // 是否显示弹出层
       open: false,
       userPage: 1,
@@ -50,7 +59,10 @@ export default {
         nickname: ''
       }],
       form: {
-        name: '',
+        hdfs_master_replicas: '',
+        datanode_replicas: '',
+        yarn_master_replicas: '',
+        yarn_node_replicas: '',
         u_id: ''
       }
     }
@@ -70,7 +82,14 @@ export default {
     },
     onSubmit() {
       console.log('submit!')
-      addNs({ name: this.form.name, u_id: parseInt(this.form.u_id) }).then((res) => {
+      addHadoop(
+        {
+          u_id: parseInt(this.form.u_id),
+          hdfs_master_replicas: parseInt(this.form.hdfs_master_replicas),
+          datanode_replicas: parseInt(this.form.datanode_replicas),
+          yarn_master_replicas: parseInt(this.form.yarn_master_replicas),
+          yarn_node_replicas: parseInt(this.form.yarn_node_replicas)
+        }).then((res) => {
         if (res.code === 1) {
           this.$message({
             type: 'success',
@@ -78,7 +97,7 @@ export default {
           })
           this.open = false
           // 调用主页面的getNsList方法刷新主页面
-          this.$parent.getNsList()
+          this.$parent.getHadoopList()
         } else {
           this.$message({
             type: 'error',

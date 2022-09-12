@@ -1,8 +1,11 @@
 <template>
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="600px">
     <el-form ref="form" :model="form" label-width="80px">
-      <el-form-item label="名称">
-        <el-input v-model="form.name" style="width: 400px" />
+      <el-form-item label="Master">
+        <el-input-number v-model="form.master_replicas" @change="change" :min="1" :max="3"></el-input-number>
+      </el-form-item>
+      <el-form-item label="Worker">
+        <el-input-number v-model="form.worker_replicas" @change="change" :min="2" :max="10"></el-input-number>
       </el-form-item>
       <el-form-item label="用户">
         <el-select v-model="form.u_id" filterable placeholder="请选择分配用户" @change="change">
@@ -32,14 +35,14 @@
 
 <script>
 import { getUserList } from '@/api/user'
-import { addNs } from '@/api/namespace'
+import { addSpark } from '@/api/spark'
 
 export default {
-  name: 'AddNamespace',
+  name: 'AddSpark',
   data() {
     return {
       // 弹出层标题
-      title: 'Add Namespace',
+      title: 'Add Spark',
       // 是否显示弹出层
       open: false,
       userPage: 1,
@@ -50,7 +53,8 @@ export default {
         nickname: ''
       }],
       form: {
-        name: '',
+        master_replicas: '',
+        worker_replicas: '',
         u_id: ''
       }
     }
@@ -70,7 +74,7 @@ export default {
     },
     onSubmit() {
       console.log('submit!')
-      addNs({ name: this.form.name, u_id: parseInt(this.form.u_id) }).then((res) => {
+      addSpark({ u_id: parseInt(this.form.u_id), master_replicas: parseInt(this.form.master_replicas), worker_replicas: parseInt(this.form.worker_replicas) }).then((res) => {
         if (res.code === 1) {
           this.$message({
             type: 'success',
@@ -78,7 +82,7 @@ export default {
           })
           this.open = false
           // 调用主页面的getNsList方法刷新主页面
-          this.$parent.getNsList()
+          this.$parent.getSparkList()
         } else {
           this.$message({
             type: 'error',

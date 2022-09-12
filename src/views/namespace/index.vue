@@ -108,6 +108,7 @@ export default {
     ])
   },
   created() {
+    this.uid = this.u_id
     this.getNsList()
   },
   data() {

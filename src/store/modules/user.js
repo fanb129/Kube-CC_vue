@@ -8,7 +8,8 @@ const getDefaultState = () => {
     name: '',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     role: 0,
-    u_id: 0
+    u_id: 0,
+    username: ''
   }
 }
 
@@ -23,6 +24,9 @@ const mutations = {
   },
   SET_NAME: (state, name) => {
     state.name = name
+  },
+  SET_USERNAME: (state,username) => {
+    state.username = username
   },
   SET_UID: (state, uid) => {
     state.u_id = uid
@@ -60,8 +64,9 @@ const actions = {
           return reject('Verification failed, please Login again.')
         }
 
-        const {nickname, avatar, role, id} = response.user_info
+        const {nickname, username ,avatar, role, id} = response.user_info
         commit('SET_NAME', nickname)
+        commit('SET_USERNAME', username)
         commit('SET_UID', id)
         // 暂时用统一指定头像
         // commit('SET_AVATAR', avatar)

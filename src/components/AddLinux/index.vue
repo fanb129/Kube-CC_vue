@@ -1,8 +1,15 @@
 <template>
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="600px">
     <el-form ref="form" :model="form" label-width="80px">
-      <el-form-item label="名称">
-        <el-input v-model="form.name" style="width: 400px" />
+      <el-form-item label="OS镜像">
+        <el-select v-model="form.kind" filterable placeholder="请选择" @change="change">
+          <el-option
+            v-for="item,index in osOptions"
+            :key="index"
+            :label="item.osName"
+            :value="item.os">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="用户">
         <el-select v-model="form.u_id" filterable placeholder="请选择分配用户" @change="change">
@@ -32,14 +39,14 @@
 
 <script>
 import { getUserList } from '@/api/user'
-import { addNs } from '@/api/namespace'
+import { addLinux } from '@/api/linux'
 
 export default {
-  name: 'AddNamespace',
+  name: 'AddLinux',
   data() {
     return {
       // 弹出层标题
-      title: 'Add Namespace',
+      title: 'Add Linux',
       // 是否显示弹出层
       open: false,
       userPage: 1,
@@ -49,8 +56,12 @@ export default {
         username: '',
         nickname: ''
       }],
+      osOptions: [
+        { os: '1', osName: 'Centos' },
+        { os: '2', osName: 'Ubuntu' }
+      ],
       form: {
-        name: '',
+        kind: '',
         u_id: ''
       }
     }
@@ -70,7 +81,7 @@ export default {
     },
     onSubmit() {
       console.log('submit!')
-      addNs({ name: this.form.name, u_id: parseInt(this.form.u_id) }).then((res) => {
+      addLinux({ u_id: parseInt(this.form.u_id), kind: parseInt(this.form.kind) }).then((res) => {
         if (res.code === 1) {
           this.$message({
             type: 'success',
@@ -78,7 +89,7 @@ export default {
           })
           this.open = false
           // 调用主页面的getNsList方法刷新主页面
-          this.$parent.getNsList()
+          this.$parent.getLinuxList()
         } else {
           this.$message({
             type: 'error',

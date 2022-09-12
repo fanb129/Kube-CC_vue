@@ -154,6 +154,7 @@ export default {
     ])
   },
   created() {
+    this.uid = this.$route.query.u_id || this.u_id
     this.getPodList()
   },
   data() {
@@ -162,7 +163,7 @@ export default {
       loading: false,
       openDialog: false,
       ns: this.$route.query.ns,
-      uid: this.$route.query.u_id,
+      uid: '',
       page: 1,
       total: 0,
       pagesize: 5,
