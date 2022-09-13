@@ -211,9 +211,9 @@ export default {
     getUserList: function() {
       getUserList(this.page).then((res) => {
         this.page = res.page
-        this.total = res.total
+        this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.tableData = res.user_list
-        // Terminal.log(res)
+        // console.log(this.total)
       })
     }
   }

@@ -7,6 +7,13 @@ export function login(data) {
     data
   })
 }
+export function checkPass(data) {
+  return request({
+    url: '/checkPass',
+    method: 'post',
+    data
+  })
+}
 export function register(data) {
   return request({
     url: '/register',
@@ -52,6 +59,13 @@ export function editUser(id,data) {
   })
 }
 
+export function updateUser(id,data) {
+  return request({
+    url: '/user/update/' + id,
+    method: 'post',
+    data
+  })
+}
 export function resetPass(id, data) {
   return request({
     url: '/user/resetpass/' + id,
