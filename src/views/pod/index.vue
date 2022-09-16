@@ -204,8 +204,7 @@ export default {
       this.$router.push({
         name: 'Terminal',
         query: {
-          type: 'pod',
-          name: row['name']
+          r: 'pod/ssh?podNs=' + row['namespace'] + '&podName=' + row['name'] + '&containerName=' + row['container_statuses'][0].name
         }
       })
     },

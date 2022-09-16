@@ -118,8 +118,17 @@ export default {
       this.$router.push({
         name: 'Terminal',
         query: {
-          type: 'node',
-          name: row['name']
+          r: 'node/ssh',
+          // user: 'root',
+          // pwd: '1234567890',
+          ip: row['ip'],
+          port: '22'
+        },
+        params: {
+          user: 'root',
+          pwd: '1234567890',
+          // ip: row['ip'],
+          // port: '22'
         }
       })
     }

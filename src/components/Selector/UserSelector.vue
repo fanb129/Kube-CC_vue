@@ -46,7 +46,7 @@ export default {
     getUserList: function () {
       getUserList(this.userPage).then((res) => {
         this.userPage = res.page
-        this.userTotal = res.total
+        this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.options = res.user_list
         // Terminal.log(res)
         this.options.push({id:'',nickname:'All User'})

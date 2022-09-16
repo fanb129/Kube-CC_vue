@@ -1,24 +1,20 @@
 <template>
-    <div className="ssh-container" ref="terminal"></div>
+  <div>
+    <div class="ssh-container" ref="terminal"></div>
+  </div>
 </template>
 
 <script>
-import {Terminal} from 'xterm'
-import {FitAddon} from 'xterm-addon-fit'
+import { Terminal } from 'xterm'
+import { FitAddon } from 'xterm-addon-fit'
 import 'xterm/css/xterm.css'
-import {debounce} from 'lodash'
-
-const packStdin = data =>
-  JSON.stringify({
-    Op: 'stdin',
-    Data: data
-  })
+import { debounce } from 'lodash'
 
 const packResize = (cols, rows) =>
   JSON.stringify({
-    Op: 'resize',
-    Cols: cols,
-    Rows: rows
+    type: 'resize',
+    cols: cols,
+    rows: rows
   })
 export default {
   name: 'MyTerminal',
@@ -29,7 +25,11 @@ export default {
       term: null,
       fitAddon: null,
       ws: null,
-      socketUrl: 'ws://127.0.0.1:8888/api/' + this.$route.query.type + '/ws/' + this.$route.query.name,
+      socketUrl: 'ws://127.0.0.1:8080/api/' + this.$route.query['r'],
+      user: this.$route.query.user,
+      pwd: this.$route.query.pwd,
+      ip: this.$route.query.ip,
+      port: this.$route.query.port,
       option: {
         lineHeight: 1.0,
         cursorBlink: true,
@@ -43,6 +43,13 @@ export default {
       }
     }
   },
+  destroyed(){
+    console.log('销毁')
+    // this.ws.send(JSON.stringify({
+    //   type: 'stdin',
+    //   data: this.utf8_to_b64('exit')
+    // }))
+  },
   mounted() {
     this.initTerm()
     this.initSocket()
@@ -55,6 +62,23 @@ export default {
     this.term && this.term.dispose()
   },
   methods: {
+    utf8_to_b64(rawString) {
+      return btoa(unescape(encodeURIComponent(rawString)));
+    },
+    b64_to_utf8(encodeString) {
+      return decodeURIComponent(escape(atob(encodeString)));
+    },
+    bytesHuman(bytes, precision) {
+      if (!/^([-+])?|(\.\d+)(\d+(\.\d+)?|(\d+\.)|Infinity)$/.test(bytes)) {
+        return '-'
+      }
+      if (bytes === 0) return '0';
+      if (typeof precision === 'undefined') precision = 1;
+      const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'];
+      const num = Math.floor(Math.log(bytes) / Math.log(1024));
+      const value = (bytes / Math.pow(1024, Math.floor(num))).toFixed(precision);
+      return `${value} ${units[num]}`
+    },
     isWsOpen() {
       return this.ws && this.ws.readyState === 1
     },
@@ -70,17 +94,20 @@ export default {
     },
     onTerminalKeyPress() {
       this.term.onData(data => {
-        this.isWsOpen() && this.ws.send(packStdin(data))
+        this.isWsOpen() && this.ws.send(JSON.stringify({
+          type: 'stdin',
+          data: this.utf8_to_b64(data)
+        }))
       })
     },
     // resize 相关
     resizeRemoteTerminal() {
-      const {cols, rows} = this.term
+      const { cols, rows } = this.term
       console.log('列数、行数设置为：', cols, rows)
       // 调整后端终端大小 使后端与前端终端大小一致
       this.isWsOpen() && this.ws.send(packResize(cols, rows))
     },
-    onResize: debounce(function() {
+    onResize: debounce(function () {
       this.fitAddon.fit()
     }, 500),
     onTerminalResize() {
@@ -93,42 +120,49 @@ export default {
     // socket
     initSocket() {
       this.term.write(this.initText)
-      this.ws = new WebSocket(this.socketUrl, ['OK'])
+      this.ws = new WebSocket(this.socketUrl,['webssh'])
       this.onOpenSocket()
       this.onCloseSocket()
       this.onErrorSocket()
+      this.term._initialized = true
       this.onMessageSocket()
     },
     // 打开连接
     onOpenSocket() {
       this.ws.onopen = () => {
         console.log('websocket 已连接')
+        this.ws.send(JSON.stringify({ type: "addr", data: this.utf8_to_b64(this.ip + ':' + this.port) }));
+        // socket.send(JSON.stringify({ type: "term", data: utf8_to_b64("linux") }));
+        this.ws.send(JSON.stringify({ type: "login", data: this.utf8_to_b64(this.user) }));
+        this.ws.send(JSON.stringify({ type: "password", data: this.utf8_to_b64(this.pwd) }));
         this.term.reset()
         setTimeout(() => {
           this.resizeRemoteTerminal()
         }, 500)
       }
     },
+
     // 关闭连接
     onCloseSocket() {
       this.ws.onclose = () => {
         console.log('关闭连接')
-        this.term.write('未连接， 3秒后重连...\r\n');
-        setTimeout(() => {
-          this.initSocket();
-        }, 3000)
+        this.term.write("未连接， 刷新后重连...\r\n");
+        // setTimeout(() => {
+        //   this.initSocket();
+        // }, 3000)
       }
     },
     // 连接错误
     onErrorSocket() {
       this.ws.onerror = () => {
-        this.$message.error('websoket连接失败，请刷新！')
+        this.term.write('连接失败，请刷新！')
       }
     },
     // 接收消息
     onMessageSocket() {
       this.ws.onmessage = res => {
-        const data = res.data
+        console.log(res)
+        const msg = JSON.parse(res.data)
         const term = this.term
         // console.log("receive: " + data)
         // 第一次连接成功将 initText 清空
@@ -138,7 +172,7 @@ export default {
           term.element && term.focus()
           this.resizeRemoteTerminal()
         }
-        term.write(data)
+        term.write(this.b64_to_utf8(msg.data))
       }
     }
   }
@@ -153,7 +187,7 @@ body {
 
 .ssh-container {
   overflow: hidden;
-  height: 100vh;
+  height: 93vh;
   border-radius: 4px;
   background: rgb(24, 29, 40);
   padding: 0px;
@@ -165,3 +199,4 @@ body {
   }
 }
 </style>
+

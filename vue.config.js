@@ -38,10 +38,18 @@ module.exports = {
     },
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: 'http://127.0.0.1:8888/api',
+        target: 'http://127.0.0.1:8080/api',
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
+        }
+      },
+      'websocket': {
+        target: 'ws://127.0.0.1:8080/api',
+        changeOrigin: true,
+        ws: true,
+        pathRewrite: {
+          '^websocket': ''
         }
       }
     }
