@@ -206,6 +206,14 @@ export default {
     }
   },
   methods: {
+    pushTerminal: function(row) {
+      this.$router.push({
+        name: 'PodTerminal',
+        query: {
+          r: 'pod/ssh?podNs=' + row['namespace'] + '&podName=' + row['name'] + '&containerName=' + row['container_statuses'][0].name
+        }
+      })
+    },
     push2deploy: function (row){
       this.$router.push({
         name: 'Deploy',

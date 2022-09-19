@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
-      <UserSelector :default-uid="uid" @nsList="changeUid"></UserSelector>
+      <UserSelector :default-uid="uid" @nsList="changeUid" />
       <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addSpark">Add
         Spark
       </el-button>
@@ -11,10 +11,10 @@
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
       <el-table-column label="ID" width="80" type="index">
-<!--        <template slot-scope="scope">-->
-<!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-<!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
-<!--        </template>-->
+        <!--        <template slot-scope="scope">-->
+        <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
+        <!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
+        <!--        </template>-->
       </el-table-column>
 
       <el-table-column label="Name" width="250">
@@ -53,7 +53,7 @@
       <el-table-column label="Pod" type="expand" width="60">
         <template slot-scope="scope">
           <el-table :data="scope.row.pod_list">
-            <el-table-column label="ID" width="60" type="index"></el-table-column>
+            <el-table-column label="ID" width="60" type="index" />
             <el-table-column label="Name" width="150"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
             <el-table-column label="Phase" width="105"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
             <el-table-column label="NodeIp" width="130"><template slot-scope="scope"><span>{{ scope.row.node_ip }}</span></template></el-table-column>
@@ -61,15 +61,20 @@
             <el-table-column label="Started" width="105"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].started }}</span></template></el-table-column>
             <el-table-column label="RestartCount" width="110"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].restartCount }}</span></template></el-table-column>
             <el-table-column label="操作">
-              <el-button
-                :disabled="(role <= 2
-                  || scope.row.namespace==='default'
-                  || scope.row.namespace==='kube-node-lease'
-                  || scope.row.namespace==='kube-public'
-                  || scope.row.namespace==='kube-system'
-                  || scope.row.namespace==='ingress-nginx')
-                  && u_id !== scope.row.u_id"
-                size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
+              <template slot-scope="scope">
+                <el-button
+                  :disabled="(role <= 2
+                    || scope.row.namespace==='default'
+                    || scope.row.namespace==='kube-node-lease'
+                    || scope.row.namespace==='kube-public'
+                    || scope.row.namespace==='kube-system'
+                    || scope.row.namespace==='ingress-nginx')
+                    && u_id !== scope.row.u_id"
+                  size="mini"
+                  type="success"
+                  @click="pushTerminal(scope.row)"
+                > 终端</el-button>
+              </template>
             </el-table-column>
           </el-table>
         </template>
@@ -77,7 +82,7 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>
+          <el-button size="mini" type="primary" @click="push2deploy(scope.row)">deploy</el-button>
           <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>
           <el-button
             :disabled="(role < 2
@@ -87,7 +92,10 @@
               || scope.row.name==='kube-system'
               || scope.row.name==='ingress-nginx')
               && u_id !== scope.row.u_id"
-            size="mini" type="warning" @click="Resetpsd(scope.row)">编辑</el-button>
+            size="mini"
+            type="warning"
+            @click="Resetpsd(scope.row)"
+          >编辑</el-button>
           <el-button
             :loading="loading"
             :disabled="(role < 2
@@ -106,22 +114,28 @@
       </el-table-column>
     </el-table>
     <div style="position: absolute;bottom: 2%">
-      <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="pagesize" :total="total"
-                     @current-change="changePageNum"/>
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :current-page="page"
+        :page-size="pagesize"
+        :total="total"
+        @current-change="changePageNum"
+      />
     </div>
-    <AddSpark :visible.sync="openDialog" ref="AddSpark"/>
+    <AddSpark ref="AddSpark" :visible.sync="openDialog" />
   </div>
 </template>
 
 <script>
 
-import {mapGetters} from 'vuex'
-import {getSparkList, deleteSpark} from '@/api/spark'
+import { mapGetters } from 'vuex'
+import { getSparkList, deleteSpark } from '@/api/spark'
 import AddSpark from '@/components/AddSpark'
-import UserSelector from "@/components/Selector/UserSelector";
+import UserSelector from '@/components/Selector/UserSelector'
 
 export default {
-  components: {AddSpark, UserSelector},
+  components: { AddSpark, UserSelector },
   computed: {
     ...mapGetters([
       'role',
@@ -206,7 +220,18 @@ export default {
     }
   },
   methods: {
-    push2deploy: function (row){
+    pushTerminal: function(row) {
+      console.log(row['namespace'])
+      console.log(row['name'])
+      console.log(row['container_statuses'][0].name)
+      this.$router.push({
+        name: 'PodTerminal',
+        query: {
+          r: 'pod/ssh?podNs=' + row['namespace'] + '&podName=' + row['name'] + '&containerName=' + row['container_statuses'][0].name
+        }
+      })
+    },
+    push2deploy: function(row) {
       this.$router.push({
         name: 'Deploy',
         query: {
@@ -215,7 +240,7 @@ export default {
         }
       })
     },
-    push2service: function (row){
+    push2service: function(row) {
       this.$router.push({
         name: 'Service',
         query: {
@@ -224,27 +249,27 @@ export default {
         }
       })
     },
-    changeUid: function(u_id){
+    changeUid: function(u_id) {
       this.uid = u_id
       this.getSparkList()
     },
-    changePageNum: function (val) {
+    changePageNum: function(val) {
       this.page = val
     },
-    getSparkList: function () {
+    getSparkList: function() {
       getSparkList(this.uid).then((res) => {
         this.total = res.length
         this.tableData = res.spark_list
         console.log(res)
       })
     },
-    addSpark: function () {
+    addSpark: function() {
       this.openDialog = true
       this.$nextTick(() => {
-        this.$refs.AddSpark.init();
-      });
+        this.$refs.AddSpark.init()
+      })
     },
-    handleDelete: function (row) {
+    handleDelete: function(row) {
       /* 提示消息*/
       this.$confirm('确认永久删除此spark集群', '提示', {
         confirmButtonText: '确定',
@@ -264,7 +289,7 @@ export default {
               this.loading = false
               this.getSparkList()
               // location.reload()
-            },1000)
+            }, 1000)
           } else {
             this.$message({
               type: 'error',

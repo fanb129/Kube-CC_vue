@@ -205,7 +205,7 @@ export default {
     },
     handleClick(tab, event) {
       if (tab.name === 'first') {
-        this.init()
+        // this.init()
       }
     },
     doSubmit() {

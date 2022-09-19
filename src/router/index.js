@@ -32,13 +32,13 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
-    path: '/terminal',
+    path: '/podterminal',
     component: Layout,
     // hidden: true,
     children: [{
       path: 'index',
-      name: 'Terminal',
-      component: () => import('@/components/Terminal/index')
+      name: 'PodTerminal',
+      component: () => import('@/components/Terminal/PodTerminal')
       // meta: { title: 'Terminal', icon: 'dashboard' }
     }]
   },
@@ -233,6 +233,17 @@ export const constantRoutes = [
       name: 'Linux',
       component: () => import('@/views/linux/index'),
       meta: { title: 'Linux', icon: 'dashboard' }
+    }]
+  },
+  {
+    path: '/terminal',
+    component: Layout,
+    // hidden: true,
+    children: [{
+      path: 'index',
+      name: 'Terminal',
+      component: () => import('@/components/Terminal/index'),
+      meta: { title: 'Terminal', icon: 'terminal_icon' }
     }]
   },
 

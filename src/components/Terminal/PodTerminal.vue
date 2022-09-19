@@ -1,32 +1,6 @@
 <template>
   <div>
-    <el-tabs v-model="activeName" @tab-click="handleClick" style="margin-left: 1vh; margin-right: 1vh">
-      <el-tab-pane name="first" label="SSH">
-        <div style="text-align: center">
-          <el-form ref="form" :model="form" status-icon :rules="rules" label-position="left" label-width="80px" style="margin-left: 50vh; width: 50vh">
-            <el-form-item label="Ip" prop="ip">
-              <el-input v-model="form.ip"/>
-            </el-form-item>
-            <el-form-item label="Port" prop="port">
-              <el-input v-model="form.port"/>
-            </el-form-item>
-            <el-form-item label="User" prop="user">
-              <el-input v-model="form.user"/>
-            </el-form-item>
-            <el-form-item label="Password" prop="pwd">
-              <el-input v-model="form.pwd" type="password"/>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="submitForm('form')">连接</el-button>
-              <el-button @click="resetForm('form')">重置</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane name="second" label="Terminal">
-        <div class="ssh-container" ref="terminal"></div>
-      </el-tab-pane>
-    </el-tabs>
+    <div class="ssh-container" ref="terminal"></div>
   </div>
 </template>
 
@@ -43,47 +17,15 @@ const packResize = (cols, rows) =>
     rows: rows
   })
 export default {
-  name: 'MyTerminal',
-  created() {
-    this.form.ip = this.$route.query.ip || ''
-    this.form.port = this.$route.query.port || ''
-  },
+  name: 'PodTerminal',
   data() {
-    var validate = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('不能为空'));
-      } else {
-        callback();
-      }
-    };
     return {
-      rules: {
-        ip: [
-          {validator: validate, trigger: 'blur'}
-        ],
-        port: [
-          {validator: validate, trigger: 'blur'}
-        ],
-        user: [
-          {validator: validate, trigger: 'blur'}
-        ],
-        pwd: [
-          {validator: validate, trigger: 'blur'}
-        ],
-      },
-      activeName: 'first',
       initText: '连接中...\r\n',
       first: true,
       term: null,
       fitAddon: null,
       ws: null,
-      socketUrl: 'ws://127.0.0.1:8080/api/node/ssh',
-      form: {
-        user: '',
-        pwd: '',
-        ip: '',
-        port: '',
-      },
+      socketUrl: 'ws://127.0.0.1:8080/api/' + this.$route.query['r'],
       option: {
         lineHeight: 1.0,
         cursorBlink: true,
@@ -93,47 +35,22 @@ export default {
         theme: {
           background: '#181d28'
         },
-        cols: 30 // 初始化的时候不要设置fit，设置col为较小值（最小为可展示initText初始文字即可）方便屏幕缩放
+        cols: 100 // 初始化的时候不要设置fit，设置col为较小值（最小为可展示initText初始文字即可）方便屏幕缩放
       }
     }
   },
-  // mounted() {
-  //   this.initTerm()
-  //   this.initSocket()
-  //
-  //   this.onTerminalResize()
-  //   this.onTerminalKeyPress()
-  // },
+  mounted() {
+    this.initTerm()
+    this.initSocket()
+
+    this.onTerminalResize()
+    this.onTerminalKeyPress()
+  },
   beforeDestroy() {
     this.removeResizeListener()
     this.term && this.term.dispose()
   },
   methods: {
-    initWs() {
-      this.initTerm()
-      this.initSocket()
-      this.onTerminalResize()
-      this.onTerminalKeyPress()
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.activeName = 'second'
-          this.initWs()
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    handleClick(tab, event) {
-      if (tab.name === 'second') {
-        // this.init()
-      }
-    },
     utf8_to_b64(rawString) {
       return btoa(unescape(encodeURIComponent(rawString)));
     },
@@ -167,8 +84,9 @@ export default {
     onTerminalKeyPress() {
       this.term.onData(data => {
         this.isWsOpen() && this.ws.send(JSON.stringify({
-          type: 'stdin',
-          data: this.utf8_to_b64(data)
+          type: 'input',
+          // input: this.utf8_to_b64(data)
+          input: data
         }))
       })
     },
@@ -192,7 +110,7 @@ export default {
     // socket
     initSocket() {
       this.term.write(this.initText)
-      this.ws = new WebSocket(this.socketUrl,['webssh'])
+      this.ws = new WebSocket(this.socketUrl)
       this.onOpenSocket()
       this.onCloseSocket()
       this.onErrorSocket()
@@ -203,10 +121,10 @@ export default {
     onOpenSocket() {
       this.ws.onopen = () => {
         console.log('websocket 已连接')
-        this.ws.send(JSON.stringify({ type: "addr", data: this.utf8_to_b64(this.form.ip + ':' + this.form.port) }));
-        // socket.send(JSON.stringify({ type: "term", data: utf8_to_b64("linux") }));
-        this.ws.send(JSON.stringify({ type: "login", data: this.utf8_to_b64(this.form.user) }));
-        this.ws.send(JSON.stringify({ type: "password", data: this.utf8_to_b64(this.form.pwd) }));
+        // this.ws.send(JSON.stringify({ type: "addr", data: this.utf8_to_b64(this.ip + ':' + this.port) }));
+        // // socket.send(JSON.stringify({ type: "term", data: utf8_to_b64("linux") }));
+        // this.ws.send(JSON.stringify({ type: "login", data: this.utf8_to_b64(this.user) }));
+        // this.ws.send(JSON.stringify({ type: "password", data: this.utf8_to_b64(this.pwd) }));
         this.term.reset()
         setTimeout(() => {
           this.resizeRemoteTerminal()
@@ -234,7 +152,9 @@ export default {
     onMessageSocket() {
       this.ws.onmessage = res => {
         console.log(res)
-        const msg = JSON.parse(res.data)
+        // const msg = JSON.parse(res.data)
+        const msg = res.data
+        // console.log(msg)
         const term = this.term
         // console.log("receive: " + data)
         // 第一次连接成功将 initText 清空
@@ -244,7 +164,7 @@ export default {
           term.element && term.focus()
           this.resizeRemoteTerminal()
         }
-        term.write(this.b64_to_utf8(msg.data))
+        term.write(msg)
       }
     }
   }
@@ -259,7 +179,7 @@ body {
 
 .ssh-container {
   overflow: hidden;
-  height: 85vh;
+  height: 93vh;
   border-radius: 4px;
   background: rgb(24, 29, 40);
   padding: 0px;

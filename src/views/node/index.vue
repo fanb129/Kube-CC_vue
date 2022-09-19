@@ -118,7 +118,7 @@ export default {
       this.$router.push({
         name: 'Terminal',
         query: {
-          r: 'node/ssh',
+          // r: 'node/ssh',
           // user: 'root',
           // pwd: '1234567890',
           ip: row['ip'],
