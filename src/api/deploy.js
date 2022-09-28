@@ -21,3 +21,14 @@ export function deleteDeploy(ns, name) {
     }
   })
 }
+
+export function getDeployYaml(name,ns){
+  return request({
+    url: '/deploy/info',
+    method: 'get',
+    params: {
+      'name': name,
+      'ns': ns
+    }
+  })
+}

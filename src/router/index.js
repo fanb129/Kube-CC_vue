@@ -82,7 +82,7 @@ export const constantRoutes = [
       {
         path: 'yaml',
         name: 'Yaml',
-        component: () => import('@/views/dashboard/index'),
+        component: () => import('@/views/yaml/index'),
         meta: { title: 'Yaml', icon: 'el-icon-upload' }
       },
       {

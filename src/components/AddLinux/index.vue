@@ -105,7 +105,7 @@ export default {
     getUserList: function() {
       getUserList(this.userPage).then((res) => {
         this.userPage = res.page
-        this.userTotal = res.total
+        this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.options = res.user_list
         this.options.push({nickname:'',id: '0',username:'Null'})
         // console.log(res)

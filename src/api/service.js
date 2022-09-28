@@ -21,3 +21,14 @@ export function deleteService(ns, name) {
     }
   })
 }
+
+export function getServiceYaml(name,ns){
+  return request({
+    url: '/service/info',
+    method: 'get',
+    params: {
+      'name': name,
+      'ns': ns
+    }
+  })
+}

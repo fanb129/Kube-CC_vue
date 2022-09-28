@@ -3,7 +3,7 @@
     <div style="margin-left: 10%; margin-top: 1%">
       <UserSelector :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
       <NsSelector :default-uid="uid" :default-ns="ns" @nsList="changeNs" ref="NsSelector"></NsSelector>
-      <el-button :disabled="role < 3" style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addNs">Add
+      <el-button :disabled="role < 3" style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addService">Add
         Service
       </el-button>
     </div>
@@ -75,7 +75,7 @@
               || scope.row.namespace==='kube-system'
               || scope.row.namespace==='ingress-nginx')
               && u_id !== scope.row.u_id"
-            size="mini" type="warning" @click="Resetpsd(scope.row)">编辑</el-button>
+            size="mini" type="warning" @click="editService(scope.row)">编辑</el-button>
           <el-button
             :loading="loading"
             :disabled="(role <= 2
@@ -103,6 +103,8 @@
         @current-change="changePageNum"
       />
     </div>
+    <YamlApply :visible.sync="applyDialog" ref="YamlApply" :kind="kind" :name="yamlName" :ns="yamlNs"/>
+    <YamlCreate :visible.sync="createDialog" ref="YamlCreate" :kind="kind"/>
   </div>
 </template>
 
@@ -112,10 +114,12 @@ import { deleteService, getServiceList } from '@/api/service'
 import { getNsList } from '@/api/namespace'
 import UserSelector from "@/components/Selector/UserSelector";
 import NsSelector from "@/components/Selector/NsSelector";
+import YamlApply from '@/components/YamlEditor/apply'
+import YamlCreate from '@/components/YamlEditor/create'
 
 export default {
   name: 'Service',
-  components: { NsSelector, UserSelector},
+  components: { NsSelector, UserSelector, YamlApply, YamlCreate},
   computed: {
     ...mapGetters([
       'role',
@@ -128,9 +132,13 @@ export default {
   },
   data() {
     return {
+      kind: 'Service',
+      yamlName: '',
+      yamlNs: '',
       timer: null,
       loading: false,
-      openDialog: false,
+      applyDialog: false,
+      createDialog: false,
       ns: this.$route.query.ns,
       uid: '',
       page: 1,
@@ -178,10 +186,18 @@ export default {
         console.log(res)
       })
     },
-    addNs: function() {
-      this.openDialog = true
+    addService: function() {
+      this.createDialog = true
       this.$nextTick(() => {
-        this.$refs.AddNamespace.init()
+        this.$refs.YamlCreate.init()
+      })
+    },
+    editService: function(row){
+      this.yamlName = row['name']
+      this.yamlNs = row['namespace']
+      this.applyDialog = true
+      this.$nextTick(() => {
+        this.$refs.YamlApply.init()
       })
     },
     handleDelete: function(row) {

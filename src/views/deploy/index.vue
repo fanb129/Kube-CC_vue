@@ -3,7 +3,7 @@
     <div style="margin-left: 10%; margin-top: 1%">
       <UserSelector :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
       <NsSelector :default-uid="uid" :default-ns="ns" @nsList="changeNs" ref="NsSelector"></NsSelector>
-      <el-button :disabled="role < 3" style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addNs">Add
+      <el-button :disabled="role < 3" style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addDeploy">Add
         Deploy
       </el-button>
     </div>
@@ -72,13 +72,13 @@
 <!--          <el-button size="mini" type="primary" @click="pushTerminal(scope.row)">pod</el-button>-->
           <el-button
             :disabled="(role <= 2
-              || scope.row.namespace==='default'
-              || scope.row.namespace==='kube-node-lease'
-              || scope.row.namespace==='kube-public'
-              || scope.row.namespace==='kube-system'
-              || scope.row.namespace==='ingress-nginx')
+              || scope.row.name==='default'
+              || scope.row.name==='kube-node-lease'
+              || scope.row.name==='kube-public'
+              || scope.row.name==='kube-system'
+              || scope.row.name==='ingress-nginx')
               && u_id !== scope.row.u_id"
-            size="mini" type="warning" @click="Resetpsd(scope.row)">编辑</el-button>
+            size="mini" type="warning" @click="editDeploy(scope.row)">编辑</el-button>
           <el-button
             :loading="loading"
             :disabled="(role <= 2
@@ -106,19 +106,22 @@
         @current-change="changePageNum"
       />
     </div>
+    <YamlApply :visible.sync="applyDialog" ref="YamlApply" :kind="kind" :name="yamlName" :ns="yamlNs"/>
+    <YamlCreate :visible.sync="createDialog" ref="YamlCreate" :kind="kind"/>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { deleteDeploy, getDeployList } from '@/api/deploy'
-import AddNamespace from "@/components/AddNamespace";
 import UserSelector from "@/components/Selector/UserSelector";
 import NsSelector from "@/components/Selector/NsSelector";
+import YamlApply from '@/components/YamlEditor/apply'
+import YamlCreate from '@/components/YamlEditor/create'
 
 export default {
   name: 'Deploy',
-  components: { NsSelector, UserSelector},
+  components: { NsSelector, UserSelector, YamlApply, YamlCreate},
   computed: {
     ...mapGetters([
       'role',
@@ -131,9 +134,13 @@ export default {
   },
   data() {
     return {
+      kind: 'Deploy',
+      yamlName: '',
+      yamlNs: '',
       timer: null,
       loading: false,
-      openDialog: false,
+      applyDialog: false,
+      createDialog: false,
       ns: this.$route.query.ns,
       uid: '',
       page: 1,
@@ -174,10 +181,18 @@ export default {
         console.log(res)
       })
     },
-    addNs: function() {
-      this.openDialog = true
+    addDeploy: function() {
+      this.createDialog = true
       this.$nextTick(() => {
-        this.$refs.AddNamespace.init()
+        this.$refs.YamlCreate.init()
+      })
+    },
+    editDeploy: function(row){
+      this.yamlName = row['name']
+      this.yamlNs = row['namespace']
+      this.applyDialog = true
+      this.$nextTick(() => {
+        this.$refs.YamlApply.init()
       })
     },
     handleDelete: function(row) {

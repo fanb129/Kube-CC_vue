@@ -21,3 +21,14 @@ export function deletePod(ns, name) {
     }
   })
 }
+
+export function getPodYaml(name,ns){
+  return request({
+    url: '/pod/info',
+    method: 'get',
+    params: {
+      'name': name,
+      'ns': ns
+    }
+  })
+}

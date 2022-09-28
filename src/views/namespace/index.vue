@@ -2,7 +2,7 @@
   <div>
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
       <UserSelector :default-uid="uid" @nsList="changeUid"></UserSelector>
-      <el-button :disabled="role < 3" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addNs">Add
+      <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addNs">Add
         Namespace
       </el-button>
     </div>
