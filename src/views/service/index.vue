@@ -3,7 +3,7 @@
     <div style="margin-left: 10%; margin-top: 1%">
       <UserSelector :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
       <NsSelector :default-uid="uid" :default-ns="ns" @nsList="changeNs" ref="NsSelector"></NsSelector>
-      <el-button :disabled="role < 3" style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addService">Add
+      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addService">Add
         Service
       </el-button>
     </div>
@@ -68,23 +68,9 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
-            :disabled="(role <= 2
-              || scope.row.namespace==='default'
-              || scope.row.namespace==='kube-node-lease'
-              || scope.row.namespace==='kube-public'
-              || scope.row.namespace==='kube-system'
-              || scope.row.namespace==='ingress-nginx')
-              && u_id !== scope.row.u_id"
             size="mini" type="warning" @click="editService(scope.row)">编辑</el-button>
           <el-button
             :loading="loading"
-            :disabled="(role <= 2
-              || scope.row.namespace==='default'
-              || scope.row.namespace==='kube-node-lease'
-              || scope.row.namespace==='kube-public'
-              || scope.row.namespace==='kube-system'
-              || scope.row.namespace==='ingress-nginx')
-              && u_id !== scope.row.u_id"
             size="mini"
             type="danger"
             @click="handleDelete(scope.row)"

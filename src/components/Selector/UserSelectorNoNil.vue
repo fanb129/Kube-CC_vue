@@ -20,7 +20,7 @@ import {getUserList} from "@/api/user";
 import {mapGetters} from "vuex";
 
 export default {
-  name: 'UserSelector',
+  name: 'UserSelectorNoNil',
   props: ['defaultUid'],
   computed: {
     ...mapGetters([
@@ -58,7 +58,7 @@ export default {
         this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.options = res.user_list
         // Terminal.log(res)
-        this.options.push({id:'',nickname:'All User',role: 3})
+        // this.options.push({id:'',nickname:'All User',role: 3})
       })
     },
   }

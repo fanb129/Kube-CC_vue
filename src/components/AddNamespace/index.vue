@@ -11,6 +11,7 @@
             :key="item.id"
             :label="item.username + '\t' + item.nickname"
             :value="item.id"
+            :disabled="role < item.role"
           />
           <el-pagination
             background
@@ -33,9 +34,16 @@
 <script>
 import { getUserList } from '@/api/user'
 import { addNs } from '@/api/namespace'
+import {mapGetters} from "vuex";
 
 export default {
   name: 'AddNamespace',
+  computed: {
+    ...mapGetters([
+      'role',
+      // 'u_id'
+    ])
+  },
   data() {
     return {
       // 弹出层标题
@@ -47,7 +55,8 @@ export default {
       options: [{
         id: '',
         username: '',
-        nickname: ''
+        nickname: '',
+        role: ''
       }],
       form: {
         name: '',
@@ -96,7 +105,7 @@ export default {
         this.userPage = res.page
         this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.options = res.user_list
-        this.options.push({nickname:'',id: '0',username:'Null'})
+        this.options.push({nickname:'',id: '0',username:'Null',role: 0})
         // console.log(res)
       })
     },

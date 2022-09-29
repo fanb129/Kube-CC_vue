@@ -62,13 +62,6 @@
             <el-table-column label="RestartCount" width="110"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].restartCount }}</span></template></el-table-column>
             <el-table-column label="操作">
               <el-button
-                :disabled="(role <= 2
-                  || scope.row.namespace==='default'
-                  || scope.row.namespace==='kube-node-lease'
-                  || scope.row.namespace==='kube-public'
-                  || scope.row.namespace==='kube-system'
-                  || scope.row.namespace==='ingress-nginx')
-                  && u_id !== scope.row.u_id"
                 size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
             </el-table-column>
           </el-table>
@@ -80,23 +73,9 @@
           <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>
           <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>
           <el-button
-            :disabled="(role < 2
-              || scope.row.name==='default'
-              || scope.row.name==='kube-node-lease'
-              || scope.row.name==='kube-public'
-              || scope.row.name==='kube-system'
-              || scope.row.name==='ingress-nginx')
-              && u_id !== scope.row.u_id"
             size="mini" type="warning" @click="Resetpsd(scope.row)">编辑</el-button>
           <el-button
             :loading="loading"
-            :disabled="(role < 2
-              || scope.row.name==='default'
-              || scope.row.name==='kube-node-lease'
-              || scope.row.name==='kube-public'
-              || scope.row.name==='kube-system'
-              || scope.row.name==='ingress-nginx')
-              && u_id !== scope.row.u_id"
             size="mini"
             type="danger"
             @click="handleDelete(scope.row)"

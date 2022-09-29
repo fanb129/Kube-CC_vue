@@ -1,5 +1,6 @@
 <template>
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="60%">
+    <span style="color: red; text-align: center; font-size: large">只允许修改spec内容，切勿修改labels标签!!!</span>
     <yaml-editor v-model="yamlValue" :read-only="readOnly" style="height: 43vh; margin-bottom: 1%;"></yaml-editor>
     <div>
 <!--      <el-button type="primary" @click="changeRead">Edit</el-button>-->
@@ -70,7 +71,7 @@ export default {
     },
     applyYaml() {
       console.log(yaml2json(this.yamlValue,false).data)
-      applyYaml({yaml: yaml2json(this.yamlValue,false).data}).then(res => {
+      applyYaml({yaml: yaml2json(this.yamlValue,false).data,kind: this.kind,name: this.name, ns: this.ns}).then(res => {
         if (res.code === 1) {
           this.$message({
             type: 'success',
