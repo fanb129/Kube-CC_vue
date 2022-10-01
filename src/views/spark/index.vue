@@ -80,7 +80,7 @@
           <el-button
             size="mini"
             type="warning"
-            @click="Resetpsd(scope.row)"
+            @click="updateSpark(scope.row)"
           >编辑</el-button>
           <el-button
             :loading="loading"
@@ -103,6 +103,7 @@
       />
     </div>
     <AddSpark ref="AddSpark" :visible.sync="openDialog" />
+    <UpdateSpark ref="UpdateSpark" :visible.sync="updateDialog"/>
   </div>
 </template>
 
@@ -112,9 +113,10 @@ import { mapGetters } from 'vuex'
 import { getSparkList, deleteSpark } from '@/api/spark'
 import AddSpark from '@/components/AddSpark'
 import UserSelector from '@/components/Selector/UserSelector'
+import UpdateSpark from '@/components/AddSpark/UpdateSpark';
 
 export default {
-  components: { AddSpark, UserSelector },
+  components: { AddSpark, UserSelector, UpdateSpark },
   computed: {
     ...mapGetters([
       'role',
@@ -131,6 +133,7 @@ export default {
       timer: null,
       loading: false,
       openDialog: false,
+      updateDialog: false,
       page: 1,
       total: 0,
       pagesize: 10,
@@ -142,6 +145,8 @@ export default {
           username: '',
           nickname: '',
           u_id: '',
+          master_replicas: '',
+          worker_replicas: '',
           pod_list: [
             {
               name: '',
@@ -246,6 +251,12 @@ export default {
       this.openDialog = true
       this.$nextTick(() => {
         this.$refs.AddSpark.init()
+      })
+    },
+    updateSpark: function(row) {
+      this.updateDialog = true
+      this.$nextTick(() => {
+        this.$refs.UpdateSpark.init(row['name'],row['u_id'], row['master_replicas'],row['worker_replicas'])
       })
     },
     handleDelete: function(row) {

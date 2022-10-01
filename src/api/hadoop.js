@@ -24,3 +24,11 @@ export function addHadoop(data) {
     data
   })
 }
+
+export function updateHadoop(data) {
+  return request({
+    url: '/hadoop/update',
+    method: 'post',
+    data
+  })
+}

@@ -13,7 +13,7 @@
       <el-form-item label="YarnNode">
         <el-input-number v-model="form.yarn_node_replicas" @change="change" :min="2" :max="10"></el-input-number>
       </el-form-item>
-      <el-form-item label="用户">
+      <el-form-item v-if="role >= 2" label="用户">
         <el-select v-model="form.u_id" filterable placeholder="请选择分配用户" @change="change">
           <el-option
             v-for="item in options"
@@ -33,7 +33,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        <el-button type="primary" @click="onSubmit">更新</el-button>
         <el-button @click="cancel">取消</el-button>
       </el-form-item>
     </el-form>
@@ -42,14 +42,20 @@
 
 <script>
 import { getUserList } from '@/api/user'
-import { addHadoop } from '@/api/hadoop'
+import { updateHadoop } from '@/api/hadoop'
+import {mapGetters} from "vuex";
 
 export default {
-  name: 'AddHadoop',
+  name: 'UpdateHadoop',
+  computed: {
+    ...mapGetters([
+      'role'
+    ])
+  },
   data() {
     return {
       // 弹出层标题
-      title: 'Add Hadoop',
+      title: 'Update Hadoop',
       // 是否显示弹出层
       open: false,
       userPage: 1,
@@ -61,6 +67,7 @@ export default {
         role: ''
       }],
       form: {
+        name: '',
         hdfs_master_replicas: '',
         datanode_replicas: '',
         yarn_master_replicas: '',
@@ -70,10 +77,22 @@ export default {
     }
   },
   methods: {
-    init() {
+    init(name,uid,hdfsMaster,datanode,yarnMaster,yarnNode) {
+      this.form.name = name
+      this.form.u_id = uid
+      this.form.hdfs_master_replicas = hdfsMaster
+      this.form.datanode_replicas = datanode
+      this.form.yarn_master_replicas = yarnMaster
+      this.form.yarn_node_replicas = yarnNode
       this.open = true
       this.$nextTick(() => {
         this.getUserList()
+        this.form.name = name
+        this.form.u_id = uid
+        this.form.hdfs_master_replicas = hdfsMaster
+        this.form.datanode_replicas = datanode
+        this.form.yarn_master_replicas = yarnMaster
+        this.form.yarn_node_replicas = yarnNode
         this.open = true
       })
     },
@@ -84,8 +103,9 @@ export default {
     },
     onSubmit() {
       console.log('submit!')
-      addHadoop(
+      updateHadoop(
         {
+          name: this.form.name,
           u_id: parseInt(this.form.u_id),
           hdfs_master_replicas: parseInt(this.form.hdfs_master_replicas),
           datanode_replicas: parseInt(this.form.datanode_replicas),

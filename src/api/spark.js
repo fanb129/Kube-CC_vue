@@ -24,3 +24,11 @@ export function addSpark(data) {
     data
   })
 }
+
+export function updateSpark(data) {
+  return request({
+    url: '/spark/update',
+    method: 'post',
+    data
+  })
+}

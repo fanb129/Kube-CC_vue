@@ -14,6 +14,7 @@
             :key="item.id"
             :label="item.username + '\t' + item.nickname"
             :value="item.id"
+            :disabled="role < item.role"
           />
           <el-pagination
             background
@@ -36,9 +37,15 @@
 <script>
 import { getUserList } from '@/api/user'
 import { addSpark } from '@/api/spark'
+import {mapGetters} from "vuex";
 
 export default {
   name: 'AddSpark',
+  computed: {
+    ...mapGetters([
+      'role'
+    ])
+  },
   data() {
     return {
       // 弹出层标题
@@ -49,6 +56,7 @@ export default {
       userTotal: 0,
       options: [{
         id: '',
+        role: '',
         username: '',
         nickname: ''
       }],
@@ -100,7 +108,7 @@ export default {
         this.userPage = res.page
         this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.options = res.user_list
-        this.options.push({nickname:'',id: '0',username:'Null'})
+        this.options.push({nickname:'',id: '0',username:'Null',role:'0'})
         // console.log(res)
       })
     },

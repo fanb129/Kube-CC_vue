@@ -24,3 +24,11 @@ export function addNs(data) {
     data
   })
 }
+
+export function updateNs(data) {
+  return request({
+    url: '/ns/update',
+    method: 'post',
+    data
+  })
+}

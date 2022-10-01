@@ -59,23 +59,19 @@
           <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>
           <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>
           <el-button
-            :disabled="(role <= 2
-              || scope.row.name==='default'
+            :disabled="scope.row.name==='default'
               || scope.row.name==='kube-node-lease'
               || scope.row.name==='kube-public'
               || scope.row.name==='kube-system'
-              || scope.row.name==='ingress-nginx')
-              && u_id !== scope.row.u_id"
-            size="mini" type="warning" @click="Resetpsd(scope.row)">编辑</el-button>
+              || scope.row.name==='ingress-nginx'"
+            size="mini" type="warning" @click="updateNs(scope.row)">编辑</el-button>
           <el-button
             :loading="loading"
-            :disabled="(role <= 2
-              || scope.row.name==='default'
+            :disabled="scope.row.name==='default'
               || scope.row.name==='kube-node-lease'
               || scope.row.name==='kube-public'
               || scope.row.name==='kube-system'
-              || scope.row.name==='ingress-nginx')
-              && u_id !== scope.row.u_id"
+              || scope.row.name==='ingress-nginx'"
             size="mini"
             type="danger"
             @click="handleDelete(scope.row)"
@@ -89,6 +85,7 @@
                      @current-change="changePageNum"/>
     </div>
     <AddNamespace :visible.sync="openDialog" ref="AddNamespace"/>
+    <UpdateNamespace :visible.sync="updateDialog" ref="UpdateNamespace"/>
   </div>
 </template>
 
@@ -97,10 +94,11 @@
 import {mapGetters} from 'vuex'
 import {getNsList, deleteNs} from '@/api/namespace'
 import AddNamespace from '@/components/AddNamespace'
+import UpdateNamespace from '@/components/AddNamespace/UpdateNamespace'
 import UserSelector from "@/components/Selector/UserSelector";
 
 export default {
-  components: {AddNamespace, UserSelector},
+  components: {AddNamespace, UserSelector, UpdateNamespace},
   computed: {
     ...mapGetters([
       'role',
@@ -117,6 +115,7 @@ export default {
       timer: null,
       loading: false,
       openDialog: false,
+      updateDialog: false,
       page: 1,
       total: 0,
       pagesize: 10,
@@ -180,6 +179,13 @@ export default {
       this.$nextTick(() => {
         this.$refs.AddNamespace.init();
       });
+    },
+    updateNs: function (row){
+      console.log(row['name'])
+      this.updateDialog = true
+      this.$nextTick(() => {
+        this.$refs.UpdateNamespace.init(row['name'],row['u_id'])
+      })
     },
     handleDelete: function (row) {
       /* 提示消息*/

@@ -74,7 +74,8 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width: 100%" @click.native.prevent="handleRegister">注册</el-button>
+      <el-button :loading="loading" type="primary" style="width: 30%" @click.native.prevent="handleRegister">注册</el-button>
+      <el-button style="width: 30%; float: right" @click="back">返回</el-button>
     </el-form>
   </div>
 </template>
@@ -174,6 +175,9 @@ export default {
         }
       })
     },
+    back() {
+      this.$router.push({ path: '/login' })
+    }
   }
 }
 </script>

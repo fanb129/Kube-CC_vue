@@ -18,6 +18,7 @@
             :key="item.id"
             :label="item.username + '\t' + item.nickname"
             :value="item.id"
+            :disabled="role < item.role"
           />
           <el-pagination
             background
@@ -54,7 +55,8 @@ export default {
       options: [{
         id: '',
         username: '',
-        nickname: ''
+        nickname: '',
+        role: ''
       }],
       osOptions: [
         { os: '1', osName: 'Centos' },
@@ -107,7 +109,7 @@ export default {
         this.userPage = res.page
         this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.options = res.user_list
-        this.options.push({nickname:'',id: '0',username:'Null'})
+        this.options.push({nickname:'',id: '0',username:'Null',role: 0})
         // console.log(res)
       })
     },

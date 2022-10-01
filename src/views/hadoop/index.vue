@@ -73,7 +73,7 @@
           <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>
           <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>
           <el-button
-            size="mini" type="warning" @click="Resetpsd(scope.row)">编辑</el-button>
+            size="mini" type="warning" @click="updateHadoop(scope.row)">编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
@@ -89,6 +89,7 @@
                      @current-change="changePageNum"/>
     </div>
     <AddHadoop :visible.sync="openDialog" ref="AddHadoop"/>
+    <UpdateHadoop :visible.sync="updateDialog" ref="UpdateHadoop"/>
   </div>
 </template>
 
@@ -97,10 +98,11 @@
 import {mapGetters} from 'vuex'
 import {getHadoopList, deleteHadoop} from '@/api/hadoop'
 import AddHadoop from '@/components/AddHadoop'
+import UpdateHadoop from "@/components/AddHadoop/UpdateHadoop";
 import UserSelector from "@/components/Selector/UserSelector";
 
 export default {
-  components: {AddHadoop, UserSelector},
+  components: {AddHadoop, UserSelector, UpdateHadoop},
   computed: {
     ...mapGetters([
       'role',
@@ -117,6 +119,7 @@ export default {
       timer: null,
       loading: false,
       openDialog: false,
+      updateDialog: false,
       page: 1,
       total: 0,
       pagesize: 10,
@@ -136,6 +139,10 @@ export default {
               phase: '',
               node_ip: '',
               u_id: '',
+              hdfs_master_replicas: '',
+              datanode_replicas: '',
+              yarn_master_replicas: '',
+              yarn_node_replicas: '',
               container_statuses: [
                 {
                   name: '',
@@ -229,6 +236,12 @@ export default {
       this.openDialog = true
       this.$nextTick(() => {
         this.$refs.AddHadoop.init();
+      });
+    },
+    updateHadoop: function (row) {
+      this.updateDialog = true
+      this.$nextTick(() => {
+        this.$refs.UpdateHadoop.init(row['name'],row['u_id'],row['hdfs_master_replicas'],row['datanode_replicas'],row['yarn_master_replicas'],row['yarn_node_replicas']);
       });
     },
     handleDelete: function (row) {
