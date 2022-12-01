@@ -6,3 +6,17 @@ export function getNodeList() {
     methd: 'get'
   })
 }
+export function deleteNode(node) {
+  return request({
+    url: '/node/delete/' + node,
+    method: 'get'
+  })
+}
+export function addNode(data) {
+  return request({
+    url: '/node/add',
+    method: 'post',
+    data
+  })
+}
+

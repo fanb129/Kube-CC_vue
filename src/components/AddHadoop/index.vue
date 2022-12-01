@@ -14,7 +14,7 @@
         <el-input-number v-model="form.yarn_node_replicas" @change="change" :min="2" :max="10"></el-input-number>
       </el-form-item>
       <el-form-item label="用户">
-        <el-select v-model="form.u_id" filterable placeholder="请选择分配用户" @change="change">
+        <el-select v-model="form.u_id" filterable multiple placeholder="请选择分配用户" @change="change">
           <el-option
             v-for="item in options"
             :key="item.id"
@@ -65,7 +65,7 @@ export default {
         datanode_replicas: '',
         yarn_master_replicas: '',
         yarn_node_replicas: '',
-        u_id: ''
+        u_id: []
       }
     }
   },
@@ -86,7 +86,7 @@ export default {
       console.log('submit!')
       addHadoop(
         {
-          u_id: parseInt(this.form.u_id),
+          u_id: this.form.u_id,
           hdfs_master_replicas: parseInt(this.form.hdfs_master_replicas),
           datanode_replicas: parseInt(this.form.datanode_replicas),
           yarn_master_replicas: parseInt(this.form.yarn_master_replicas),

@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import  { mapGetters } from 'vuex'
 import { deletePod, getPodList } from '@/api/pod'
 import { getNsList } from '@/api/namespace'
 import UserSelector from "@/components/Selector/UserSelector";

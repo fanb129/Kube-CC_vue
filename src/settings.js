@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'k8s_deploy',
+  title: 'Kube-CC',
 
   /**
    * @type {boolean} true | false

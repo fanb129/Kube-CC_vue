@@ -8,7 +8,7 @@
         <el-input-number v-model="form.worker_replicas" @change="change" :min="2" :max="10"></el-input-number>
       </el-form-item>
       <el-form-item label="用户">
-        <el-select v-model="form.u_id" filterable placeholder="请选择分配用户" @change="change">
+        <el-select v-model="form.u_id" filterable multiple placeholder="请选择分配用户" @change="change">
           <el-option
             v-for="item in options"
             :key="item.id"
@@ -63,7 +63,7 @@ export default {
       form: {
         master_replicas: '',
         worker_replicas: '',
-        u_id: ''
+        u_id: []
       }
     }
   },
@@ -82,7 +82,7 @@ export default {
     },
     onSubmit() {
       console.log('submit!')
-      addSpark({ u_id: parseInt(this.form.u_id), master_replicas: parseInt(this.form.master_replicas), worker_replicas: parseInt(this.form.worker_replicas) }).then((res) => {
+      addSpark({ u_id: this.form.u_id, master_replicas: parseInt(this.form.master_replicas), worker_replicas: parseInt(this.form.worker_replicas) }).then((res) => {
         if (res.code === 1) {
           this.$message({
             type: 'success',

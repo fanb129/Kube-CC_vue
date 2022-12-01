@@ -1,14 +1,19 @@
 <template>
   <div>
+    <div style="margin-left: 10%; margin-top: 1%; flex: auto">
+      <el-button :disabled="role < 3" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addNode">Add
+        Node
+      </el-button>
+    </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
       <!-- <el-table :data='tableData' style='width: 100%'> -->
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
       <el-table-column label="ID" width="100" type="index">
-<!--        <template slot-scope="scope">-->
-<!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-<!--          <span style="margin-left: 10px">{{ scope.$index + 1 }}</span>-->
-<!--        </template>-->
+        <!--        <template slot-scope="scope">-->
+        <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
+        <!--          <span style="margin-left: 10px">{{ scope.$index + 1 }}</span>-->
+        <!--        </template>-->
       </el-table-column>
 
       <el-table-column label="主机名" width="120">
@@ -57,7 +62,7 @@
         <template slot-scope="scope">
           <!--          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' @click='Resetpsd(scope.row)'>Terminal</el-button>-->
           <el-button :disabled="role <= 2 " size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
-          <!--          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' type='danger' @click='handleDelete(scope.row)'>删除</el-button>-->
+          <el-button :disabled="role <= 2 || scope.row.name === 'master'" size="mini" type="danger" @click="deleteNode(scope.row.name)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -65,15 +70,18 @@
     <div style="position: absolute;bottom: 2%">
       <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="pagesize" :total="total" @current-change="changePageNum" />
     </div>
-    </div>
+    <AddNode ref="AddNode" :visible.sync="openDialog" />
+  </div>
 </template>
 
 <script>
 
 import { mapGetters } from 'vuex'
-import { getNodeList } from '@/api/node'
+import { deleteNode, getNodeList } from '@/api/node'
+import AddNode from '@/components/AddNode'
 
 export default {
+  components: { AddNode },
   computed: {
     ...mapGetters([
       'role'
@@ -84,6 +92,7 @@ export default {
   },
   data() {
     return {
+      openDialog: false,
       value: '',
       page: 1,
       total: 0,
@@ -103,6 +112,47 @@ export default {
     }
   },
   methods: {
+    addNode: function() {
+      this.openDialog = true
+      this.$nextTick(() => {
+        this.$refs.AddNode.init()
+      })
+    },
+    deleteNode: function(node) {
+      /* 提示消息*/
+      this.$confirm('确认删除此node及其所含包含资源', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteNode(node).then((res) => {
+          if (res.code === 1) {
+            this.$message({
+              type: 'success',
+              message: res.msg
+            })
+            // location.reload()
+            this.loading = true
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+              this.loading = false
+              this.getNodeList()
+              // location.reload()
+            }, 1000)
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.msg
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
     changePageNum: function(val) {
       this.page = val
       // this.getUserList()
@@ -126,7 +176,7 @@ export default {
         },
         params: {
           user: 'root',
-          pwd: '1234567890',
+          pwd: '1234567890'
           // ip: row['ip'],
           // port: '22'
         }

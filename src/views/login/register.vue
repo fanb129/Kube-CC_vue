@@ -3,7 +3,7 @@
     <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">k8s_deploy</h3>
+        <h3 class="title">Kube-CC</h3>
       </div>
 
       <el-form-item prop="username">

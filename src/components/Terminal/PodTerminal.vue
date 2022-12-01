@@ -30,10 +30,24 @@ export default {
         lineHeight: 1.0,
         cursorBlink: true,
         cursorStyle: 'block', // 光标样式 'block' | 'underline' | 'bar'
-        fontSize: 18,
+        fontSize: 30,
         fontFamily: "Monaco, Menlo, Consolas, 'Courier New', monospace",
         theme: {
-          background: '#181d28'
+          // 背景色
+          background: '#ffffff',
+          // 前景色
+          foreground: '#000000',
+          // 光标背景色
+          cursor: '#000000',
+          // 光标前景色
+          /** The accent color of the cursor (fg color for a block cursor) */
+          // cursorAccent: '#000000',
+          // 选择背景色
+          /** The selection background color (can be transparent) */
+          selection: '#0000ff',
+          // 选择前景色
+          /** The selection foreground color */
+          selectionForeground: '#0000ff'
         },
         cols: 100 // 初始化的时候不要设置fit，设置col为较小值（最小为可展示initText初始文字即可）方便屏幕缩放
       }
@@ -181,9 +195,9 @@ body {
   overflow: hidden;
   height: 93vh;
   border-radius: 4px;
-  background: rgb(24, 29, 40);
+  background: rgb(255, 255, 255);
   padding: 0px;
-  color: rgb(255, 255, 255);
+  //color: rgb(255, 255, 255);
 
   .xterm-scroll-area::-webkit-scrollbar-thumb {
     background-color: #b7c4d1;

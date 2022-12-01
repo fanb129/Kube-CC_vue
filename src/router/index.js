@@ -254,12 +254,12 @@ export const constantRoutes = [
     meta: { title: 'About', icon: 'link' },
     children: [
       {
-        path: 'https://github.com/fanb129/k8s_deploy_gin',
-        meta: { title: 'k8s_deploy_gin', icon: 'link' }
+        path: 'https://github.com/fanb129/Kube-CC',
+        meta: { title: 'Kube-CC', icon: 'link' }
       },
       {
-        path: 'https://github.com/fanb129/k8s_deploy_vue',
-        meta: { title: 'k8s_deploy_vue', icon: 'link' }
+        path: 'https://github.com/fanb129/Kube-CC_vue',
+        meta: { title: 'Kube-CC_vue', icon: 'link' }
       }
     ]
   },
