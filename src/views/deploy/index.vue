@@ -3,9 +3,17 @@
     <div style="margin-left: 10%; margin-top: 1%">
       <UserSelector :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
       <NsSelector :default-uid="uid" :default-ns="ns" @nsList="changeNs" ref="NsSelector"></NsSelector>
-      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addDeploy">Add
-        Deploy
-      </el-button>
+<!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addDeploy">Add-->
+<!--        Deploy-->
+<!--      </el-button>-->
+
+      <el-dropdown split-button trigger="click" @command="handleCommand" style="margin-left: 30%" type="primary" @click="addDeploy">
+        Add Deploy
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="a">Form</el-dropdown-item>
+          <el-dropdown-item command="b">Yaml</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
       <!-- <el-table :data='tableData' style='width: 100%'> -->
@@ -94,6 +102,7 @@
     </div>
     <YamlApply :visible.sync="applyDialog" ref="YamlApply" :kind="kind" :name="yamlName" :ns="yamlNs"/>
     <YamlCreate :visible.sync="createDialog" ref="YamlCreate" :kind="kind"/>
+    <AddDeploy :visible.sync="addDialog" ref="AddDeploy"/>
   </div>
 </template>
 
@@ -104,10 +113,11 @@ import UserSelector from "@/components/Selector/UserSelector";
 import NsSelector from "@/components/Selector/NsSelector";
 import YamlApply from '@/components/YamlEditor/apply'
 import YamlCreate from '@/components/YamlEditor/create'
+import AddDeploy from '@/components/AddDeploy'
 
 export default {
   name: 'Deploy',
-  components: { NsSelector, UserSelector, YamlApply, YamlCreate},
+  components: { NsSelector, UserSelector, YamlApply, YamlCreate, AddDeploy },
   computed: {
     ...mapGetters([
       'role',
@@ -127,6 +137,7 @@ export default {
       loading: false,
       applyDialog: false,
       createDialog: false,
+      addDialog: false,
       ns: this.$route.query.ns,
       uid: '',
       page: 1,
@@ -147,6 +158,13 @@ export default {
     }
   },
   methods: {
+    handleCommand(command) {
+      if (command === 'a') {
+        this.addDeploy()
+      } else {
+        this.yamlCreate()
+      }
+    },
     changeUid: function (u_id){
       this.uid = u_id
       this.$refs.NsSelector.u_id = this.uid
@@ -168,6 +186,12 @@ export default {
       })
     },
     addDeploy: function() {
+      this.addDialog = true
+      this.$nextTick(() => {
+        this.$refs.AddDeploy.init()
+      })
+    },
+    yamlCreate: function() {
       this.createDialog = true
       this.$nextTick(() => {
         this.$refs.YamlCreate.init()

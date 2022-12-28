@@ -42,7 +42,7 @@ import { createYaml } from '@/api/yaml'
 import { yaml2json } from '@/utils/yaml'
 
 export default {
-  name: 'AddDeploy',
+  name: 'AddPod',
   components: { UserSelectorNoNil, NsSelectorNoNil },
   computed: {
     ...mapGetters([
@@ -50,7 +50,7 @@ export default {
       'u_id'
     ])
   },
-  data: function() {
+  data() {
     return {
       descriptors: {
         metadata: {
@@ -67,81 +67,55 @@ export default {
         spec: {
           type: 'object',
           fields: {
-            replicas: { type: 'integer', required: true, min: 1 },
-            selector: {
-              type: 'object',
-              defaultField: { type: 'string', required: true }
-            },
-            template: {
-              type: 'object',
-              fields: {
-                metadata: {
-                  type: 'object',
-                  fields: {
-                    // name: { type: 'string', required: true },
-                    // namespace: { type: 'string', required: true },
-                    labels: {
-                      type: 'object',
-                      defaultField: { type: 'string', required: true }
-                    }
-                  }
-                },
-                spec: {
-                  type: 'object',
-                  fields: {
-                    containers: {
-                      type: 'array',
-                      required: true,
-                      defaultField: {
-                        type: 'object',
-                        fields: {
-                          name: { type: 'string', required: true },
-                          image: { type: 'string', required: true },
-                          command: { type: 'array', defaultField: { type: 'string', required: true }},
-                          args: { type: 'array', defaultField: { type: 'string', required: true }},
-                          ports: { type: 'array', defaultField: {
-                            type: 'object',
-                            fields: {
-                              name: { type: 'string', required: true },
-                              containerPort: { type: 'integer', required: true },
-                              protocol: {
-                                type: 'enum',
-                                required: true,
-                                enum: ['TCP', 'UDP', 'SCTP'],
-                                options: [
-                                  { label: 'TCP', value: 'TCP' },
-                                  { label: 'UDP', value: 'UDP' },
-                                  { label: 'SCTP', value: 'SCTP' }
-                                ]
-                              }
-                            }
-                          }},
-                          imagePullPolicy: {
-                            type: 'enum',
-                            required: true,
-                            enum: ['Always', 'Never', 'IfNotPresent'],
-                            options: [
-                              { label: 'Always', value: 'Always' },
-                              { label: 'Never', value: 'Never' },
-                              { label: 'IfNotPresent', value: 'IfNotPresent' }
-                            ]
-                          }
-                        }
+            containers: {
+              type: 'array',
+              required: true,
+              defaultField: {
+                type: 'object',
+                fields: {
+                  name: { type: 'string', required: true },
+                  image: { type: 'string', required: true },
+                  command: { type: 'array', defaultField: { type: 'string', required: true }},
+                  args: { type: 'array', defaultField: { type: 'string', required: true }},
+                  ports: { type: 'array', defaultField: {
+                    type: 'object',
+                    fields: {
+                      name: { type: 'string', required: true },
+                      containerPort: { type: 'integer', required: true },
+                      protocol: {
+                        type: 'enum',
+                        required: true,
+                        enum: ['TCP', 'UDP', 'SCTP'],
+                        options: [
+                          { label: 'TCP', value: 'TCP' },
+                          { label: 'UDP', value: 'UDP' },
+                          { label: 'SCTP', value: 'SCTP' }
+                        ]
                       }
-                    },
-                    restartPolicy: {
-                      type: 'enum',
-                      required: true,
-                      enum: ['Always', 'OnFailure', 'Never'],
-                      options: [
-                        { label: 'Always', value: 'Always' },
-                        { label: 'OnFailure', value: 'OnFailure' },
-                        { label: 'Never', value: 'Never' }
-                      ]
                     }
+                  }},
+                  imagePullPolicy: {
+                    type: 'enum',
+                    required: true,
+                    enum: ['Always', 'Never', 'IfNotPresent'],
+                    options: [
+                      { label: 'Always', value: 'Always' },
+                      { label: 'Never', value: 'Never' },
+                      { label: 'IfNotPresent', value: 'IfNotPresent' }
+                    ]
                   }
                 }
               }
+            },
+            restartPolicy: {
+              type: 'enum',
+              required: true,
+              enum: ['Always', 'OnFailure', 'Never'],
+              options: [
+                { label: 'Always', value: 'Always' },
+                { label: 'OnFailure', value: 'OnFailure' },
+                { label: 'Never', value: 'Never' }
+              ]
             }
           }
         }
@@ -149,40 +123,31 @@ export default {
       uid: '',
       ns: '',
       // 弹出层标题
-      title: 'Add Deploy Form',
+      title: 'Add Pod Form',
       // 是否显示弹出层
       open: false,
       form: {
-        kind: 'deploy',
+        kind: 'pod',
         metadata: {
           name: '',
           namespace: '',
           labels: {} // map
         },
         spec: {
-          replicas: 0,
-          selector: {},
-          template: {
-            metadata: {
-              labels: {} // map
-            },
-            spec: {
-              containers: [{
-                name: '',
-                image: '',
-                command: [],
-                args: [],
-                ports: [{
-                  name: '',
-                  hostPort: 0,
-                  containerPort: 0,
-                  protocol: ''
-                }],
-                imagePullPolicy: ''
-              }],
-              restartPolicy: ''
-            }
-          }
+          containers: [{
+            name: '',
+            image: '',
+            command: [],
+            args: [],
+            ports: [{
+              name: '',
+              hostPort: 0,
+              containerPort: 0,
+              protocol: ''
+            }],
+            imagePullPolicy: ''
+          }],
+          restartPolicy: ''
         }
       }
     }

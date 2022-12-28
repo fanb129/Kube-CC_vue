@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="600px">
-    <el-form ref="form" :model="form" label-width="100px ">
+    <el-form ref="form" :model="form" label-width="100px">
       <el-form-item label="HdfsMaster">
         <el-input-number v-model="form.hdfs_master_replicas" @change="change" :min="1" :max="3"></el-input-number>
       </el-form-item>

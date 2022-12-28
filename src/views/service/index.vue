@@ -1,21 +1,39 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%">
-      <UserSelector :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
-      <NsSelector :default-uid="uid" :default-ns="ns" @nsList="changeNs" ref="NsSelector"></NsSelector>
-      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addService">Add
-        Service
-      </el-button>
+      <UserSelector ref="UserSelector" :default-uid="uid" @nsList="changeUid" />
+      <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
+      <!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addService">Add-->
+      <!--        Service-->
+      <!--      </el-button>-->
+
+<!--      <el-dropdown trigger="click" @command="handleCommand" style="margin-left: 30%">-->
+<!--        <span class="el-dropdown-link">-->
+<!--          Add Service<i class="el-icon-arrow-down el-icon&#45;&#45;right" />-->
+<!--        </span>-->
+<!--        <el-dropdown-menu slot="dropdown">-->
+<!--          <el-dropdown-item command="a">Form</el-dropdown-item>-->
+<!--          <el-dropdown-item command="b">Yaml</el-dropdown-item>-->
+<!--        </el-dropdown-menu>-->
+<!--      </el-dropdown>-->
+
+      <el-dropdown split-button trigger="click" @command="handleCommand" style="margin-left: 30%" type="primary" @click="addService">
+        Add Service
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="a">Form</el-dropdown-item>
+          <el-dropdown-item command="b">Yaml</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)">
       <!-- <el-table :data='tableData' style='width: 100%'> -->
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
       <el-table-column label="ID" width="40" type="index">
-<!--        <template slot-scope="scope">-->
-<!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-<!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
-<!--        </template>-->
+        <!--        <template slot-scope="scope">-->
+        <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
+        <!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
+        <!--        </template>-->
       </el-table-column>
 
       <el-table-column label="Name" width="115">
@@ -68,7 +86,10 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
-            size="mini" type="warning" @click="editService(scope.row)">编辑</el-button>
+            size="mini"
+            type="warning"
+            @click="editService(scope.row)"
+          >编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
@@ -89,8 +110,9 @@
         @current-change="changePageNum"
       />
     </div>
-    <YamlApply :visible.sync="applyDialog" ref="YamlApply" :kind="kind" :name="yamlName" :ns="yamlNs"/>
+    <YamlApply ref="YamlApply" :visible.sync="applyDialog" :kind="kind" :name="yamlName" :ns="yamlNs" />
     <YamlCreate :visible.sync="createDialog" ref="YamlCreate" :kind="kind"/>
+    <AddService ref="AddService" :visible.sync="addDialog" />
   </div>
 </template>
 
@@ -98,14 +120,15 @@
 import { mapGetters } from 'vuex'
 import { deleteService, getServiceList } from '@/api/service'
 import { getNsList } from '@/api/namespace'
-import UserSelector from "@/components/Selector/UserSelector";
-import NsSelector from "@/components/Selector/NsSelector";
+import UserSelector from '@/components/Selector/UserSelector'
+import NsSelector from '@/components/Selector/NsSelector'
 import YamlApply from '@/components/YamlEditor/apply'
 import YamlCreate from '@/components/YamlEditor/create'
+import AddService from '@/components/AddService'
 
 export default {
   name: 'Service',
-  components: { NsSelector, UserSelector, YamlApply, YamlCreate},
+  components: { NsSelector, UserSelector, YamlApply, YamlCreate, AddService },
   computed: {
     ...mapGetters([
       'role',
@@ -125,6 +148,7 @@ export default {
       loading: false,
       applyDialog: false,
       createDialog: false,
+      addDialog: false,
       ns: this.$route.query.ns,
       uid: '',
       page: 1,
@@ -152,13 +176,20 @@ export default {
     }
   },
   methods: {
-    changeUid: function (u_id){
+    handleCommand(command) {
+      if (command === 'a') {
+        this.addService()
+      } else {
+        this.yamlCreate()
+      }
+    },
+    changeUid: function(u_id) {
       this.uid = u_id
       this.$refs.NsSelector.u_id = this.uid
       this.$refs.NsSelector.getNsList()
       this.getServiceList()
     },
-    changeNs: function (ns){
+    changeNs: function(ns) {
       this.ns = ns
       this.getServiceList()
     },
@@ -166,19 +197,25 @@ export default {
       this.page = val
     },
     getServiceList: function() {
-      getServiceList(this.uid,this.ns).then((res) => {
+      getServiceList(this.uid, this.ns).then((res) => {
         this.total = res.length
         this.tableData = res.service_list
         console.log(res)
       })
     },
     addService: function() {
+      this.addDialog = true
+      this.$nextTick(() => {
+        this.$refs.AddService.init()
+      })
+    },
+    yamlCreate: function() {
       this.createDialog = true
       this.$nextTick(() => {
         this.$refs.YamlCreate.init()
       })
     },
-    editService: function(row){
+    editService: function(row) {
       this.yamlName = row['name']
       this.yamlNs = row['namespace']
       this.applyDialog = true
