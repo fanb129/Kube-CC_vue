@@ -21,7 +21,7 @@
       <!-- <el-table :data='tableData' style='width: 100%'> -->
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="ID" width="80" type="index">
+      <el-table-column label="ID" width="50" type="index">
         <!--        <template slot-scope="scope">-->
         <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
         <!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
@@ -41,23 +41,41 @@
           <span>{{ scope.row.status }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="username" width="150">
+      <el-table-column label="created_at" width="100">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.created_at }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="expired_at" width="100">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.expired_time }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="cpu" width="100">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="memory" width="100">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="username" width="100">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.username }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="nickname" width="150">
+      <el-table-column label="nickname" width="100">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.nickname }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="created_at" width="200">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
 
@@ -81,10 +99,18 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>
-          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>
+          <el-dropdown size="mini" split-button trigger="click" @command="handleCommand" type="primary" style="padding: 15px">
+            更多
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item :command="beforeHandleCommand('deploy',scope.row)">deploy</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+<!--          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>-->
+<!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
           <el-button
-            size="mini" type="warning" @click="Resetpsd(scope.row)">编辑</el-button>
+            :disabled="role < 2"
+            size="mini" type="warning" @click="updateLinux(scope.row)">编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
@@ -100,6 +126,7 @@
                      @current-change="changePageNum"/>
     </div>
     <AddLinux :visible.sync="openDialog" ref="AddLinux"/>
+    <UpdateLinux :visible.sync="updateDialog" ref="UpdateLinux"/>
   </div>
 </template>
 
@@ -108,10 +135,11 @@
 import {mapGetters} from 'vuex'
 import {getLinuxList, deleteLinux} from '@/api/linux'
 import AddLinux from '@/components/AddLinux'
+import UpdateLinux from '@/components/AddLinux/UpdateLinux'
 import UserSelector from "@/components/Selector/UserSelector";
 
 export default {
-  components: {AddLinux, UserSelector},
+  components: {AddLinux, UserSelector, UpdateLinux},
   computed: {
     ...mapGetters([
       'role',
@@ -130,6 +158,7 @@ export default {
       timer: null,
       loading: false,
       openDialog: false,
+      updateDialog: false,
       page: 1,
       total: 0,
       pagesize: 10,
@@ -146,6 +175,11 @@ export default {
           nickname: '',
           image: '',
           u_id: '',
+          cpu: '',
+          memory: '',
+          used_cpu: '',
+          used_memory: '',
+          expired_time: '',
           pod_list: [
             {
               name: '',
@@ -203,6 +237,19 @@ export default {
     }
   },
   methods: {
+    handleCommand(command) {
+      if (command.command === 'deploy') {
+        this.push2deploy(command.row)
+      } else if (command.command === 'service') {
+        this.push2service(command.row)
+      }
+    },
+    beforeHandleCommand(item,row){
+      return {
+        'command': item,
+        'row': row
+      }
+    },
     pushTerminal: function(row) {
       this.$router.push({
         name: 'PodTerminal',
@@ -251,6 +298,18 @@ export default {
       this.openDialog = true
       this.$nextTick(() => {
         this.$refs.AddLinux.init();
+      });
+    },
+    updateLinux: function (row) {
+      this.updateDialog = true
+      this.$nextTick(() => {
+        this.$refs.UpdateLinux.init(
+          row['name'],
+          row['u_id'],
+          row['expired_time'],
+          row['cpu'],
+          row['memory']
+        );
       });
     },
     handleDelete: function (row) {

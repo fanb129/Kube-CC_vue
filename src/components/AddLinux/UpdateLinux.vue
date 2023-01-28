@@ -1,18 +1,8 @@
 <template>
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="600px">
     <el-form ref="form" :model="form" :rules="formRules" label-width="80px">
-      <el-form-item label="OS镜像">
-        <el-select v-model="form.kind" filterable placeholder="请选择" @change="change">
-          <el-option
-            v-for="item,index in osOptions"
-            :key="index"
-            :label="item.osName"
-            :value="item.os">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="用户">
-        <el-select v-model="form.u_id" filterable multiple placeholder="请选择分配用户" @change="change">
+      <el-form-item label="用户" prop="u_id">
+        <el-select v-model="form.u_id" filterable placeholder="请选择分配用户" @change="change">
           <el-option
             v-for="item in options"
             :key="item.id"
@@ -44,7 +34,7 @@
         <el-input v-model="form.memory"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        <el-button type="primary" @click="onSubmit">更新</el-button>
         <el-button @click="cancel">取消</el-button>
       </el-form-item>
     </el-form>
@@ -53,14 +43,21 @@
 
 <script>
 import { getUserList } from '@/api/user'
-import { addLinux } from '@/api/linux'
+import { updateLinux } from '@/api/linux'
+import {mapGetters} from "vuex";
 
 export default {
-  name: 'AddLinux',
+  name: 'UpdateLinux',
+  computed: {
+    ...mapGetters([
+      'role',
+      // 'u_id'
+    ])
+  },
   data() {
     return {
       // 弹出层标题
-      title: 'Add Linux',
+      title: 'Update Linux',
       // 是否显示弹出层
       open: false,
       userPage: 1,
@@ -71,13 +68,9 @@ export default {
         nickname: '',
         role: ''
       }],
-      osOptions: [
-        { os: '1', osName: 'Centos' },
-        { os: '2', osName: 'Ubuntu' }
-      ],
       form: {
-        kind: '',
-        u_id: [],
+        name: '',
+        u_id: '',
         expired_time: null,
         cpu: '',
         memory: ''
@@ -90,10 +83,20 @@ export default {
     }
   },
   methods: {
-    init() {
+    init(name,uid,expired_time,cpu,memory) {
+      this.form.name = name
+      this.form.u_id = uid
+      this.form.expired_time = new Date(expired_time)
+      this.form.cpu = cpu
+      this.form.memory = memory
       this.open = true
       this.$nextTick(() => {
         this.getUserList()
+        this.form.name = name
+        this.form.u_id = uid
+        this.form.expired_time = new Date(expired_time)
+        this.form.cpu = cpu
+        this.form.memory = memory
         this.open = true
       })
     },
@@ -106,9 +109,9 @@ export default {
       console.log('submit!')
       this.$refs.form.validate(valid => {
         if (valid) {
-          addLinux({
-            u_id: this.form.u_id,
-            kind: parseInt(this.form.kind),
+          updateLinux({
+            name: this.form.name,
+            u_id: parseInt(this.form.u_id),
             expired_time: this.form.expired_time,
             cpu: this.form.cpu,
             memory: this.form.memory
@@ -128,7 +131,7 @@ export default {
               })
             }
           })
-        }else{
+        } else {
           return false
         }
       })

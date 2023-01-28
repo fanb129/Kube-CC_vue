@@ -25,3 +25,11 @@ export function addLinux(data) {
     data
   })
 }
+
+export function updateLinux(data) {
+  return request({
+    url: '/linux/update',
+    method: 'post',
+    data
+  })
+}

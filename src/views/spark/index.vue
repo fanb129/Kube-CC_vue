@@ -10,7 +10,7 @@
       <!-- <el-table :data='tableData' style='width: 100%'> -->
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="ID" width="80" type="index">
+      <el-table-column label="ID" width="50" type="index">
         <!--        <template slot-scope="scope">-->
         <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
         <!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
@@ -30,23 +30,41 @@
           <span>{{ scope.row.status }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="username" width="150">
+      <el-table-column label="created_at" width="100">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.created_at }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="expired_at" width="100">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.expired_time }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="cpu" width="100">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="memory" width="100">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="username" width="100">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.username }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="nickname" width="150">
+      <el-table-column label="nickname" width="100">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.nickname }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="created_at" width="200">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
 
@@ -75,9 +93,17 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="push2deploy(scope.row)">deploy</el-button>
-          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>
+          <el-dropdown size="mini" split-button trigger="click" @command="handleCommand" type="primary" style="padding: 15px">
+            更多
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item :command="beforeHandleCommand('deploy',scope.row)">deploy</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+<!--          <el-button size="mini" type="primary" @click="push2deploy(scope.row)">deploy</el-button>-->
+<!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
           <el-button
+            :disabled="role < 2"
             size="mini"
             type="warning"
             @click="updateSpark(scope.row)"
@@ -204,6 +230,19 @@ export default {
     }
   },
   methods: {
+    handleCommand(command) {
+      if (command.command === 'deploy') {
+        this.push2deploy(command.row)
+      } else if (command.command === 'service') {
+        this.push2service(command.row)
+      }
+    },
+    beforeHandleCommand(item,row){
+      return {
+        'command': item,
+        'row': row
+      }
+    },
     pushTerminal: function(row) {
       console.log(row['namespace'])
       console.log(row['name'])
@@ -256,7 +295,15 @@ export default {
     updateSpark: function(row) {
       this.updateDialog = true
       this.$nextTick(() => {
-        this.$refs.UpdateSpark.init(row['name'],row['u_id'], row['master_replicas'],row['worker_replicas'])
+        this.$refs.UpdateSpark.init(
+          row['name'],
+          row['u_id'],
+          row['master_replicas'],
+          row['worker_replicas'],
+          row['expired_time'],
+          row['cpu'],
+          row['memory']
+        )
       })
     },
     handleDelete: function(row) {

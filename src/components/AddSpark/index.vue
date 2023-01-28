@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="600px">
-    <el-form ref="form" :model="form" label-width="80px">
+    <el-form ref="form" :model="form" :rules="formRules" label-width="80px">
       <el-form-item label="Master">
         <el-input-number v-model="form.master_replicas" @change="change" :min="1" :max="3"></el-input-number>
       </el-form-item>
@@ -25,6 +25,19 @@
             @current-change="changeUserPageNum"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="过期时间" prop="expired_time">
+        <el-date-picker
+          v-model="form.expired_time"
+          type="datetime"
+          placeholder="选择日期时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="CPU" prop="cpu">
+        <el-input v-model="form.cpu"></el-input>
+      </el-form-item>
+      <el-form-item label="memory" prop="memory">
+        <el-input v-model="form.memory"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -63,7 +76,15 @@ export default {
       form: {
         master_replicas: '',
         worker_replicas: '',
-        u_id: []
+        u_id: [],
+        expired_time: null,
+        cpu: '',
+        memory: ''
+      },
+      formRules:{
+        u_id: [{ required: true, trigger: 'blur'}],
+        cpu: [{ required: true,trigger: 'blur'}],
+        memory: [{ required: true,trigger: 'blur'}],
       }
     }
   },
@@ -82,20 +103,33 @@ export default {
     },
     onSubmit() {
       console.log('submit!')
-      addSpark({ u_id: this.form.u_id, master_replicas: parseInt(this.form.master_replicas), worker_replicas: parseInt(this.form.worker_replicas) }).then((res) => {
-        if (res.code === 1) {
-          this.$message({
-            type: 'success',
-            message: res.msg
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          addSpark({
+            u_id: this.form.u_id,
+            master_replicas: parseInt(this.form.master_replicas),
+            worker_replicas: parseInt(this.form.worker_replicas),
+            expired_time: this.form.expired_time,
+            cpu: this.form.cpu,
+            memory: this.form.memory
+          }).then((res) => {
+            if (res.code === 1) {
+              this.$message({
+                type: 'success',
+                message: res.msg
+              })
+              this.open = false
+              // 调用主页面的getNsList方法刷新主页面
+              this.$parent.getSparkList()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.msg
+              })
+            }
           })
-          this.open = false
-          // 调用主页面的getNsList方法刷新主页面
-          this.$parent.getSparkList()
-        } else {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
+        }else{
+          return false
         }
       })
     },

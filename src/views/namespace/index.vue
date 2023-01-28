@@ -10,7 +10,7 @@
       <!-- <el-table :data='tableData' style='width: 100%'> -->
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="ID" width="100" type="index">
+      <el-table-column label="ID" width="50" type="index">
 <!--        <template slot-scope="scope">-->
 <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
 <!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
@@ -31,21 +31,42 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="created_at" width="200">
+      <el-table-column label="created_at" width="100">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="username" width="150">
+      <el-table-column label="expired_at" width="100">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.expired_time }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="cpu" width="100">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="memory" width="100">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="username" width="100">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.username }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="nickname" width="150">
+      <el-table-column label="nickname" width="100">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.nickname }}</span>
@@ -55,15 +76,24 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="push2pod(scope.row)">pod</el-button>
-          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>
-          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>
+          <el-dropdown size="mini" split-button trigger="click" @command="handleCommand" type="primary" style="padding: 15px">
+            更多
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item :command="beforeHandleCommand('pod',scope.row)">pod</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand('deploy',scope.row)">deploy</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+<!--          <el-button size="mini" type="primary" @click="push2pod(scope.row)">pod</el-button>-->
+<!--          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>-->
+<!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
           <el-button
             :disabled="scope.row.name==='default'
               || scope.row.name==='kube-node-lease'
               || scope.row.name==='kube-public'
               || scope.row.name==='kube-system'
-              || scope.row.name==='ingress-nginx'"
+              || scope.row.name==='ingress-nginx'
+              || role < 2"
             size="mini" type="warning" @click="updateNs(scope.row)">编辑</el-button>
           <el-button
             :loading="loading"
@@ -126,12 +156,32 @@ export default {
           created_at: '',
           username: '',
           nickname: '',
-          u_id: ''
+          u_id: '',
+          cpu: '',
+          memory: '',
+          used_cpu: '',
+          used_memory: '',
+          expired_time: ''
         }
       ]
     }
   },
   methods: {
+    handleCommand(command) {
+      if (command.command === 'deploy') {
+        this.push2deploy(command.row)
+      } else if (command.command === 'service') {
+        this.push2service(command.row)
+      } else if(command.command === 'pod'){
+        this.push2pod(command.row)
+      }
+    },
+    beforeHandleCommand(item,row){
+      return {
+        'command': item,
+        'row': row
+      }
+    },
     changeUid: function(u_id){
       this.uid = u_id
       this.getNsList()
@@ -184,7 +234,7 @@ export default {
       console.log(row['name'])
       this.updateDialog = true
       this.$nextTick(() => {
-        this.$refs.UpdateNamespace.init(row['name'],row['u_id'])
+        this.$refs.UpdateNamespace.init(row['name'],row['u_id'],row['expired_time'],row['cpu'],row['memory'])
       })
     },
     handleDelete: function (row) {
@@ -207,7 +257,7 @@ export default {
               this.loading = false
               this.getNsList()
               // location.reload()
-            },1000)
+            },2000)
           } else {
             this.$message({
               type: 'error',

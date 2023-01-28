@@ -1,18 +1,6 @@
 <template>
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="600px">
-    <el-form ref="form" :model="form" label-width="100px">
-      <el-form-item label="HdfsMaster">
-        <el-input-number v-model="form.hdfs_master_replicas" @change="change" :min="1" :max="3"></el-input-number>
-      </el-form-item>
-      <el-form-item label="Datanode">
-        <el-input-number v-model="form.datanode_replicas" @change="change" :min="2" :max="10"></el-input-number>
-      </el-form-item>
-      <el-form-item label="YarnMaster">
-        <el-input-number v-model="form.yarn_master_replicas" @change="change" :min="1" :max="3"></el-input-number>
-      </el-form-item>
-      <el-form-item label="YarnNode">
-        <el-input-number v-model="form.yarn_node_replicas" @change="change" :min="2" :max="10"></el-input-number>
-      </el-form-item>
+    <el-form ref="form" :model="form" :rules="formRules" label-width="100px">
       <el-form-item label="用户">
         <el-select v-model="form.u_id" filterable multiple placeholder="请选择分配用户" @change="change">
           <el-option
@@ -31,6 +19,31 @@
             @current-change="changeUserPageNum"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="HdfsMaster">
+        <el-input-number v-model="form.hdfs_master_replicas" @change="change" :min="1" :max="3"></el-input-number>
+      </el-form-item>
+      <el-form-item label="Datanode">
+        <el-input-number v-model="form.datanode_replicas" @change="change" :min="2" :max="10"></el-input-number>
+      </el-form-item>
+      <el-form-item label="YarnMaster">
+        <el-input-number v-model="form.yarn_master_replicas" @change="change" :min="1" :max="3"></el-input-number>
+      </el-form-item>
+      <el-form-item label="YarnNode">
+        <el-input-number v-model="form.yarn_node_replicas" @change="change" :min="2" :max="10"></el-input-number>
+      </el-form-item>
+      <el-form-item label="过期时间" prop="expired_time">
+        <el-date-picker
+          v-model="form.expired_time"
+          type="datetime"
+          placeholder="选择日期时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="CPU" prop="cpu">
+        <el-input v-model="form.cpu"></el-input>
+      </el-form-item>
+      <el-form-item label="memory" prop="memory">
+        <el-input v-model="form.memory"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -65,7 +78,15 @@ export default {
         datanode_replicas: '',
         yarn_master_replicas: '',
         yarn_node_replicas: '',
-        u_id: []
+        u_id: [],
+        expired_time: null,
+        cpu: '',
+        memory: ''
+      },
+      formRules:{
+        u_id: [{ required: true, trigger: 'blur'}],
+        cpu: [{ required: true, trigger: 'blur'}],
+        memory: [{ required: true, trigger: 'blur'}],
       }
     }
   },
@@ -84,27 +105,36 @@ export default {
     },
     onSubmit() {
       console.log('submit!')
-      addHadoop(
-        {
-          u_id: this.form.u_id,
-          hdfs_master_replicas: parseInt(this.form.hdfs_master_replicas),
-          datanode_replicas: parseInt(this.form.datanode_replicas),
-          yarn_master_replicas: parseInt(this.form.yarn_master_replicas),
-          yarn_node_replicas: parseInt(this.form.yarn_node_replicas)
-        }).then((res) => {
-        if (res.code === 1) {
-          this.$message({
-            type: 'success',
-            message: res.msg
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          addHadoop(
+            {
+              u_id: this.form.u_id,
+              hdfs_master_replicas: parseInt(this.form.hdfs_master_replicas),
+              datanode_replicas: parseInt(this.form.datanode_replicas),
+              yarn_master_replicas: parseInt(this.form.yarn_master_replicas),
+              yarn_node_replicas: parseInt(this.form.yarn_node_replicas),
+              expired_time: this.form.expired_time,
+              cpu: this.form.cpu,
+              memory: this.form.memory
+            }).then((res) => {
+            if (res.code === 1) {
+              this.$message({
+                type: 'success',
+                message: res.msg
+              })
+              this.open = false
+              // 调用主页面的getNsList方法刷新主页面
+              this.$parent.getHadoopList()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.msg
+              })
+            }
           })
-          this.open = false
-          // 调用主页面的getNsList方法刷新主页面
-          this.$parent.getHadoopList()
         } else {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
+          return false
         }
       })
     },
