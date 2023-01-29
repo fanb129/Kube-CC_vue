@@ -1,99 +1,133 @@
-# vue-admin-template
+# Kube-CC
+基于K8S的轻量化大数据课程实验教学平台构建
 
-English | [简体中文](./README-zh.md)
+前端地址：[https://github.com/fanb129/Kube-CC_vue](https://github.com/fanb129/Kube-CC_vue)
 
-> A minimal vue admin template with Element UI & axios & iconfont & permission control & lint
-
-**Live demo:** http://panjiachen.github.io/vue-admin-template
+后端地址：[https://github.com/fanb129/Kube-CC](https://github.com/fanb129/Kube-CC)
 
 
-**The current version is `v4.0+` build on `vue-cli`. If you want to use the old version , you can switch branch to [tag/3.11.0](https://github.com/PanJiaChen/vue-admin-template/tree/tag/3.11.0), it does not rely on `vue-cli`**
 
-<p align="center">
-  <b>SPONSORED BY</b>
-</p>
-<p align="center">
-   <a href="https://finclip.com?from=vue_element" title="FinClip" target="_blank">
-      <img height="200px" src="https://gitee.com/panjiachen/gitee-cdn/raw/master/vue%E8%B5%9E%E5%8A%A9.png" title="FinClip">
-   </a>
-</p>
+## 一、环境
 
-## Build Setup
+1. 后端Go1.18，Gin，client-go， gorm，zap，jwt-go
+2. 前端vue2 + element，基于vue-admin-template模板
+3. kubernetes1.17
+4. MySQL8
 
-```bash
-# clone the project
-git clone https://github.com/PanJiaChen/vue-admin-template.git
+## 二、后端配置文件
 
-# enter the project directory
-cd vue-admin-template
+/conf/conf.ini
 
-# install dependency
-npm install
+```ini
+[server]
+AppMode = debug
+Port = :8080
+PageSize = 10
+ProjectName = fanb.com
 
-# develop
-npm run dev
+[kubernetes]
+KubeConfig = E:\go\Kube-CC\conf\kube.config
+SparkImage = registry.cn-shanghai.aliyuncs.com/fanb/myspark:1.5.2_v1
+CentosImage = registry.cn-shanghai.aliyuncs.com/fanb/mycentos:7
+UbuntuImage = registry.cn-shanghai.aliyuncs.com/fanb/myubuntu:18.04
+;HadoopImage = registry.cn-shanghai.aliyuncs.com/fanb/myhadoop:latest
+HadoopImage = kubeguide/hadoop:latest
+
+[database]
+DbType = mysql
+#DbHost = 127.0.0.1
+DbHost = ******
+DbPort = 3306
+DbUser = root
+DbPassWord = ******
+DbName = k8s_deploy_gin
+RedisHost = 39.103.195.185
+RedisPort = 6379
+[jwt]
+JwtKey = kubernetes.com
+TokenExpiredTime = 604800
+
+[password]
+bcryptCost = 10
+SshPwd = root123456
+
+[master]
+Host = 192.168.139.131
+Port = 22
+User = root
+Password = 1234567890
 ```
 
-This will automatically open http://localhost:9528
+## 三、项目介绍
 
-## Build
+### 1. 平台功能结构图
 
-```bash
-# build for test environment
-npm run build:stage
+![](img/功能结构图.png) 
 
-# build for production environment
-npm run build:prod
-```
+### 2. 系统整体架构图
 
-## Advanced
+![](img/整体架构图.png) 
 
-```bash
-# preview the release environment effect
-npm run preview
+### 3. 后端结构图
 
-# preview the release environment effect + static resource analysis
-npm run preview -- --report
+![](img/后端结构.png) 
 
-# code format check
-npm run lint
+### 4. 前端结构图
 
-# code format check and auto fix
-npm run lint -- --fix
-```
+![](img/前端结构.png) 
 
-Refer to [Documentation](https://panjiachen.github.io/vue-element-admin-site/guide/essentials/deploy.html) for more information
 
-## Demo
 
-![demo](https://github.com/PanJiaChen/PanJiaChen.github.io/blob/master/images/demo.gif)
+## 四、项目展示
 
-## Extra
+### 1. 首页
 
-If you want router permission && generate menu by user roles , you can use this branch [permission-control](https://github.com/PanJiaChen/vue-admin-template/tree/permission-control)
+![](img/首页.png)
 
-For `typescript` version, you can use [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template) (Credits: [@Armour](https://github.com/Armour))
+### 2. 用户管理
 
-## Related Project
+![](img/user.png)
 
-- [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
+### 3. node
 
-- [electron-vue-admin](https://github.com/PanJiaChen/electron-vue-admin)
+![](img/node.png)
 
-- [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template)
+### 4. namespace
 
-- [awesome-project](https://github.com/PanJiaChen/vue-element-admin/issues/2312)
+![](img/ns.png)
 
-## Browsers support
+### 5. deployment
 
-Modern browsers and Internet Explorer 10+.
+![](img/deploy.png)
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
-| --------- | --------- | --------- | --------- |
-| IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions
+添加
 
-## License
+![](img/add deploy.png)
 
-[MIT](https://github.com/PanJiaChen/vue-admin-template/blob/master/LICENSE) license.
+编辑
 
-Copyright (c) 2017-present PanJiaChen
+![](img/update deploy.png)
+
+### 6. service
+
+![](img/service.png)
+
+### 7. pod
+
+![](img/pod.png)
+
+### 8. spark
+
+![](img/spark.png)
+
+进入终端
+
+![](img/spark-console.png)
+
+添加
+
+![](img/add spark.png) 
+
+### 9. terminal
+
+![](img/terminal.png)
