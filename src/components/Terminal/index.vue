@@ -77,7 +77,7 @@ export default {
       term: null,
       fitAddon: null,
       ws: null,
-      socketUrl: 'ws://127.0.0.1:8080/api/node/ssh',
+      socketUrl: `${process.env.VUE_APP_WS_API}/node/ssh`,
       form: {
         user: '',
         pwd: '',
@@ -217,6 +217,7 @@ export default {
     // socket
     initSocket() {
       this.term.write(this.initText)
+      console.log(this.socketUrl)
       this.ws = new WebSocket(this.socketUrl,['webssh'])
       this.onOpenSocket()
       this.onCloseSocket()

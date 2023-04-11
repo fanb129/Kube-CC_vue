@@ -30,6 +30,8 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
+    // productionSourceMap: false,
+    disableHostCheck: true,
     port: port,
     open: true,
     overlay: {
@@ -38,14 +40,14 @@ module.exports = {
     },
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: 'http://127.0.0.1:8080/api',
+        target: process.env.VUE_APP_BASE_API,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       },
       'websocket': {
-        target: 'ws://127.0.0.1:8080/api',
+        target: process.env.VUE_APP_WS_API,
         changeOrigin: true,
         ws: true,
         pathRewrite: {

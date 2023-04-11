@@ -25,7 +25,7 @@ export default {
       term: null,
       fitAddon: null,
       ws: null,
-      socketUrl: 'ws://127.0.0.1:8080/api/' + this.$route.query['r'],
+      socketUrl: process.env.VUE_APP_WS_API + '/' + this.$route.query['r'],
       option: {
         lineHeight: 1.0,
         cursorBlink: true,
@@ -124,6 +124,7 @@ export default {
     // socket
     initSocket() {
       this.term.write(this.initText)
+      console.log(this.socketUrl)
       this.ws = new WebSocket(this.socketUrl)
       this.onOpenSocket()
       this.onCloseSocket()
