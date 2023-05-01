@@ -90,8 +90,10 @@
             <el-table-column label="Started" width="105"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].started }}</span></template></el-table-column>
             <el-table-column label="RestartCount" width="110"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].restartCount }}</span></template></el-table-column>
             <el-table-column label="操作">
-              <el-button
-                size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
+              <template slot-scope="scope">
+                <el-button
+                  size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
+              </template>
             </el-table-column>
           </el-table>
         </template>
@@ -251,6 +253,9 @@ export default {
       }
     },
     pushTerminal: function(row) {
+      console.log(row['namespace'])
+      console.log(row['name'])
+      console.log(row['container_statuses'][0].name)
       this.$router.push({
         name: 'PodTerminal',
         query: {
