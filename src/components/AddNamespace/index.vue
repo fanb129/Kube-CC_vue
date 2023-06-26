@@ -85,8 +85,8 @@ export default {
       formRules:{
         name: [{ required: true, trigger: 'blur'}],
         u_id: [{ required: true, trigger: 'blur'}],
-        cpu: [{ required: true,type: 'number', trigger: 'blur'}],
-        memory: [{ required: true,type: 'number', trigger: 'blur'}],
+        cpu: [{ required: true, trigger: 'blur'}],
+        memory: [{ required: true,trigger: 'blur'}],
       }
     }
   },
