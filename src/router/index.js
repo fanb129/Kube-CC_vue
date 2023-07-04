@@ -118,17 +118,40 @@ export const constantRoutes = [
     ]
   },
 
+  // {
+  //   path: '/user',
+  //   component: Layout,
+  //   // redirect: '/user',
+  //   children: [{
+  //     path: 'index',
+  //     name: 'User',
+  //     component: () => import('@/views/user/index'),
+  //     meta: { title: 'User', icon: 'user' }
+  //   }]
+  // },
+
   {
-    path: '/user',
+    path: '/users',
     component: Layout,
-    // redirect: '/user',
-    children: [{
-      path: 'index',
-      name: 'User',
-      component: () => import('@/views/user/index'),
-      meta: { title: 'User', icon: 'user' }
-    }]
+    redirect: '/users/user',
+    name: 'Users',
+    meta: { title: 'Users', icon: 'tree' },
+    children: [
+      {
+        path: 'group',
+        name: 'Group',
+        component: () => import('@/views/group/index'),
+        meta: { title: 'Group', icon: 'user' }
+      },
+      {
+        path: 'user',
+        name: 'User',
+        component: () => import('@/views/user/index'),
+        meta: { title: 'User', icon: 'user' }
+      }
+    ]
   },
+
   // {
   //   path: '/form',
   //   component: Layout,
