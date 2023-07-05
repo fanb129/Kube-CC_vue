@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div style="position:relative;">
+      <el-button style="position:relative;left: 56%;" :disabled="role <= 1" size='middle' type="warning" @click='showDialogC()'>创建组</el-button>
+    </div>
     <el-table :data='tableData' style='width: 100%' >
       <!-- <el-table :data='tableData' style='width: 100%'> -->
 <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
@@ -57,6 +60,33 @@
     <div style="position: absolute;bottom: 2%">
       <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="1" :total="total" @current-change="changePageNum"></el-pagination>
     </div>
+    <!--  创建组弹窗-->
+    <el-dialog title='创建组' :data="adminuser" :visible.sync='statusDialogCVisible'>
+      <el-form>
+        <el-form-item label='管理员' :label-width='formLabelWidth'>
+          <template>
+            <el-select v-model="value" filterable placeholder="请选择">
+              <el-option
+                v-for="item in adminuser"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </template>
+        </el-form-item>
+        <el-form-item label='组名' :label-width='formLabelWidth'>
+          <el-input v-model="inputgn" placeholder="请输入内容"></el-input>
+        </el-form-item>
+        <el-form-item label='组描述' :label-width='formLabelWidth'>
+          <el-input v-model="inputgd" placeholder="请输入内容"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot='footer' class='dialog-footer'>
+        <el-button @click='statusDialogCVisible = false'>取 消</el-button>
+        <el-button type='primary' @click='CTGroup()'>确 定</el-button>
+      </div>
+    </el-dialog>
       <!--  查看组弹窗-->
     <el-dialog :data = 'tuser' title='查看组' :visible.sync='statusDialogUVisible'>
       <el-table :data = 'tuser' style='width: 100%' >
@@ -135,11 +165,10 @@
 <script>
 
 import { editUser, getUserList, resetPass } from '@/api/user'
-import { deleteGroup, remove, transAdmin, getGroupList, viewGroupUser } from '@/api/group'
+import { deleteGroup, remove, transAdmin, getGroupList, viewGroupUser,creatGroup } from '@/api/group'
 import { mapGetters } from 'vuex'
 var tg_id
 var ta_id
-var ts_id
 
 export default {
   computed: {
@@ -159,7 +188,10 @@ export default {
       formLabelWidth: '10%',
       statusDialogUVisible: false,
       statusDialogTVisible: false,
+      statusDialogCVisible: false,
       //rolelist: ['普通用户', '管理员', '超级管理员'],
+      inputgn: '',
+      inputgd: '',
       tableData: [
         {
           groupid: '',
@@ -182,52 +214,81 @@ export default {
           gid: ''
         }
       ],
+      tgroup: [
+      ],
       transuser: [
+      ],
+      adminuser: [
+      ],
+      alluser: [
+      ],
+      alladmin: [
       ]
+      // creatgroup: [
+      //   {
+      //     name: '',
+      //     adminid: '',
+      //     description: ''
+      //   }
+      // ],
     }
   },
   methods: {
+    //改变页码
     changePageNum: function(val) {
       this.page = val
       this.getGroupList()
     },
-    // Resetpsd(row) {
-    //   this.$prompt('该组成员如下', {
-    //     formtype: 1,
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消'
-    //     // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-    //     // inputErrorMessage: '邮箱格式不正确'
-    //   }).then(({ value }) => {
-    //     resetPass(row['id'], { password: value }).then((res) => {
-    //       if (res.code === 1) {
-    //         this.$message({
-    //           type: 'success',
-    //           message: res.msg
-    //         })
-    //       } else {
-    //         this.$message({
-    //           type: 'error',
-    //           message: res.msg
-    //         })
-    //       }
-    //     })
-    //   })
-    //     .catch(() => {
-    //       this.$message({
-    //         type: 'info',
-    //         message: '取消输入'
-    //       })
-    //     })
-    // },
     change() {
       this.$forceUpdate()
     },
+    showDialogC(){
+      getUserList(this.page).then((res) => {
+        if (res.code == 1) {
+          this.alluser = []
+          this.alladmin = []
+          this.alluser = res.user_list
+          for (let i=0;i<this.alluser.length;i++) {
+            if (this.alluser[i].role >= 2){
+              this.alladmin.push(this.alluser[i])
+            }
+          }
+          this.adminuser=[]
+          this.adminuser.push(this.alladmin.map(function(item,index){
+            var tmp = {
+              "value" : item.id,
+              "label" : item.username,
+            }
+            return tmp
+          }))
+          this.adminuser = this.adminuser[0]
+          //console.log(this.transuser)
+          // this.$message({
+          //   type: 'success',
+          //   message: res.msg
+          // })
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
+        }
+      })
+      this.statusDialogCVisible=true
+    },
+    CTGroup(){
+      //this.statusDialogCVisible=true
+      creatGroup().then((res) => {
+        
+      })
+    },
+    //查看组用户弹出框
     showDialogU(id) {
       //this.statusDialogUVisible = true
       tg_id = id
       viewGroupUser(tg_id).then((res) => {
         if (res.code == 1) {
+          this.tuser = []
           this.tuser = res.groupuser_list
           // this.$message({
           //   type: 'success',
@@ -250,11 +311,13 @@ export default {
        //location.reload()
        this.statusDialogUVisible = true
     },
+    //转移管理员弹出框
     showDialogT(row) {
       tg_id = row.groupid
       ta_id = row.adminid
       viewGroupUser(tg_id).then((res) => {
         if (res.code == 1) {
+          this.tuser = []
           this.tuser = res.groupuser_list
           this.transuser=[]
           this.transuser.push(this.tuser.map(function(item,index){
@@ -265,7 +328,7 @@ export default {
             return tmp
           }))
           this.transuser = this.transuser[0]
-          console.log(this.transuser)
+          //console.log(this.transuser)
           // this.$message({
           //   type: 'success',
           //   message: res.msg
@@ -279,13 +342,20 @@ export default {
       })
       this.statusDialogTVisible = true
     },
+    //转移管理员具体实现
     TransAd(value) {
-      transAdmin(tg_id, { od_id: ta_id, nw_id: value}).then((res) => {
+      this.$confirm('确认更改组管理员为该用户?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+      transAdmin(tg_id, { oldadminid: ta_id, newadminid: value }).then((res) => {
         if (res.code === 1) {
           this.$message({
             type: 'success',
             message: res.msg
           })
+          location.reload()
         } else {
           this.$message({
             type: 'error',
@@ -300,32 +370,9 @@ export default {
           })
         })
       this.statusDialogVisible = false
-      location.reload()
-    },
-    Resetlev(value) {
-      // Terminal.log('2222222222222222')
-      editUser(new_id, { role: parseInt(value) }).then((res) => {
-        if (res.code === 1) {
-          this.$message({
-            type: 'success',
-            message: res.msg
-          })
-        } else {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
-        }
       })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消输入'
-          })
-        })
-      this.statusDialogVisible = false
-      location.reload()
     },
+    //删除组
     handleDelete(row) {
       /* 提示消息*/
       this.$confirm('确认永久删除此组?', '提示', {
@@ -354,6 +401,7 @@ export default {
         })
       })
     },
+    //查看组用户
     viewGroupUser: function() {
       viewGroupUser(tg_id).then((res) => {
         // this.page = res.page
@@ -362,11 +410,18 @@ export default {
         // console.log(this.total)
       })
     },
+    //获取组列表
     getGroupList: function() {
       getGroupList(this.page).then((res) => {
         this.page = res.page
         this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.tableData = res.group_list
+        // console.log(this.total)
+      })
+    },
+    getUserList: function() {
+      getUserList(this.page).then((res) => {
+        this.alluser = res.user_list
         // console.log(this.total)
       })
     }

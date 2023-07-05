@@ -22,6 +22,13 @@ export function viewGroupUser(g_id) {
   })
 }
 
+export function creatGroup() {
+  return request({
+    url: '/group/creat/',
+    method: 'get'
+  })
+}
+
 export function deleteGroup(g_id) {
   return request({
     url: '/group/delete/' + g_id,
