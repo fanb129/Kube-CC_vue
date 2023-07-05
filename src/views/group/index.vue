@@ -48,9 +48,9 @@
 
       <el-table-column label='操作'>
         <template slot-scope='scope'>
-          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' type="warning" @click='showDialogU(scope.row["groupid"])'>查看组</el-button>
-          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' type="warning" @click='showDialogT(scope.row["id"])'> 更改管理员</el-button>
-          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' type='danger' @click='handleDelete(scope.row)'>删除</el-button>
+          <el-button :disabled="role != 3 && ( role <= 1 || u_id != scope.row['adminid'] )" size='mini' type="warning" @click='showDialogU(scope.row["groupid"])'>查看组</el-button>
+          <el-button :disabled="role != 3 && ( role <= 1 || u_id != scope.row['adminid'] )" size='mini' type="warning" @click='showDialogT(scope.row)'> 更改管理员</el-button>
+          <el-button :disabled="role != 3 && ( role <= 1 || u_id != scope.row['adminid'] )" size='mini' type='danger' @click='handleDelete(scope.row)'>删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -113,19 +113,20 @@
       </div>
     </el-dialog>
       <!--  更改管理员弹窗-->
-    <el-dialog title='更改管理员' :visible.sync='statusDialogTVisible'>
-      <el-form>
-        <el-form-item label='成员' :label-width='formLabelWidth'>
-          <el-select v-model='value' placeholder='请选择' @change='change()'>
-            <el-option v-if="role > 2" label='超级管理员' value="3"></el-option>
-            <el-option v-if="role > 1" label='管理员' value="2"></el-option>
-            <el-option label='普通用户' value="1"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
+    <el-dialog title='更改管理员' :data = 'transuser' :visible.sync='statusDialogTVisible'>
+      <template>
+        <el-select v-model="value" filterable placeholder="请选择">
+          <el-option
+            v-for="item in transuser"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </template>
       <div slot='footer' class='dialog-footer'>
         <el-button @click='statusDialogTVisible = false'>取 消</el-button>
-        <el-button type='primary' @click='Resetlev(value)'>确 定</el-button>
+        <el-button type='primary' @click='TransAd(value)'>确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -137,11 +138,14 @@ import { editUser, getUserList, resetPass } from '@/api/user'
 import { deleteGroup, remove, transAdmin, getGroupList, viewGroupUser } from '@/api/group'
 import { mapGetters } from 'vuex'
 var tg_id
+var ta_id
+var ts_id
 
 export default {
   computed: {
     ...mapGetters([
-      'role'
+      'role',
+      'u_id'
     ])
   },
   created() {
@@ -177,6 +181,8 @@ export default {
           avatar: '',
           gid: ''
         }
+      ],
+      transuser: [
       ]
     }
   },
@@ -185,35 +191,35 @@ export default {
       this.page = val
       this.getGroupList()
     },
-    Resetpsd(row) {
-      this.$prompt('该组成员如下', {
-        formtype: 1,
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-        // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-        // inputErrorMessage: '邮箱格式不正确'
-      }).then(({ value }) => {
-        resetPass(row['id'], { password: value }).then((res) => {
-          if (res.code === 1) {
-            this.$message({
-              type: 'success',
-              message: res.msg
-            })
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.msg
-            })
-          }
-        })
-      })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消输入'
-          })
-        })
-    },
+    // Resetpsd(row) {
+    //   this.$prompt('该组成员如下', {
+    //     formtype: 1,
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消'
+    //     // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+    //     // inputErrorMessage: '邮箱格式不正确'
+    //   }).then(({ value }) => {
+    //     resetPass(row['id'], { password: value }).then((res) => {
+    //       if (res.code === 1) {
+    //         this.$message({
+    //           type: 'success',
+    //           message: res.msg
+    //         })
+    //       } else {
+    //         this.$message({
+    //           type: 'error',
+    //           message: res.msg
+    //         })
+    //       }
+    //     })
+    //   })
+    //     .catch(() => {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '取消输入'
+    //       })
+    //     })
+    // },
     change() {
       this.$forceUpdate()
     },
@@ -223,10 +229,10 @@ export default {
       viewGroupUser(tg_id).then((res) => {
         if (res.code == 1) {
           this.tuser = res.groupuser_list
-          this.$message({
-            type: 'success',
-            message: res.msg
-          })
+          // this.$message({
+          //   type: 'success',
+          //   message: res.msg
+          // })
         } else {
           this.$message({
             type: 'error',
@@ -244,9 +250,57 @@ export default {
        //location.reload()
        this.statusDialogUVisible = true
     },
-    showDialogT(id) {
+    showDialogT(row) {
+      tg_id = row.groupid
+      ta_id = row.adminid
+      viewGroupUser(tg_id).then((res) => {
+        if (res.code == 1) {
+          this.tuser = res.groupuser_list
+          this.transuser=[]
+          this.transuser.push(this.tuser.map(function(item,index){
+            var tmp = {
+              "value" : item.id,
+              "label" : item.username,
+            }
+            return tmp
+          }))
+          this.transuser = this.transuser[0]
+          console.log(this.transuser)
+          // this.$message({
+          //   type: 'success',
+          //   message: res.msg
+          // })
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
+        }
+      })
       this.statusDialogTVisible = true
-      tg_id = id
+    },
+    TransAd(value) {
+      transAdmin(tg_id, { od_id: ta_id, nw_id: value}).then((res) => {
+        if (res.code === 1) {
+          this.$message({
+            type: 'success',
+            message: res.msg
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
+        }
+      })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消更改管理员'
+          })
+        })
+      this.statusDialogVisible = false
+      location.reload()
     },
     Resetlev(value) {
       // Terminal.log('2222222222222222')
