@@ -7,7 +7,7 @@
       <!-- <el-table :data='tableData' style='width: 100%'> -->
 <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label='ID' width='100' type="index">
+      <el-table-column label='序号' width='100' type="index">
 <!--        <template slot-scope='scope'>-->
 <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
 <!--          <span style='margin-left: 1%'>{{ scope.$index + 1 }}</span>-->
@@ -269,10 +269,10 @@ export default {
           //   message: res.msg
           // })
         } else {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
+          // this.$message({
+          //   type: 'error',
+          //   message: res.msg
+          // })
         }
       })
       this.statusDialogCVisible=true
@@ -311,10 +311,11 @@ export default {
     //查看组用户弹出框
     showDialogU(id) {
       //this.statusDialogUVisible = true
+      this.tuser = []
       tg_id = id
       viewGroupUser(tg_id).then((res) => {
         if (res.code == 1) {
-          this.tuser = []
+          //this.tuser = []
           this.tuser = res.groupuser_list
           // this.$message({
           //   type: 'success',
@@ -328,10 +329,10 @@ export default {
         }
       })
        .catch(() => {
-         this.$message({
-           type:'info',
-           message: '退出查看'
-         })
+        //  this.$message({
+        //    type:'info',
+        //    message: '退出查看'
+        //  })
        })
        //this.statusDialogUVisible = false
        //location.reload()
@@ -339,13 +340,15 @@ export default {
     },
     //转移管理员弹出框
     showDialogT(row) {
+      this.tuser = []
+      this.transuser=[]
       tg_id = row.groupid
       ta_id = row.adminid
       viewGroupUser(tg_id).then((res) => {
         if (res.code == 1) {
-          this.tuser = []
+          //this.tuser = []
           this.tuser = res.groupuser_list
-          this.transuser=[]
+          //this.transuser=[]
           this.transuser.push(this.tuser.map(function(item,index){
             var tmp = {
               "value" : item.id,
@@ -406,7 +409,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteGroup(row['id']).then((res) => {
+        deleteGroup(row['groupid']).then((res) => {
           if (res.code === 1) {
             this.$message({
               type: 'success',
@@ -445,6 +448,7 @@ export default {
         // console.log(this.total)
       })
     },
+    //获取用户列表
     getUserList: function() {
       getUserList(this.page).then((res) => {
         this.alluser = res.user_list
