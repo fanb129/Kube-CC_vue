@@ -84,7 +84,7 @@
       </el-form>
       <div slot='footer' class='dialog-footer'>
         <el-button @click='statusDialogCVisible = false'>取 消</el-button>
-        <el-button type='primary' @click='CTGroup()'>确 定</el-button>
+        <el-button type='primary' @click='CTGroup(value)'>确 定</el-button>
       </div>
     </el-dialog>
       <!--  查看组弹窗-->
@@ -242,6 +242,7 @@ export default {
     change() {
       this.$forceUpdate()
     },
+    //创建组弹出框
     showDialogC(){
       getUserList(this.page).then((res) => {
         if (res.code == 1) {
@@ -276,10 +277,35 @@ export default {
       })
       this.statusDialogCVisible=true
     },
-    CTGroup(){
+    //创建组具体实现
+    CTGroup(value){
       //this.statusDialogCVisible=true
-      creatGroup().then((res) => {
-        
+      this.$confirm('确认创建该组?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+      creatGroup(value, {name: this.inputgn,description: this.inputgd}).then((res) => {
+        if (res.code === 1) {
+          this.$message({
+            type: 'success',
+            message: res.msg
+          })
+          location.reload()
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
+        }
+      })
+      .catch(() => {
+          // this.$message({
+          //   type: 'info',
+          //   message: "取消创建组"
+          // })
+        })
+      this.statusDialogCVisible = false
       })
     },
     //查看组用户弹出框

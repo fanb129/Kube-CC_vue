@@ -22,10 +22,11 @@ export function viewGroupUser(g_id) {
   })
 }
 
-export function creatGroup() {
+export function creatGroup(ad_id,data) {
   return request({
-    url: '/group/creat/',
-    method: 'get'
+    url: '/group/creat/' + ad_id,
+    method: 'post',
+    data
   })
 }
 
