@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
-      <UserSelector :default-uid="uid" @nsList="changeUid"></UserSelector>
+      <UserSelector :default-uid="uid" @nsList="changeUid" />
       <div style="display: inline; margin-left: 2%">
         <span>OS镜像：</span>
         <el-select v-model="os" filterable placeholder="请选择" @change="change">
@@ -9,8 +9,8 @@
             v-for="item,index in options"
             :key="index"
             :label="item.osName"
-            :value="item.os">
-          </el-option>
+            :value="item.os"
+          />
         </el-select>
       </div>
       <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addLinux">Add
@@ -82,7 +82,7 @@
       <el-table-column label="Pod" type="expand" width="60">
         <template slot-scope="scope">
           <el-table :data="scope.row.pod_list">
-            <el-table-column label="ID" width="60" type="index"></el-table-column>
+            <el-table-column label="ID" width="60" type="index" />
             <el-table-column label="Name" width="150"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
             <el-table-column label="Phase" width="105"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
             <el-table-column label="NodeIp" width="130"><template slot-scope="scope"><span>{{ scope.row.node_ip }}</span></template></el-table-column>
@@ -92,7 +92,10 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button
-                  size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
+                  size="mini"
+                  type="success"
+                  @click="pushTerminal(scope.row)"
+                > 终端</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -101,18 +104,21 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-dropdown size="mini" split-button trigger="click" @command="handleCommand" type="primary" style="padding: 15px">
+          <el-dropdown size="mini" split-button trigger="click" type="primary" style="padding: 15px" @command="handleCommand">
             更多
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :command="beforeHandleCommand('deploy',scope.row)">deploy</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-<!--          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>-->
-<!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
+          <!--          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>-->
+          <!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
           <el-button
             :disabled="role < 2"
-            size="mini" type="warning" @click="updateLinux(scope.row)">编辑</el-button>
+            size="mini"
+            type="warning"
+            @click="updateLinux(scope.row)"
+          >编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
@@ -124,24 +130,30 @@
       </el-table-column>
     </el-table>
     <div style="position: absolute;bottom: 2%">
-      <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="pagesize" :total="total"
-                     @current-change="changePageNum"/>
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :current-page="page"
+        :page-size="pagesize"
+        :total="total"
+        @current-change="changePageNum"
+      />
     </div>
-    <AddLinux :visible.sync="openDialog" ref="AddLinux"/>
-    <UpdateLinux :visible.sync="updateDialog" ref="UpdateLinux"/>
+    <AddLinux ref="AddLinux" :visible.sync="openDialog" />
+    <UpdateLinux ref="UpdateLinux" :visible.sync="updateDialog" />
   </div>
 </template>
 
 <script>
 
-import {mapGetters} from 'vuex'
-import {getLinuxList, deleteLinux} from '@/api/linux'
+import { mapGetters } from 'vuex'
+import { getLinuxList, deleteLinux } from '@/api/linux'
 import AddLinux from '@/components/AddLinux'
 import UpdateLinux from '@/components/AddLinux/UpdateLinux'
-import UserSelector from "@/components/Selector/UserSelector";
+import UserSelector from '@/components/Selector/UserSelector'
 
 export default {
-  components: {AddLinux, UserSelector, UpdateLinux},
+  components: { AddLinux, UserSelector, UpdateLinux },
   computed: {
     ...mapGetters([
       'role',
@@ -246,7 +258,7 @@ export default {
         this.push2service(command.row)
       }
     },
-    beforeHandleCommand(item,row){
+    beforeHandleCommand(item, row) {
       return {
         'command': item,
         'row': row
@@ -263,11 +275,11 @@ export default {
         }
       })
     },
-    change: function (){
+    change: function() {
       this.$forceUpdate()
       this.getLinuxList()
     },
-    push2deploy: function (row){
+    push2deploy: function(row) {
       this.$router.push({
         name: 'Deploy',
         query: {
@@ -276,7 +288,7 @@ export default {
         }
       })
     },
-    push2service: function (row){
+    push2service: function(row) {
       this.$router.push({
         name: 'Service',
         query: {
@@ -285,27 +297,27 @@ export default {
         }
       })
     },
-    changeUid: function(u_id){
+    changeUid: function(u_id) {
       this.uid = u_id
       this.getLinuxList()
     },
-    changePageNum: function (val) {
+    changePageNum: function(val) {
       this.page = val
     },
-    getLinuxList: function () {
+    getLinuxList: function() {
       getLinuxList(this.uid, this.os).then((res) => {
         this.total = res.length
         this.tableData = res.linux_list
         console.log(res)
       })
     },
-    addLinux: function () {
+    addLinux: function() {
       this.openDialog = true
       this.$nextTick(() => {
-        this.$refs.AddLinux.init();
-      });
+        this.$refs.AddLinux.init()
+      })
     },
-    updateLinux: function (row) {
+    updateLinux: function(row) {
       this.updateDialog = true
       this.$nextTick(() => {
         this.$refs.UpdateLinux.init(
@@ -314,10 +326,10 @@ export default {
           row['expired_time'],
           row['cpu'],
           row['memory']
-        );
-      });
+        )
+      })
     },
-    handleDelete: function (row) {
+    handleDelete: function(row) {
       /* 提示消息*/
       this.$confirm('确认永久删除此linux', '提示', {
         confirmButtonText: '确定',
@@ -337,7 +349,7 @@ export default {
               this.loading = false
               this.getLinuxList()
               // location.reload()
-            },1000)
+            }, 1000)
           } else {
             this.$message({
               type: 'error',

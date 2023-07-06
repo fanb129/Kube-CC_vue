@@ -1,8 +1,8 @@
 <template>
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="60%">
-    <UserSelectorNoNil :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelectorNoNil>
-    <NsSelectorNoNil :default-uid="uid" :default-ns="ns" @nsList="changeNs" ref="NsSelector"></NsSelectorNoNil>
-    <yaml-editor v-model="yamlValue" :read-only="readOnly" style="height: 43vh; margin-bottom: 1%;"></yaml-editor>
+    <UserSelectorNoNil ref="UserSelector" :default-uid="uid" @nsList="changeUid" />
+    <NsSelectorNoNil ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
+    <yaml-editor v-model="yamlValue" :read-only="readOnly" style="height: 43vh; margin-bottom: 1%;" />
     <div>
       <el-button type="primary" @click="createYaml">Create</el-button>
       <el-button @click="cancel">Cancel</el-button>
@@ -11,17 +11,16 @@
 </template>
 
 <script>
-import {yaml2json} from "@/utils/yaml";
-import { createYaml } from "@/api/yaml";
-import YamlEditor from '@/components/YamlEditor/index.vue';
-import NsSelectorNoNil from "@/components/Selector/NsSelectorNoNil";
-import UserSelectorNoNil from "@/components/Selector/UserSelectorNoNil";
-import {mapGetters} from "vuex";
-
+import { yaml2json } from '@/utils/yaml'
+import { createYaml } from '@/api/yaml'
+import YamlEditor from '@/components/YamlEditor/index.vue'
+import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
+import UserSelectorNoNil from '@/components/Selector/UserSelectorNoNil'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'YamlCreate',
-  components: {YamlEditor, UserSelectorNoNil, NsSelectorNoNil},
+  components: { YamlEditor, UserSelectorNoNil, NsSelectorNoNil },
   props: ['kind'],
   computed: {
     ...mapGetters([
@@ -38,16 +37,16 @@ export default {
       // 弹出层标题
       title: 'Add ' + this.kind + ' Yaml',
       // 是否显示弹出层
-      open: false,
+      open: false
     }
   },
   methods: {
-    changeUid: function (u_id){
+    changeUid: function(u_id) {
       this.uid = u_id
       this.$refs.NsSelector.u_id = this.uid
       this.$refs.NsSelector.getNsList()
     },
-    changeNs: function (ns){
+    changeNs: function(ns) {
       this.ns = ns
     },
     init() {
@@ -62,9 +61,9 @@ export default {
       this.open = false
       // this.reset()
     },
-    createYaml(){
+    createYaml() {
       console.log(this.ns)
-      createYaml({yaml: yaml2json(this.yamlValue,false).data,kind: this.kind,ns: this.ns}).then(res => {
+      createYaml({ yaml: yaml2json(this.yamlValue, false).data, kind: this.kind, ns: this.ns }).then(res => {
         if (res.code === 1) {
           this.$message({
             type: 'success',
@@ -73,11 +72,11 @@ export default {
           this.open = false
           // 调用主页面的方法刷新主页面
           // this.$parent.get()
-          if (this.kind === 'Deploy'){
+          if (this.kind === 'Deploy') {
             this.$parent.getDeployList()
-          } else if (this.kind === 'Service'){
+          } else if (this.kind === 'Service') {
             this.$parent.getServiceList()
-          } else if (this.kind === 'Pod'){
+          } else if (this.kind === 'Pod') {
             this.$parent.getPodList()
           }
           this.yamlValue = ''

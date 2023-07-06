@@ -27,17 +27,17 @@
         <el-date-picker
           v-model="form.expired_time"
           type="datetime"
-          placeholder="选择日期时间">
-        </el-date-picker>
+          placeholder="选择日期时间"
+        />
       </el-form-item>
       <el-form-item label="CPU" prop="cpu">
-        <el-input v-model="form.cpu"></el-input>
+        <el-input v-model="form.cpu" />
       </el-form-item>
       <el-form-item label="memory" prop="memory">
-        <el-input v-model="form.memory"></el-input>
+        <el-input v-model="form.memory" />
       </el-form-item>
       <el-form-item label="容器数量">
-        <el-input-number v-model="form.num" @change="change" :min="1"></el-input-number>
+        <el-input-number v-model="form.num" :min="1" @change="change" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -50,13 +50,13 @@
 <script>
 import { getUserList } from '@/api/user'
 import { addNs } from '@/api/namespace'
-import {mapGetters} from "vuex";
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'AddNamespace',
   computed: {
     ...mapGetters([
-      'role',
+      'role'
       // 'u_id'
     ])
   },
@@ -82,11 +82,11 @@ export default {
         memory: '',
         num: ''
       },
-      formRules:{
-        name: [{ required: true, trigger: 'blur'}],
-        u_id: [{ required: true, trigger: 'blur'}],
-        cpu: [{ required: true, trigger: 'blur'}],
-        memory: [{ required: true,trigger: 'blur'}],
+      formRules: {
+        name: [{ required: true, trigger: 'blur' }],
+        u_id: [{ required: true, trigger: 'blur' }],
+        cpu: [{ required: true, trigger: 'blur' }],
+        memory: [{ required: true, trigger: 'blur' }]
       }
     }
   },
@@ -103,7 +103,7 @@ export default {
       this.open = false
       this.reset()
     },
-    onSubmit: function () {
+    onSubmit: function() {
       console.log('submit!')
       this.$refs.form.validate(valid => {
         if (valid) {
@@ -130,7 +130,7 @@ export default {
               })
             }
           })
-        }else {
+        } else {
           return false
         }
       })
@@ -144,7 +144,7 @@ export default {
         this.userPage = res.page
         this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.options = res.user_list
-        this.options.push({nickname:'',id: '0',username:'Null',role: 0})
+        this.options.push({ nickname: '', id: '0', username: 'Null', role: 0 })
         // console.log(res)
       })
     },

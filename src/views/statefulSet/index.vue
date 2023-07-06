@@ -3,40 +3,30 @@
     <div style="margin-left: 10%; margin-top: 1%">
       <UserSelector ref="UserSelector" :default-uid="uid" @nsList="changeUid" />
       <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
-      <!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addService">Add-->
-      <!--        Service-->
+      <!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addDeploy">Add-->
+      <!--        Deploy-->
       <!--      </el-button>-->
 
-<!--      <el-dropdown trigger="click" @command="handleCommand" style="margin-left: 30%">-->
-<!--        <span class="el-dropdown-link">-->
-<!--          Add Service<i class="el-icon-arrow-down el-icon&#45;&#45;right" />-->
-<!--        </span>-->
-<!--        <el-dropdown-menu slot="dropdown">-->
-<!--          <el-dropdown-item command="a">Form</el-dropdown-item>-->
-<!--          <el-dropdown-item command="b">Yaml</el-dropdown-item>-->
-<!--        </el-dropdown-menu>-->
-<!--      </el-dropdown>-->
-
-      <el-dropdown split-button trigger="click" @command="handleCommand" style="margin-left: 30%" type="primary" @click="addService">
-        Add Service
+      <el-dropdown split-button trigger="click" style="margin-left: 30%" type="primary" @command="handleCommand" @click="addStatefulSet">
+        Add StatefulSet
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="a">Form</el-dropdown-item>
           <el-dropdown-item command="b">Yaml</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)">
+    <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
       <!-- <el-table :data='tableData' style='width: 100%'> -->
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="ID" width="40" type="index">
-        <!--        <template slot-scope="scope">-->
-        <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-        <!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
-        <!--        </template>-->
+      <el-table-column label="ID" width="80">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>
+        </template>
       </el-table-column>
 
-      <el-table-column label="Name" width="115">
+      <el-table-column label="Name" width="250">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.name }}</span>
@@ -50,45 +40,48 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="created_at" width="150">
+      <el-table-column label="created_at" width="200">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="ClusterIp" width="120">
+      <el-table-column label="Replicas" width="80">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.cluster_ip }}</span>
+          <span>{{ scope.row.replicas }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Type" width="85">
+      <el-table-column label="Updated" width="80">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.type }}</span>
+          <span>{{ scope.row.updated_replicas }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Ports" type="expand" width="60">
+      <el-table-column label="Ready" width="80">
         <template slot-scope="scope">
-          <el-table :data="scope.row.ports">
-            <el-table-column label="Name" width="105"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
-            <el-table-column label="Protocol" width="105"><template slot-scope="scope"><span>{{ scope.row.protocol }}</span></template></el-table-column>
-            <el-table-column label="Port" width="105"><template slot-scope="scope"><span>{{ scope.row.port }}</span></template></el-table-column>
-            <el-table-column label="NodePort" width="105"><template slot-scope="scope"><span>{{ scope.row.nodePort }}</span></template></el-table-column>
-            <el-table-column label="TargetPort" width="105"><template slot-scope="scope"><span>{{ scope.row.targetPort }}</span></template></el-table-column>
-          </el-table>
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.ready_replicas }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="Available" width="85">
+        <template slot-scope="scope">
+          <!-- <i class='el-icon-time'></i> -->
+          <span>{{ scope.row.available_replicas }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">
+          <!--          <el-button size="mini" type="primary" @click="pushTerminal(scope.row)">pod</el-button>-->
           <el-button
             size="mini"
             type="warning"
-            @click="editService(scope.row)"
+            @click="editStatefulSet(scope.row)"
           >编辑</el-button>
           <el-button
             :loading="loading"
@@ -111,25 +104,28 @@
       />
     </div>
     <YamlApply ref="YamlApply" :visible.sync="applyDialog" :kind="kind" :name="yamlName" :ns="yamlNs" />
-    <YamlCreate :visible.sync="createDialog" ref="YamlCreate" :kind="kind"/>
-    <AddService ref="AddService" :visible.sync="addDialog" />
+    <YamlCreate ref="YamlCreate" :visible.sync="createDialog" :kind="kind" />
+    <AddDeploy ref="AddStatefulSet" :visible.sync="addDialog" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { deleteService, getServiceList } from '@/api/service'
-import { getNsList } from '@/api/namespace'
+import { deleteStatefulSet, getStatefulSetList } from '@/api/statefulSet'
 import UserSelector from '@/components/Selector/UserSelector'
 import NsSelector from '@/components/Selector/NsSelector'
 import YamlApply from '@/components/YamlEditor/apply'
 import YamlCreate from '@/components/YamlEditor/create'
-import AddService from '@/components/AddService'
+import AddDeploy from '@/components/AddDeploy'
+import addStatefulSet from '@/components/AddStatefulSet/index.vue'
 
 export default {
-  name: 'Service',
-  components: { NsSelector, UserSelector, YamlApply, YamlCreate, AddService },
+  name: 'Deploy',
+  components: { NsSelector, UserSelector, YamlApply, YamlCreate, AddDeploy },
   computed: {
+    addStatefulSet() {
+      return addStatefulSet
+    },
     ...mapGetters([
       'role',
       'u_id'
@@ -137,11 +133,11 @@ export default {
   },
   created() {
     this.uid = this.$route.query.u_id || this.u_id
-    this.getServiceList()
+    this.getDeployList()
   },
   data() {
     return {
-      kind: 'Service',
+      kind: 'Deploy',
       yamlName: '',
       yamlNs: '',
       timer: null,
@@ -159,18 +155,11 @@ export default {
           name: '',
           namespace: '',
           created_at: '',
-          type: '',
-          cluster_ip: '',
-          u_id: '',
-          ports: [
-            {
-              name: '',
-              protocol: '',
-              port: '',
-              nodePort: '',
-              targetPort: ''
-            }
-          ]
+          replicas: '',
+          updated_replicas: '',
+          ready_replicas: '',
+          available_replicas: '',
+          u_id: ''
         }
       ]
     }
@@ -178,7 +167,7 @@ export default {
   methods: {
     handleCommand(command) {
       if (command === 'a') {
-        this.addService()
+        this.addStatefulSet()
       } else {
         this.yamlCreate()
       }
@@ -187,26 +176,27 @@ export default {
       this.uid = u_id
       this.$refs.NsSelector.u_id = this.uid
       this.$refs.NsSelector.getNsList()
-      this.getServiceList()
+      this.getStatefulSetList()
     },
     changeNs: function(ns) {
       this.ns = ns
-      this.getServiceList()
+      this.getStatefulSetList()
     },
     changePageNum: function(val) {
       this.page = val
     },
-    getServiceList: function() {
-      getServiceList(this.uid, this.ns).then((res) => {
+    getStatefulSetList: function() {
+      getStatefulSetList(this.uid, this.ns).then((res) => {
         this.total = res.length
-        this.tableData = res.service_list
+        this.tableData = res.deploy_list
         console.log(res)
       })
     },
-    addService: function() {
+    // eslint-disable-next-line vue/no-dupe-keys
+    addStatefulSet: function() {
       this.addDialog = true
       this.$nextTick(() => {
-        this.$refs.AddService.init()
+        this.$refs.AddStatefulSet.init()
       })
     },
     yamlCreate: function() {
@@ -215,7 +205,7 @@ export default {
         this.$refs.YamlCreate.init()
       })
     },
-    editService: function(row) {
+    editStatefulSet: function(row) {
       this.yamlName = row['name']
       this.yamlNs = row['namespace']
       this.applyDialog = true
@@ -225,12 +215,12 @@ export default {
     },
     handleDelete: function(row) {
       /* 提示消息*/
-      this.$confirm('确认永久删除此service', '提示', {
+      this.$confirm('确认永久删除此statefulSet及其所含pod', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteService(row['namespace'], row['name']).then((res) => {
+        deleteStatefulSet(row['namespace'], row['name']).then((res) => {
           if (res.code === 1) {
             this.$message({
               type: 'success',
@@ -241,7 +231,7 @@ export default {
             clearTimeout(this.timer)
             this.timer = setTimeout(() => {
               this.loading = false
-              this.getServiceList()
+              this.getStatefulSetList()
               // location.reload()
             }, 1000)
           } else {

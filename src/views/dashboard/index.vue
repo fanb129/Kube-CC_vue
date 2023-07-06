@@ -87,14 +87,14 @@
 import { mapGetters } from 'vuex'
 import EditPwd from '@/components/EditPwd'
 import { updateUser, getUserList } from '@/api/user'
-import { getNodeList } from "@/api/node";
-import { getNsList } from "@/api/namespace";
-import { getDeployList } from "@/api/deploy";
-import { getServiceList } from "@/api/service";
-import { getPodList } from "@/api/pod";
-import { getSparkList } from "@/api/spark";
-import { getHadoopList } from "@/api/hadoop";
-import { getLinuxList } from "@/api/linux";
+import { getNodeList } from '@/api/node'
+import { getNsList } from '@/api/namespace'
+import { getDeployList } from '@/api/deploy'
+import { getServiceList } from '@/api/service'
+import { getPodList } from '@/api/pod'
+import { getSparkList } from '@/api/spark'
+import { getHadoopList } from '@/api/hadoop'
+import { getLinuxList } from '@/api/linux'
 import { Message } from 'element-ui'
 
 export default {
@@ -173,33 +173,33 @@ export default {
   },
   methods: {
     push2(index) {
-      switch (index){
+      switch (index) {
         case 0:
-          this.$router.push({ name: 'User' });
-          break;
+          this.$router.push({ name: 'User' })
+          break
         case 1:
-          this.$router.push({ name: 'Node' });
+          this.$router.push({ name: 'Node' })
           break
         case 2:
-          this.$router.push({ name: 'Namespace' });
+          this.$router.push({ name: 'Namespace' })
           break
         case 3:
-          this.$router.push({ name: 'Deploy' });
+          this.$router.push({ name: 'Deploy' })
           break
         case 4:
-          this.$router.push({ name: 'Service' });
+          this.$router.push({ name: 'Service' })
           break
         case 5:
-          this.$router.push({ name: 'Pod' });
+          this.$router.push({ name: 'Pod' })
           break
         case 6:
-          this.$router.push({ name: 'Spark' });
+          this.$router.push({ name: 'Spark' })
           break
         case 7:
-          this.$router.push({ name: 'Hadoop' });
+          this.$router.push({ name: 'Hadoop' })
           break
         case 8:
-          this.$router.push({ name: 'Linux' });
+          this.$router.push({ name: 'Linux' })
           break
       }
     },

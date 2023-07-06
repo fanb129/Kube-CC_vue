@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getDeployList(u_id,ns) {
+export function getDeployList(u_id, ns) {
   return request({
     url: '/deploy',
     method: 'get',
@@ -22,7 +22,29 @@ export function deleteDeploy(ns, name) {
   })
 }
 
-export function getDeployYaml(name,ns){
+export function addDeploy(ns, name) {
+  return request({
+    url: '/deploy/add',
+    method: 'post',
+    params: {
+      'ns': ns,
+      'name': name
+    }
+  })
+}
+
+export function updateDeploy(ns, name) {
+  return request({
+    url: '/deploy/update',
+    method: 'post',
+    params: {
+      'ns': ns,
+      'name': name
+    }
+  })
+}
+
+export function getDeployYaml(name, ns) {
   return request({
     url: '/deploy/info',
     method: 'get',

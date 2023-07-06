@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
-      <UserSelector :default-uid="uid" @nsList="changeUid"></UserSelector>
+      <UserSelector :default-uid="uid" @nsList="changeUid" />
       <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addHadoop">Add
         Hadoop
       </el-button>
@@ -71,7 +71,7 @@
       <el-table-column label="Pod" type="expand" width="60">
         <template slot-scope="scope">
           <el-table :data="scope.row.pod_list">
-            <el-table-column label="ID" width="60" type="index"></el-table-column>
+            <el-table-column label="ID" width="60" type="index" />
             <el-table-column label="Name" width="150"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
             <el-table-column label="Phase" width="105"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
             <el-table-column label="NodeIp" width="130"><template slot-scope="scope"><span>{{ scope.row.node_ip }}</span></template></el-table-column>
@@ -81,7 +81,10 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button
-                  size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
+                  size="mini"
+                  type="success"
+                  @click="pushTerminal(scope.row)"
+                > 终端</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -90,18 +93,21 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-dropdown size="mini" split-button trigger="click" @command="handleCommand" type="primary" style="padding: 15px">
+          <el-dropdown size="mini" split-button trigger="click" type="primary" style="padding: 15px" @command="handleCommand">
             更多
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :command="beforeHandleCommand('deploy',scope.row)">deploy</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-<!--          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>-->
-<!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
+          <!--          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>-->
+          <!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
           <el-button
             :disabled="role < 2"
-            size="mini" type="warning" @click="updateHadoop(scope.row)">编辑</el-button>
+            size="mini"
+            type="warning"
+            @click="updateHadoop(scope.row)"
+          >编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
@@ -113,24 +119,30 @@
       </el-table-column>
     </el-table>
     <div style="position: absolute;bottom: 2%">
-      <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="pagesize" :total="total"
-                     @current-change="changePageNum"/>
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :current-page="page"
+        :page-size="pagesize"
+        :total="total"
+        @current-change="changePageNum"
+      />
     </div>
-    <AddHadoop :visible.sync="openDialog" ref="AddHadoop"/>
-    <UpdateHadoop :visible.sync="updateDialog" ref="UpdateHadoop"/>
+    <AddHadoop ref="AddHadoop" :visible.sync="openDialog" />
+    <UpdateHadoop ref="UpdateHadoop" :visible.sync="updateDialog" />
   </div>
 </template>
 
 <script>
 
-import {mapGetters} from 'vuex'
-import {getHadoopList, deleteHadoop} from '@/api/hadoop'
+import { mapGetters } from 'vuex'
+import { getHadoopList, deleteHadoop } from '@/api/hadoop'
 import AddHadoop from '@/components/AddHadoop'
-import UpdateHadoop from "@/components/AddHadoop/UpdateHadoop";
-import UserSelector from "@/components/Selector/UserSelector";
+import UpdateHadoop from '@/components/AddHadoop/UpdateHadoop'
+import UserSelector from '@/components/Selector/UserSelector'
 
 export default {
-  components: {AddHadoop, UserSelector, UpdateHadoop},
+  components: { AddHadoop, UserSelector, UpdateHadoop },
   computed: {
     ...mapGetters([
       'role',
@@ -232,7 +244,7 @@ export default {
         this.push2service(command.row)
       }
     },
-    beforeHandleCommand(item,row){
+    beforeHandleCommand(item, row) {
       return {
         'command': item,
         'row': row
@@ -246,7 +258,7 @@ export default {
         }
       })
     },
-    push2deploy: function (row){
+    push2deploy: function(row) {
       this.$router.push({
         name: 'Deploy',
         query: {
@@ -255,7 +267,7 @@ export default {
         }
       })
     },
-    push2service: function (row){
+    push2service: function(row) {
       this.$router.push({
         name: 'Service',
         query: {
@@ -264,27 +276,27 @@ export default {
         }
       })
     },
-    changeUid: function(u_id){
+    changeUid: function(u_id) {
       this.uid = u_id
       this.getHadoopList()
     },
-    changePageNum: function (val) {
+    changePageNum: function(val) {
       this.page = val
     },
-    getHadoopList: function () {
+    getHadoopList: function() {
       getHadoopList(this.uid).then((res) => {
         this.total = res.length
         this.tableData = res.hadoop_list
         console.log(res)
       })
     },
-    addHadoop: function () {
+    addHadoop: function() {
       this.openDialog = true
       this.$nextTick(() => {
-        this.$refs.AddHadoop.init();
-      });
+        this.$refs.AddHadoop.init()
+      })
     },
-    updateHadoop: function (row) {
+    updateHadoop: function(row) {
       this.updateDialog = true
       this.$nextTick(() => {
         this.$refs.UpdateHadoop.init(
@@ -297,10 +309,10 @@ export default {
           row['expired_time'],
           row['cpu'],
           row['memory']
-        );
-      });
+        )
+      })
     },
-    handleDelete: function (row) {
+    handleDelete: function(row) {
       /* 提示消息*/
       this.$confirm('确认永久删除此hadoop集群', '提示', {
         confirmButtonText: '确定',
@@ -320,7 +332,7 @@ export default {
               this.loading = false
               this.getHadoopList()
               // location.reload()
-            },1000)
+            }, 1000)
           } else {
             this.$message({
               type: 'error',

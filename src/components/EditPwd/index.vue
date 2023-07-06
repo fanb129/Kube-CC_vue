@@ -22,7 +22,7 @@
 
 <script>
 import store from '@/store'
-import { resetPass, checkPass } from "@/api/user";
+import { resetPass, checkPass } from '@/api/user'
 
 export default {
   name: 'EditPwd',

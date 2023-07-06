@@ -93,15 +93,15 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-dropdown size="mini" split-button trigger="click" @command="handleCommand" type="primary" style="padding: 15px">
+          <el-dropdown size="mini" split-button trigger="click" type="primary" style="padding: 15px" @command="handleCommand">
             更多
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :command="beforeHandleCommand('deploy',scope.row)">deploy</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-<!--          <el-button size="mini" type="primary" @click="push2deploy(scope.row)">deploy</el-button>-->
-<!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
+          <!--          <el-button size="mini" type="primary" @click="push2deploy(scope.row)">deploy</el-button>-->
+          <!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
           <el-button
             :disabled="role < 2"
             size="mini"
@@ -129,7 +129,7 @@
       />
     </div>
     <AddSpark ref="AddSpark" :visible.sync="openDialog" />
-    <UpdateSpark ref="UpdateSpark" :visible.sync="updateDialog"/>
+    <UpdateSpark ref="UpdateSpark" :visible.sync="updateDialog" />
   </div>
 </template>
 
@@ -139,7 +139,7 @@ import { mapGetters } from 'vuex'
 import { getSparkList, deleteSpark } from '@/api/spark'
 import AddSpark from '@/components/AddSpark'
 import UserSelector from '@/components/Selector/UserSelector'
-import UpdateSpark from '@/components/AddSpark/UpdateSpark';
+import UpdateSpark from '@/components/AddSpark/UpdateSpark'
 
 export default {
   components: { AddSpark, UserSelector, UpdateSpark },
@@ -237,7 +237,7 @@ export default {
         this.push2service(command.row)
       }
     },
-    beforeHandleCommand(item,row){
+    beforeHandleCommand(item, row) {
       return {
         'command': item,
         'row': row

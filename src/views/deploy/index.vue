@@ -1,15 +1,15 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%">
-      <UserSelector :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
-      <NsSelector :default-uid="uid" :default-ns="ns" @nsList="changeNs" ref="NsSelector"></NsSelector>
-<!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addDeploy">Add-->
-<!--        Deploy-->
-<!--      </el-button>-->
+      <UserSelector ref="UserSelector" :default-uid="uid" @nsList="changeUid" />
+      <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
+      <!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addDeploy">Add-->
+      <!--        Deploy-->
+      <!--      </el-button>-->
 
-      <el-dropdown split-button trigger="click" @command="handleCommand" style="margin-left: 30%" type="primary" @click="addDeploy">
+      <el-dropdown split-button trigger="click" style="margin-left: 30%" type="primary" @command="handleCommand" @click="addDeploy">
         Add Deploy
-        <el-dropdown-menu slot="dropdown">
+        <el-dropdown-menu #dropdown>
           <el-dropdown-item command="a">Form</el-dropdown-item>
           <el-dropdown-item command="b">Yaml</el-dropdown-item>
         </el-dropdown-menu>
@@ -20,7 +20,7 @@
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
       <el-table-column label="ID" width="80">
-        <template slot-scope="scope">
+        <template #default="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>
         </template>
@@ -34,7 +34,7 @@
       </el-table-column>
 
       <el-table-column label="Namespace" width="250">
-        <template slot-scope="scope">
+        <template #scope>
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.namespace }}</span>
         </template>
@@ -77,9 +77,12 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-<!--          <el-button size="mini" type="primary" @click="pushTerminal(scope.row)">pod</el-button>-->
+          <!--          <el-button size="mini" type="primary" @click="pushTerminal(scope.row)">pod</el-button>-->
           <el-button
-            size="mini" type="warning" @click="editDeploy(scope.row)">编辑</el-button>
+            size="mini"
+            type="warning"
+            @click="editDeploy(scope.row)"
+          >编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
@@ -100,17 +103,17 @@
         @current-change="changePageNum"
       />
     </div>
-    <YamlApply :visible.sync="applyDialog" ref="YamlApply" :kind="kind" :name="yamlName" :ns="yamlNs"/>
-    <YamlCreate :visible.sync="createDialog" ref="YamlCreate" :kind="kind"/>
-    <AddDeploy :visible.sync="addDialog" ref="AddDeploy"/>
+    <YamlApply ref="YamlApply" :visible.sync="applyDialog" :kind="kind" :name="yamlName" :ns="yamlNs" />
+    <YamlCreate ref="YamlCreate" :visible.sync="createDialog" :kind="kind" />
+    <AddDeploy ref="AddDeploy" :visible.sync="addDialog" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { deleteDeploy, getDeployList } from '@/api/deploy'
-import UserSelector from "@/components/Selector/UserSelector";
-import NsSelector from "@/components/Selector/NsSelector";
+import UserSelector from '@/components/Selector/UserSelector'
+import NsSelector from '@/components/Selector/NsSelector'
 import YamlApply from '@/components/YamlEditor/apply'
 import YamlCreate from '@/components/YamlEditor/create'
 import AddDeploy from '@/components/AddDeploy'
@@ -165,13 +168,13 @@ export default {
         this.yamlCreate()
       }
     },
-    changeUid: function (u_id){
+    changeUid: function(u_id) {
       this.uid = u_id
       this.$refs.NsSelector.u_id = this.uid
       this.$refs.NsSelector.getNsList()
       this.getDeployList()
     },
-    changeNs: function (ns){
+    changeNs: function(ns) {
       this.ns = ns
       this.getDeployList()
     },
@@ -179,7 +182,7 @@ export default {
       this.page = val
     },
     getDeployList: function() {
-      getDeployList(this.uid,this.ns).then((res) => {
+      getDeployList(this.uid, this.ns).then((res) => {
         this.total = res.length
         this.tableData = res.deploy_list
         console.log(res)
@@ -197,7 +200,7 @@ export default {
         this.$refs.YamlCreate.init()
       })
     },
-    editDeploy: function(row){
+    editDeploy: function(row) {
       this.yamlName = row['name']
       this.yamlNs = row['namespace']
       this.applyDialog = true
