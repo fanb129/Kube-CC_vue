@@ -39,7 +39,6 @@ import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
 import UserSelectorNoNil from '@/components/Selector/UserSelectorNoNil'
 import { mapGetters } from 'vuex'
 import { createYaml } from '@/api/yaml'
-import { yaml2json } from '@/utils/yaml'
 
 export default {
   name: 'AddDeploy',

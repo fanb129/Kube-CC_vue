@@ -2,12 +2,19 @@
   <div>
     <div style="margin-left: 10%; margin-top: 1%">
       <UserSelector ref="UserSelector" :default-uid="uid" @nsList="changeUid" />
-      <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
+      <NsSelector ref="NsSelector" :default-ns="ns" :default-uid="uid" @nsList="changeNs" />
       <!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addDeploy">Add-->
       <!--        Deploy-->
       <!--      </el-button>-->
 
-      <el-dropdown split-button trigger="click" style="margin-left: 30%" type="primary" @command="handleCommand" @click="addStatefulSet">
+      <el-dropdown
+        split-button
+        style="margin-left: 30%"
+        trigger="click"
+        type="primary"
+        @click="addStatefulSet"
+        @command="handleCommand"
+      >
         Add StatefulSet
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="a">Form</el-dropdown-item>
@@ -77,12 +84,12 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <!--          <el-button size="mini" type="primary" @click="pushTerminal(scope.row)">pod</el-button>-->
           <el-button
             size="mini"
             type="warning"
             @click="editStatefulSet(scope.row)"
-          >编辑</el-button>
+          >编辑
+          </el-button>
           <el-button
             :loading="loading"
             size="mini"
@@ -95,16 +102,16 @@
     </el-table>
     <div style="position: absolute;bottom: 2%">
       <el-pagination
-        background
-        layout="prev, pager, next"
         :current-page="page"
         :page-size="pagesize"
         :total="total"
+        background
+        layout="prev, pager, next"
         @current-change="changePageNum"
       />
     </div>
-    <YamlApply ref="YamlApply" :visible.sync="applyDialog" :kind="kind" :name="yamlName" :ns="yamlNs" />
-    <YamlCreate ref="YamlCreate" :visible.sync="createDialog" :kind="kind" />
+    <YamlApply ref="YamlApply" :kind="kind" :name="yamlName" :ns="yamlNs" :visible.sync="applyDialog" />
+    <YamlCreate ref="YamlCreate" :kind="kind" :visible.sync="createDialog" />
     <AddDeploy ref="AddStatefulSet" :visible.sync="addDialog" />
   </div>
 </template>
@@ -120,7 +127,7 @@ import AddDeploy from '@/components/AddDeploy'
 import addStatefulSet from '@/components/AddStatefulSet/index.vue'
 
 export default {
-  name: 'Deploy',
+  name: 'StatefulSet',
   components: { NsSelector, UserSelector, YamlApply, YamlCreate, AddDeploy },
   computed: {
     addStatefulSet() {
