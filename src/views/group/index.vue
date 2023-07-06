@@ -21,10 +21,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column label='管理员ID' width='100'>
+      <el-table-column label='管理员' width='100'>
         <template slot-scope='scope'>
           <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.adminid }}</span>
+          <span>{{ scope.row.adminname }}</span>
         </template>
       </el-table-column>
 
@@ -215,6 +215,7 @@ export default {
           groupid: '',
           name: '',
           adminid: '',
+          adminname: '',
           description: '',
           group_created_at: '',
           group_updated_at: '',
