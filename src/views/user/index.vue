@@ -4,7 +4,7 @@
       <!-- <el-table :data='tableData' style='width: 100%'> -->
 <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label='ID' width='100' type="index">
+      <el-table-column label='序号' width='100' type="index">
 <!--        <template slot-scope='scope'>-->
 <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
 <!--          <span style='margin-left: 1%'>{{ scope.$index + 1 }}</span>-->
