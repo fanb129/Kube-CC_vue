@@ -22,7 +22,7 @@ export function viewGroupUser(g_id) {
   })
 }
 
-export function creatGroup(ad_id,data) {
+export function creatGroup(ad_id, data) {
   return request({
     url: '/group/creat/' + ad_id,
     method: 'post',
@@ -37,23 +37,37 @@ export function deleteGroup(g_id) {
   })
 }
 
-export function transAdmin(g_id,data) {
+// export function transAdmin(g_id,data) {
+//   return request({
+//     url: '/group/transadmin/' + g_id,
+//     method: 'post',
+//     data
+//   })
+// }
+
+// export function removeUser(u_id) {
+//   return request({
+//     url: '/group/remove/' + u_id,
+//     method: 'get',
+//   })
+// }
+
+export function addUser(u_id, data) {
   return request({
-    url: '/group/transadmin/' + g_id,
+    url: '/group/add/' + u_id,
     method: 'post',
     data
   })
 }
 
-export function remove(u_id) {
-    return request({
-      url: '/group/remove/' + u_id,
-      method: 'post',
-      data
-    })
-  }
+export function removeUser(u_id) {
+  return request({
+    url: '/group/remove/' + u_id,
+    method: 'get'
+  })
+}
 
-export function updateGroup(g_id,data) {
+export function updateGroup(g_id, data) {
   return request({
     url: '/group/update/' + g_id,
     method: 'post',

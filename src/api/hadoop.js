@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export function getHadoopList(u_id) {
   return request({
     url: '/hadoop',
-    method: 'get',
+    methd: 'get',
     params: {
       'u_id': u_id
     }
