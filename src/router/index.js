@@ -104,6 +104,12 @@ export const constantRoutes = [
         meta: { title: 'Deploy', icon: 'dashboard' }
       },
       {
+        path: 'statefulSet',
+        name: 'StatefulSet',
+        component: () => import('@/views/statefulSet/index'),
+        meta: { title: 'StatefulSet', icon: 'dashboard' }
+      },
+      {
         path: 'service',
         name: 'Service',
         component: () => import('@/views/service/index'),

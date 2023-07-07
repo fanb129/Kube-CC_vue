@@ -51,7 +51,7 @@ export function deleteUser(id) {
   })
 }
 
-export function editUser(id, data) {
+export function editUser(id,data) {
   return request({
     url: '/user/edit/' + id,
     method: 'post',
@@ -59,7 +59,7 @@ export function editUser(id, data) {
   })
 }
 
-export function updateUser(id, data) {
+export function updateUser(id,data) {
   return request({
     url: '/user/update/' + id,
     method: 'post',
