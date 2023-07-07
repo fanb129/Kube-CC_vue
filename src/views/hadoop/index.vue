@@ -7,75 +7,63 @@
       </el-button>
     </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
-      <!-- <el-table :data='tableData' style='width: 100%'> -->
-      <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="ID" width="50" type="index">
-        <!--        <template slot-scope="scope">-->
-        <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-        <!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
-        <!--        </template>-->
+      <el-table-column label="编号" width="50" type="index">
       </el-table-column>
 
-      <el-table-column label="Name" width="250">
+      <el-table-column label="名称" width="250">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Status" width="100">
+      <el-table-column label="状态" width="100">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.status }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="created_at" width="100">
+      <el-table-column label="创建时间" width="100">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="expired_at" width="100">
+      <el-table-column label="失效于" width="100">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.expired_time }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="cpu" width="100">
+      <el-table-column label="处理器配置" width="100">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="memory" width="100">
+      <el-table-column label="内存配置" width="100">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="username" width="100">
+      <el-table-column label="用户名称" width="100">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.username }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="nickname" width="100">
+      <el-table-column label="用户昵称" width="100">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.nickname }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Pod" type="expand" width="60">
+      <el-table-column label="Pod管理" type="expand" width="60">
         <template slot-scope="scope">
           <el-table :data="scope.row.pod_list">
-            <el-table-column label="ID" width="60" type="index" />
-            <el-table-column label="Name" width="150"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
-            <el-table-column label="Phase" width="105"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
-            <el-table-column label="NodeIp" width="130"><template slot-scope="scope"><span>{{ scope.row.node_ip }}</span></template></el-table-column>
-            <el-table-column label="Ready" width="105"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].ready }}</span></template></el-table-column>
+            <el-table-column label="Pod编号" width="60" type="index" />
+            <el-table-column label="名称" width="150"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+            <el-table-column label="阶段" width="105"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
+            <el-table-column label="节点Ip" width="130"><template slot-scope="scope"><span>{{ scope.row.node_ip }}</span></template></el-table-column>
+            <el-table-column label="就绪" width="105"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].ready }}</span></template></el-table-column>
             <el-table-column label="Started" width="105"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].started }}</span></template></el-table-column>
             <el-table-column label="RestartCount" width="110"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].restartCount }}</span></template></el-table-column>
             <el-table-column label="操作">
@@ -100,8 +88,6 @@
               <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <!--          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>-->
-          <!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
           <el-button
             :disabled="role < 2"
             size="mini"

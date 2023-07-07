@@ -19,56 +19,56 @@
       <!-- <el-table :data='tableData' style='width: 100%'> -->
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="ID" width="80">
+      <el-table-column label="编号" width="80">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Name" width="250">
+      <el-table-column label="名称" width="250">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Namespace" width="250">
+      <el-table-column label="所属命名空间" width="250">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.namespace }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="created_at" width="200">
+      <el-table-column label="创建时间" width="200">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Replicas" width="80">
+      <el-table-column label="拷贝" width="80">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.replicas }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Updated" width="80">
+      <el-table-column label="已更新" width="80">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.updated_replicas }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Ready" width="80">
+      <el-table-column label="就绪" width="80">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.ready_replicas }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Available" width="85">
+      <el-table-column label="可用" width="85">
         <template slot-scope="scope">
           <!-- <i class='el-icon-time'></i> -->
           <span>{{ scope.row.available_replicas }}</span>
