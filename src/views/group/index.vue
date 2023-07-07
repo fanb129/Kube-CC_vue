@@ -1,7 +1,8 @@
 <template>
   <div>
     <div style="position:relative;">
-      <el-button style="position:relative;left: 56%;" :disabled="role <= 1" size='middle' type="warning" @click='showDialogC()'>创建组</el-button>
+      <el-button style="position:relative;left: 56%;" :disabled="role <= 1" size='middle' type="warning" @click='showDialogC(role,u_id,username)'>创建组</el-button>
+      <el-button style="position:relative;left: 56%;" :disabled="role <= 1" size='middle' type="warning" @click='showDialogE(u_id)'>编辑组</el-button>
     </div>
     <el-table :data='tableData' style='width: 100%' >
       <!-- <el-table :data='tableData' style='width: 100%'> -->
@@ -86,6 +87,33 @@
       <div slot='footer' class='dialog-footer'>
         <el-button @click='statusDialogCVisible = false'>取 消</el-button>
         <el-button type='primary' @click='CTGroup(value)'>确 定</el-button>
+      </div>
+    </el-dialog>
+    <!--  编辑组弹窗-->
+    <el-dialog title='编辑组' :data="admgroup" :visible.sync='statusDialogEVisible'>
+      <el-form>
+        <el-form-item label='组名' :label-width='formLabelWidth'>
+          <template>
+            <el-select v-model="value" filterable placeholder="请选择">
+              <el-option
+                v-for="item in admgroup"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </template>
+        </el-form-item>
+        <el-form-item label='编辑组名' :label-width='formLabelWidth'>
+          <el-input v-model="inputegn" placeholder="请输入内容"></el-input>
+        </el-form-item>
+        <el-form-item label='编辑描述' :label-width='formLabelWidth'>
+          <el-input v-model="inputegd" placeholder="请输入内容"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot='footer' class='dialog-footer'>
+        <el-button @click='statusDialogEVisible = false'>取 消</el-button>
+        <el-button type='primary' @click='EDGroup(value)'>确 定</el-button>
       </div>
     </el-dialog>
       <!--  查看组弹窗-->
@@ -183,7 +211,7 @@
 <script>
 
 import { editUser, getUserList, resetPass } from '@/api/user'
-import { deleteGroup, addUser, removeUser, getGroupList, viewGroupUser,creatGroup } from '@/api/group'
+import { deleteGroup, addUser, removeUser, getGroupList, viewGroupUser, creatGroup, updateGroup } from '@/api/group'
 import { mapGetters } from 'vuex'
 var tg_id
 
@@ -191,7 +219,8 @@ export default {
   computed: {
     ...mapGetters([
       'role',
-      'u_id'
+      'u_id',
+      'username'
     ])
   },
   created() {
@@ -207,9 +236,12 @@ export default {
       statusDialogAVisible: false,
       statusDialogRVisible: false,
       statusDialogCVisible: false,
+      statusDialogEVisible: false,
       //rolelist: ['普通用户', '管理员', '超级管理员'],
       inputgn: '',
       inputgd: '',
+      inputegn: '',
+      inputegd: '',
       tableData: [
         {
           groupid: '',
@@ -233,20 +265,16 @@ export default {
           gid: ''
         }
       ],
-      tgroup: [
-      ],
-      rmuser: [
-      ],
-      adminuser: [
-      ],
-      alluser: [
-      ],
-      alladmin: [
-      ],
-      adduser: [
-      ],
-      oduser: [
-      ]
+      tgroup: [],
+      rmuser: [],
+      adminuser: [],
+      alluser: [],
+      alladmin: [],
+      adduser: [],
+      oduser: [],
+      allgroup:[],
+      adgroup:[],
+      admgroup:[],
       // creatgroup: [
       //   {
       //     name: '',
@@ -266,11 +294,13 @@ export default {
       this.$forceUpdate()
     },
     //创建组弹出框
-    showDialogC(){
+    showDialogC(role,u_id,username){
+      this.value = ''
       this.alluser = []
       this.alladmin = []
       this.adminuser = []
-      getUserList(this.page).then((res) => {
+      if(role == 3){
+        getUserList(this.page).then((res) => {
         if (res.code == 1) {
           // this.alluser = []
           // this.alladmin = []
@@ -300,7 +330,13 @@ export default {
           //   message: res.msg
           // })
         }
-      })
+       })
+      }else if (role == 2){
+        this.adminuser = [{
+          "value" : u_id,
+          "label" : username
+        }]
+      }
       this.statusDialogCVisible=true
     },
     //创建组具体实现
@@ -332,6 +368,74 @@ export default {
           // })
         })
       this.statusDialogCVisible = false
+      })
+    },
+    //编辑组弹出框
+    showDialogE(u_id){
+      this.value = ''
+      this.allgroup = []
+      this.adgroup = []
+      this.admgroup = []
+      getGroupList(this.page).then((res) => {
+        if (res.code == 1) {
+          // this.allgroup = []
+          this.allgroup = res.group_list
+          for (let i=0;i<this.allgroup.length;i++) {
+            if (this.allgroup[i].adminid == u_id){
+              this.adgroup.push(this.allgroup[i])
+            }
+          }
+          this.admgroup.push(this.adgroup.map(function(item,index){
+            var tmp = {
+              "value" : item.groupid,
+              "label" : item.name,
+            }
+            return tmp
+          }))
+          this.admgroup = this.admgroup[0]
+          //console.log(this.rmuser)
+          // this.$message({
+          //   type: 'success',
+          //   message: res.msg
+          // })
+        } else {
+          // this.$message({
+          //   type: 'error',
+          //   message: res.msg
+          // })
+        }
+      })
+      this.statusDialogEVisible=true
+    },
+    //编辑组具体实现
+    EDGroup(value){
+      //this.statusDialogCVisible=true
+      this.$confirm('确认更改该组信息?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+      updateGroup(value, {name: this.inputegn,description: this.inputegd}).then((res) => {
+        if (res.code === 1) {
+          this.$message({
+            type: 'success',
+            message: res.msg
+          })
+          location.reload()
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
+        }
+      })
+      .catch(() => {
+          // this.$message({
+          //   type: 'info',
+          //   message: "取消创建组"
+          // })
+        })
+      this.statusDialogEVisible = false
       })
     },
     //查看组用户弹出框
@@ -366,6 +470,7 @@ export default {
     },
     //添加用户弹出框
     showDialogA(row) {
+      this.value = ''
       this.alluser = []
       this.oduser = []
       this.adduser = []
@@ -436,6 +541,7 @@ export default {
     },
     //移出用户弹出框
     showDialogR(row) {
+      this.value = ''
       this.tuser = []
       this.rmuser=[]
       tg_id = row.groupid
