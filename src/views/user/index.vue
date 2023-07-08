@@ -51,9 +51,9 @@
 
       <el-table-column label='操作'>
         <template slot-scope='scope'>
-          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' type="warning" @click='Resetpsd(scope.row)'>重置密码</el-button>
-          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' type="warning" @click='showDialog(scope.row["id"])'> 权限修改</el-button>
-          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' type='danger' @click='handleDelete(scope.row)'>删除</el-button>
+          <el-button :disabled="role <= 1 || role < scope.row['role'] || (role == scope.row['role'] && u_id != scope.row['id'])" size='mini' type="warning" @click='Resetpsd(scope.row)'>重置密码</el-button>
+          <el-button :disabled="role <= 1 || role < scope.row['role'] || (role == scope.row['role'] && u_id != scope.row['id'])" size='mini' type="warning" @click='showDialog(scope.row["id"])'> 权限修改</el-button>
+          <el-button :disabled="role <= 1 || role < scope.row['role'] || (role == scope.row['role'] && u_id != scope.row['id'])" size='mini' type='danger' @click='handleDelete(scope.row)'>删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -88,7 +88,8 @@ var new_id
 export default {
   computed: {
     ...mapGetters([
-      'role'
+      'role',
+      'u_id'
     ])
   },
   created() {
@@ -103,16 +104,17 @@ export default {
       statusDialogVisible: false,
       rolelist: ['普通用户', '管理员', '超级管理员'],
       tableData: [
-        {
-          id: '',
-          username: '',
-          nickname: '',
-          role: '',
-          created_at: '',
-          updated_at: '',
-          avatar: ''
-        }
-      ]
+        // {
+        //   id: '',
+        //   username: '',
+        //   nickname: '',
+        //   role: '',
+        //   created_at: '',
+        //   updated_at: '',
+        //   avatar: ''
+        // }
+      ],
+      tData:[]
     }
   },
   methods: {
@@ -212,7 +214,23 @@ export default {
       getUserList(this.page).then((res) => {
         this.page = res.page
         this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
-        this.tableData = res.user_list
+        this.tData = res.user_list
+        for(let i=0;i<this.tData.length;i++){
+          if(this.tData[i].role==3){
+            this.tableData.push(this.tData[i])
+          }
+        }
+        for(let i=0;i<this.tData.length;i++){
+          if(this.tData[i].role==2){
+            this.tableData.push(this.tData[i])
+          }
+        }
+        for(let i=0;i<this.tData.length;i++){
+          if(this.tData[i].role==1){
+            this.tableData.push(this.tData[i])
+          }
+        }
+        //this.tableData.sort(function(a,b){return a.role > b.role})
         // console.log(this.total)
       })
     }

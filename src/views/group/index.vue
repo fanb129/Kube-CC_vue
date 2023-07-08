@@ -325,10 +325,10 @@ export default {
           //   message: res.msg
           // })
         } else {
-          // this.$message({
-          //   type: 'error',
-          //   message: res.msg
-          // })
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
         }
        })
       }else if (role == 2){
@@ -348,7 +348,7 @@ export default {
         type: 'warning'
       }).then(() => {
       creatGroup(value, {name: this.inputgn,description: this.inputgd}).then((res) => {
-        if (res.code === 1) {
+        if (res.code == 1) {
           this.$message({
             type: 'success',
             message: res.msg
@@ -362,10 +362,10 @@ export default {
         }
       })
       .catch(() => {
-          // this.$message({
-          //   type: 'info',
-          //   message: "取消创建组"
-          // })
+          this.$message({
+            type: 'info',
+            message: "取消创建组"
+          })
         })
       this.statusDialogCVisible = false
       })
@@ -399,10 +399,10 @@ export default {
           //   message: res.msg
           // })
         } else {
-          // this.$message({
-          //   type: 'error',
-          //   message: res.msg
-          // })
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
         }
       })
       this.statusDialogEVisible=true
@@ -430,10 +430,10 @@ export default {
         }
       })
       .catch(() => {
-          // this.$message({
-          //   type: 'info',
-          //   message: "取消创建组"
-          // })
+          this.$message({
+            type: 'info',
+            message: "取消创建组"
+          })
         })
       this.statusDialogEVisible = false
       })
@@ -447,10 +447,10 @@ export default {
         if (res.code == 1) {
           //this.tuser = []
           this.tuser = res.groupuser_list
-          // this.$message({
-          //   type: 'success',
-          //   message: res.msg
-          // })
+          this.$message({
+            type: 'success',
+            message: res.msg
+          })
         } else {
           this.$message({
             type: 'error',
@@ -459,10 +459,10 @@ export default {
         }
       })
        .catch(() => {
-        //  this.$message({
-        //    type:'info',
-        //    message: '退出查看'
-        //  })
+         this.$message({
+           type:'info',
+           message: '退出查看'
+         })
        })
        //this.statusDialogUVisible = false
        //location.reload()
@@ -500,10 +500,10 @@ export default {
           //   message: res.msg
           // })
         } else {
-          // this.$message({
-          //   type: 'error',
-          //   message: res.msg
-          // })
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
         }
       })
       this.statusDialogAVisible=true
@@ -531,10 +531,10 @@ export default {
         }
       })
       .catch(() => {
-          // this.$message({
-          //   type: 'info',
-          //   message: "取消创建组"
-          // })
+          this.$message({
+            type: 'info',
+            message: "取消创建组"
+          })
         })
       this.statusDialogAVisible = false
       })
