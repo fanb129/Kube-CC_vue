@@ -183,6 +183,7 @@ export default {
               created_at: '',
               phase: '',
               node_ip: '',
+              host_ip: '',
               u_id: '',
               hdfs_master_replicas: '',
               datanode_replicas: '',

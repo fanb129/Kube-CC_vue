@@ -100,7 +100,7 @@ export const constantRoutes = [
     children: [
       {
         path: '/内置模板',
-        component: Layout,
+        component: () => import('@/layout/index2'),
         redirect: '/内置模板',
         name: '内置模板',
         meta: { title: '内置模板', icon: 'tree' },
@@ -127,7 +127,7 @@ export const constantRoutes = [
       },
       {
         path: '/自定义应用',
-        component: Layout,
+        component: () => import('@/layout/index2'),
         redirect: '/自定义应用',
         name: '自定义应用',
         meta: { title: '自定义应用', icon: 'tree' },

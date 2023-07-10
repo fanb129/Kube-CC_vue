@@ -3,9 +3,6 @@
     <div style="margin-left: 10%; margin-top: 1%">
       <UserSelector ref="UserSelector" :default-uid="uid" @nsList="changeUid" />
       <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
-      <!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addDeploy">Add-->
-      <!--        Deploy-->
-      <!--      </el-button>-->
 
       <el-dropdown split-button trigger="click" style="margin-left: 30%" type="primary" @command="handleCommand" @click="addDeploy">
         Add Deploy
@@ -16,8 +13,6 @@
       </el-dropdown>
     </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
-      <!-- <el-table :data='tableData' style='width: 100%'> -->
-      <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
       <el-table-column label="ID" width="80">
         <template slot-scope="scope">
@@ -74,10 +69,45 @@
           <span>{{ scope.row.available_replicas }}</span>
         </template>
       </el-table-column>
+      <el-table
+        v-loading="dataListLoading"
+        :data="scope.row.ports"
+        size="mini"
+        style="width: 100%;"
+        height="320"
+        :header-cell-style="{ background: '#fcfcfc', color: '#606266', height:'36px'}"
+        @selection-change="selectionChangeHandle"
+        @cell-click="tableDbEdit"
+        @cell-dblclick="tableDbEdit"
+      >
+        <el-table-column type="selection" header-align="center" align="center" width="50" />
+      </el-table>
+      <!--   Ports   -->
+      <el-table-column label="端口" type="expand" width="80">
+        <template slot-scope="scope">
+          <el-table :data="scope.row.ports">
+            <el-table-column label="名称" width="100"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+            <el-table-column label="协议" width="100"><template slot-scope="scope"><span>{{ scope.row.protocol }}</span></template></el-table-column>
+            <el-table-column label="本地端口" width="130"><template slot-scope="scope"><span>{{ scope.row.port }}</span></template></el-table-column>
+            <el-table-column label="目标端口" width="130"><template slot-scope="scope"><span>{{ scope.row.targetPort }}</span></template></el-table-column>
+            <el-table-column label="网络节点端口" width="130"><template slot-scope="scope"><span>{{ scope.row.nodePort }}</span></template></el-table-column>
+          </el-table>
+        </template>
+      </el-table-column>
+      <!--   Pod_list   -->
+      <el-table-column label="Pod表单" type="expand" width="80">
+        <template slot-scope="scope">
+          <el-table :data="scope.row.pod_list">
+            <el-table-column label="名称" width="100"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+            <el-table-column label="阶段" width="100"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
+            <el-table-column label="主机Ip" width="130"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
+            <el-table-column label="节点Ip" width="130"><template slot-scope="scope"><span>{{ scope.row.node_ip }}</span></template></el-table-column>
+          </el-table>
+        </template>
+      </el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <!--          <el-button size="mini" type="primary" @click="pushTerminal(scope.row)">pod</el-button>-->
           <el-button
             size="mini"
             type="warning"
@@ -146,6 +176,23 @@ export default {
       page: 1,
       total: 0,
       pagesize: 10,
+      ports: [
+        {
+          name: '',
+          protocol: '',
+          port: '',
+          targetPort: '',
+          nodePort: ''
+        }
+      ],
+      pod_list: [
+        {
+          name: '',
+          phase: '',
+          host_ip: '',
+          pod_ip: ''
+        }
+      ],
       tableData: [
         {
           name: '',
