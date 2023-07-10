@@ -131,13 +131,14 @@ export default {
     ])
   },
   created() {
-    this.getUserList()
+    //this.getUserList()
     this.viewGroupByAd()
+    //console.log(this.tagroup)
   },
   data() {
     return {
       value: '',
-      valueg:'',
+      valueg: '',
       page: 1,
       total: 0,
       formLabelWidth: '10%',
@@ -170,9 +171,14 @@ export default {
           gpu: ''
         }
       ],
-      tagroup: [],
-      tagroupuser: [],
-      tt: []
+      tagroup: [
+      ],
+      tagroupuser: [
+      ],
+      tt: [
+      ],
+      tagid: [
+      ]
     }
   },
   methods: {
@@ -208,6 +214,7 @@ export default {
             message: '取消输入'
           })
         })
+        console.log(this.tagid)
     },
     change() {
       this.$forceUpdate()
@@ -319,6 +326,7 @@ export default {
       if (valueg == 0) {
         this.getUserList()
       }
+      // else if(valueg == 0){}
       else {
         //this.tableData=[]
         viewGroupUser(valueg).then((res) => {
@@ -364,11 +372,24 @@ export default {
             return tmp
           }))
           this.tagroup = this.tagroup[0]
-          this.tagroup.push({
+          // this.tagroup.push({
+          //   "value" : 0,
+          //   "label" : '请选择'
+          // })
+          if(this.role == 3){
+            this.tagroup.push({
             "value" : 0,
-            "label" : '取消选中'
+            "label" : '所有用户'
           })
+          }
       })
+      // this.tagid=['0']
+      // for(let i=0;i<this.tagroup.length;i++){
+      //   if(!this.tagid.includes(this.tagroup[i].value)){
+      //     this.tagid.push(this.tagroup[i].value)
+      //   }
+      // }
+      //console.log(this.tagroup)
     }
   }
 }
