@@ -53,7 +53,7 @@ export const constantRoutes = [
       {
         path: 'run-log',
         name: 'Run-log',
-        component: () => import('@/views/sys-login-log/index'),
+        component: () => import('@/views/user/index'),
         meta: { title: 'RunningLog', icon: '' }
       },
      
