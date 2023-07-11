@@ -18,78 +18,37 @@
           <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
-      <!--      <el-table-column label="ID" width="80">-->
-      <!--        <template slot-scope="scope">-->
-      <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-      <!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
 
-      <!--      <el-table-column label="名称" width="250">-->
-      <!--        <template slot-scope="scope">-->
-      <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-      <!--          <span>{{ scope.row.name }}</span>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
+      <el-table-column width="100" property="name" label="名称">
+        <template slot-scope="scope">
+          <span style="margin-left: 1%">{{ scope.row.name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="150" property="namespace" label="命名空间">
+        <template slot-scope="scope">
+          <span style="margin-left: 1%">{{ scope.row.namespace }}</span>
+        </template>
+      </el-table-column>
 
-      <!--      <el-table-column label="命名空间" width="250">-->
-      <!--        <template slot-scope="scope">-->
-      <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-      <!--          <span>{{ scope.row.namespace }}</span>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
-
-      <!--      <el-table-column label="创建时间" width="200">-->
-      <!--        <template slot-scope="scope">-->
-      <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-      <!--          <span>{{ scope.row.created_at }}</span>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
-
-      <!--      <el-table-column label="拷贝" width="80">-->
-      <!--        <template slot-scope="scope">-->
-      <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-      <!--          <span>{{ scope.row.replicas }}</span>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
-
-      <!--      <el-table-column label="更新" width="80">-->
-      <!--        <template slot-scope="scope">-->
-      <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-      <!--          <span>{{ scope.row.updated_replicas }}</span>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
-
-      <!--      <el-table-column label="就绪" width="80">-->
-      <!--        <template slot-scope="scope">-->
-      <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-      <!--          <span>{{ scope.row.ready_replicas }}</span>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
-
-      <!--      <el-table-column label="可用" width="85">-->
-      <!--        <template slot-scope="scope">-->
-      <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-      <!--          <span>{{ scope.row.available_replicas }}</span>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
-
-      <el-table-column width="100" property="name" label="名称" />
-      <el-table-column width="150" property="namespace" label="命名空间" />
-      <el-table-column width="150" property="created_at" label="创建时间" />
+      <el-table-column width="200" property="created_at" label="创建时间">
+        <template slot-scope="scope">
+          <i class="el-icon-time" />
+          <span style="margin-left: 1%">{{ scope.row.created_at }}</span>
+        </template>
+      </el-table-column>
 
       <!--      /* 1基本信息*/-->
       <el-table-column label="基本信息" width="150">
         <template slot-scope="scope">
           <el-popover
             placement="right"
-            width="650"
+            width="725"
             trigger="click"
           >
-            <el-table :data="scope.row.ports">
-              <el-table-column width="80" property="replicas" label="拷贝数" />
-              <el-table-column width="200" property="image" label="映像文件" />
-              <el-table-column width="300" property="volume" label="数据卷" />
+            <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
+              <el-table-column width="80" property="replicas" label="拷贝数"><template slot-scope="scope"><span>{{ scope.row.replicas }}</span></template></el-table-column>
+              <el-table-column width="200" property="image" label="映像文件"><template slot-scope="scope"><span>{{ scope.row.image }}</span></template></el-table-column>
+              <el-table-column width="400" property="volume" label="数据卷"><template slot-scope="scope"><span>{{ scope.row.volume }}</span></template></el-table-column>
             </el-table>
             <el-button slot="reference" size="mini">点击查看</el-button>
           </el-popover></template>
@@ -104,16 +63,17 @@
             trigger="click"
           >
             <el-table :data="scope.row.ports">
-              <el-table-column width="100" property="date" label="名称" />
-              <el-table-column width="100" property="name" label="协议" />
-              <el-table-column width="150" property="name" label="本地端口" />
-              <el-table-column width="150" property="name" label="目标端口" />
-              <el-table-column width="150" property="address" label="网络节点端口" />
+              <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+              <el-table-column width="100" property="protocol" label="协议"><template slot-scope="scope"><span>{{ scope.row.protocol }}</span></template></el-table-column>
+              <el-table-column width="150" property="port" label="本地端口"><template slot-scope="scope"><span>{{ scope.row.port }}</span></template></el-table-column>
+              <el-table-column width="150" property="targetPort" label="目的端口"><template slot-scope="scope"><span>{{ scope.row.targetPort }}</span></template></el-table-column>
+              <el-table-column width="150" property="nodePort" label="网络节点端口"><template slot-scope="scope"><span>{{ scope.row.nodePort }}</span></template></el-table-column>
             </el-table>
             <el-button slot="reference" size="mini">点击查看</el-button>
           </el-popover></template>
       </el-table-column>
-      <!--      </el-popover>-->
+
+      <!--    3规格   -->
 
       <el-table-column label="规格" width="150">
         <template slot-scope="scope">
@@ -122,19 +82,19 @@
             width="850"
             trigger="click"
           >
-            <el-table :data="scope.row.ports">
-              <el-table-column width="120" property="cpu" label="cpu" />
-              <el-table-column width="120" property="memory" label="内存" />
-              <el-table-column width="120" property="storage" label="临时存储" />
-              <el-table-column width="120" property="pvc" label="永久存储" />
-              <el-table-column width="120" property="gpu" label="gpu" />
-              <el-table-column width="200" property="pvc_path" label="pvc路径" />
+            <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
+              <el-table-column width="120" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
+              <el-table-column width="120" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
+              <el-table-column width="120" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
+              <el-table-column width="120" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
+              <el-table-column width="120" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
+              <el-table-column width="200" property="pvc_path" label="pvc路径"><template slot-scope="scope"><span>{{ scope.row.pvc_path }}</span></template></el-table-column>
             </el-table>
             <el-button slot="reference" size="mini">点击查看</el-button>
           </el-popover></template>
       </el-table-column>
 
-      <!--      /* 4状态*/-->
+      <!--       4状态   -->
       <el-table-column label="状态" width="150">
         <template slot-scope="scope">
           <el-popover
@@ -142,10 +102,10 @@
             width="500"
             trigger="click"
           >
-            <el-table :data="scope.row.ports">
-              <el-table-column width="120" property="updated_replicas" label="更新副本" />
-              <el-table-column width="120" property="ready_replicas" label="就绪副本" />
-              <el-table-column width="120" property="available_replicas" label="可用副本" />
+            <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
+              <el-table-column width="120" property="updated_replicas" label="更新副本"><template slot-scope="scope"><span>{{ scope.row.updated_replicas }}</span></template></el-table-column>
+              <el-table-column width="120" property="ready_replicas" label="就绪副本"><template slot-scope="scope"><span>{{ scope.row.ready_replicas }}</span></template></el-table-column>
+              <el-table-column width="120" property="available_replicas" label="可用副本"><template slot-scope="scope"><span>{{ scope.row.available_replicas }}</span></template></el-table-column>
             </el-table>
             <el-button slot="reference" size="mini">点击查看</el-button>
           </el-popover></template>
@@ -155,10 +115,10 @@
       <el-table-column label="Pod表单" type="expand" width="150">
         <template slot-scope="scope">
           <el-table :data="scope.row.pod_list">
-            <el-table-column label="名称" width="100"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
-            <el-table-column label="阶段" width="100"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
-            <el-table-column label="主机Ip" width="130"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
-            <el-table-column label="节点Ip" width="130"><template slot-scope="scope"><span>{{ scope.row.node_ip }}</span></template></el-table-column>
+            <el-table-column label="名称" width="150"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+            <el-table-column label="阶段" width="150"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
+            <el-table-column label="主机Ip" width="150"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
+            <el-table-column label="节点Ip" width="150"><template slot-scope="scope"><span>{{ scope.row.node_ip }}</span></template></el-table-column>
           </el-table>
         </template>
       </el-table-column>
@@ -235,13 +195,9 @@ export default {
       pagesize: 10,
       tableData: [
         {
-          /*          updated_replicas: '',
-          ready_replicas: '',
-          available_replicas: '',
-          u_id: ''*/
 
           /* 1基本信息*/
-          name: '',
+          name: 'test1',
           namespace: '',
           replicas: 0,
           image: '',
@@ -250,7 +206,7 @@ export default {
           /* 2端口*/
           ports: [
             {
-              name: '',
+              name: 'portA',
               protocol: '',
               port: '',
               targetPort: '',
@@ -260,16 +216,10 @@ export default {
 
           /* 3规格*/
           cpu: '1',
-          memory: '',
-          storage: '',
-          pvc: '',
-          gpu: '',
-          /* used_cpu: '',*/
-          /* used_memory: '',*/
-          /* used_storage: '',*/
-          /* used_pvc: '',*/
-          /* used_gpu: '',*/
-
+          memory: '2',
+          storage: '3',
+          pvc: '4',
+          gpu: '5',
           pvc_path: [
             '/data'
           ],

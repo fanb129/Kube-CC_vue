@@ -7,23 +7,15 @@
       </el-button>
     </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
-      <!-- <el-table :data='tableData' style='width: 100%'> -->
-      <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="Spark ID" width="100" type="index">
-        <!--        <template slot-scope="scope">-->
-        <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-        <!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
-        <!--        </template>-->
-      </el-table-column>
-
-      <el-table-column width="100" property="name" label="名称" />
-      <el-table-column width="80" property="status" label="状态" />
-      <el-table-column width="120" property="created_at" label="创建时间" />
-      <el-table-column width="100" property="username" label="用户账号" />
-      <el-table-column width="100" property="nickname" label="用户昵称" />
-      <el-table-column width="80" property="u_id" label="UID" />
-      <el-table-column width="150" property="expired_time" label="过期时间" />
+      <el-table-column label="Spark ID" width="100" type="index" />
+      <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+      <el-table-column width="100" property="status" label="状态"><template slot-scope="scope"><span>{{ scope.row.status }}</span></template></el-table-column>
+      <el-table-column width="150" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time"><span>{{ scope.row.created_at }}</span></i></template></el-table-column>
+      <el-table-column width="120" property="username" label="用户账号"><template slot-scope="scope"><span>{{ scope.row.username }}</span></template></el-table-column>
+      <el-table-column width="120" property="nickname" label="用户昵称"><template slot-scope="scope"><span>{{ scope.row.nickname }}</span></template></el-table-column>
+      <el-table-column width="100" property="u_id" label="UID"><template slot-scope="scope"><span>{{ scope.row.u_id }}</span></template></el-table-column>
+      <el-table-column width="150" property="expired_time" label="过期时间"><template slot-scope="scope"><i class="el-icon-time"><span>{{ scope.row.expired_time }}</span></i></template></el-table-column>
 
       <el-table-column label="规格" width="150">
         <template slot-scope="scope">
@@ -32,12 +24,12 @@
             width="700"
             trigger="click"
           >
-            <el-table :data="scope.row.ports">
-              <el-table-column width="120" property="cpu" label="cpu" />
-              <el-table-column width="120" property="memory" label="内存" />
-              <el-table-column width="120" property="storage" label="临时存储" />
-              <el-table-column width="120" property="pvc" label="永久存储" />
-              <el-table-column width="120" property="gpu" label="gpu" />
+            <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
+              <el-table-column width="120" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
+              <el-table-column width="120" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
+              <el-table-column width="120" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
+              <el-table-column width="120" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
+              <el-table-column width="120" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
             </el-table>
             <el-button slot="reference" size="mini">点击查看</el-button>
           </el-popover></template>
@@ -47,18 +39,18 @@
         <template slot-scope="scope">
           <el-popover
             placement="right"
-            width="750"
+            width="1000"
             trigger="click"
           >
-            <el-table :data="scope.row.ports">
-              <el-table-column width="80" property="name" label="名称" />
-              <el-table-column width="100" property="namespace" label="命名空间" />
-              <el-table-column width="120" property="created_at" label="创建于" />
-              <el-table-column width="80" property="replicas" label="副本数" />
-              <el-table-column width="80" property="updated_replicas" label="更新副本" />
-              <el-table-column width="80" property="ready_replicas" label="就绪副本" />
-              <el-table-column width="80" property="available_replicas" label="可用副本" />
-              <el-table-column width="80" property="u_id" label="UID" />
+            <el-table :data="scope.row.deploy_list">
+              <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+              <el-table-column width="150" property="namespace" label="命名空间"><template slot-scope="scope"><span>{{ scope.row.namespace }}</span></template></el-table-column>
+              <el-table-column width="150" property="created_at" label="创建于"><template slot-scope="scope"><i class="el-icon-time"><span>{{ scope.row.created_at }}</span></i></template></el-table-column>
+              <el-table-column width="100" property="replicas" label="副本数"><template slot-scope="scope"><span>{{ scope.row.replicas }}</span></template></el-table-column>
+              <el-table-column width="100" property="updated_replicas" label="更新副本"><template slot-scope="scope"><span>{{ scope.row.updated_replicas }}</span></template></el-table-column>
+              <el-table-column width="100" property="ready_replicas" label="就绪副本"><template slot-scope="scope"><span>{{ scope.row.ready_replicas }}</span></template></el-table-column>
+              <el-table-column width="100" property="available_replicas" label="可用副本"><template slot-scope="scope"><span>{{ scope.row.available_replicas }}</span></template></el-table-column>
+              <el-table-column width="100" property="u_id" label="UID"><template slot-scope="scope"><span>{{ scope.row.u_id }}</span></template></el-table-column>
             </el-table>
             <el-button slot="reference" size="mini">点击查看</el-button>
           </el-popover></template>
@@ -73,8 +65,6 @@
               <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <!--          <el-button size="mini" type="primary" @click="push2deploy(scope.row)">deploy</el-button>-->
-          <!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
           <el-button
             :disabled="role < 2"
             size="mini"
@@ -128,7 +118,7 @@ export default {
   },
   data() {
     return {
-      uid: '',
+      uid: 'uid114514',
       timer: null,
       loading: false,
       openDialog: false,
@@ -138,32 +128,32 @@ export default {
       pagesize: 10,
       tableData: [
         {
-          name: '',
-          status: '',
-          created_at: '',
-          username: '',
-          nickname: '',
-          u_id: '',
+          name: 'spark1',
+          status: '活跃',
+          created_at: '2023-07-11',
+          username: 'ABdoge',
+          nickname: 'ABD',
+          u_id: 'ABD114',
+          expired_time: null,
 
-          cpu: '',
-          memory: '',
-          storage: '',
-          pvc: '',
-          gpu: '',
+          cpu: '1',
+          memory: '2',
+          storage: '3',
+          pvc: '4',
+          gpu: '5',
 
           deploy_list: [
             {
-              name: '',
-              namespace: '',
-              created_at: '',
-              replicas: '',
-              updated_replicas: '',
-              ready_replicas: '',
-              available_replicas: '',
-              u_id: ''
+              name: 'spark_d1',
+              namespace: 'test1',
+              created_at: '2023-07-11',
+              replicas: '2',
+              updated_replicas: '2',
+              ready_replicas: '2',
+              available_replicas: '2',
+              u_id: '222'
             }
           ],
-
           ingress_list: []
         }
       ]

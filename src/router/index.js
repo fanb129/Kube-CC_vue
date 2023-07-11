@@ -68,7 +68,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'el-icon-s-home' }
+      meta: { title: ' Dashboard', icon: 'el-icon-s-home' }
     }]
   },
   { path: '/主机',
@@ -78,7 +78,7 @@ export const constantRoutes = [
       path: '主机',
       name: '主机',
       component: () => import('@/views/node/index'),
-      meta: { title: '主机', icon: 'el-icon-s-platform' }
+      meta: { title: ' 主机', icon: 'el-icon-s-platform' }
     }]
   },
   { path: '/工作空间',
@@ -88,7 +88,7 @@ export const constantRoutes = [
       path: '/工作空间',
       name: '工作空间',
       component: () => import('@/views/namespace/index'),
-      meta: { title: '工作空间', icon: 'el-icon-s-help' }
+      meta: { title: ' 工作空间', icon: 'el-icon-s-help' }
     }]
   },
   {
@@ -96,7 +96,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/应用',
     name: '应用',
-    meta: { title: '应用', icon: 'el-icon-s-grid' },
+    meta: { title: ' 应用', icon: 'el-icon-s-grid' },
     children: [
       {
         path: '/内置模板',
