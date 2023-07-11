@@ -22,7 +22,14 @@ export function viewGroupUser(g_id) {
   })
 }
 
-export function creatGroup(ad_id, data) {
+export function viewGroupByAd(u_id) {
+  return request({
+    url: '/group/vgbyad/' + u_id,
+    method: 'get'
+  })
+}
+
+export function creatGroup(ad_id,data) {
   return request({
     url: '/group/creat/' + ad_id,
     method: 'post',
@@ -63,11 +70,11 @@ export function addUser(u_id, data) {
 export function removeUser(u_id) {
   return request({
     url: '/group/remove/' + u_id,
-    method: 'get'
+    method: 'get',
   })
 }
 
-export function updateGroup(g_id, data) {
+export function updateGroup(g_id,data) {
   return request({
     url: '/group/update/' + g_id,
     method: 'post',
