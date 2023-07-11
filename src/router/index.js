@@ -236,6 +236,18 @@ export const constantRoutes = [
   },
 
   {
+    path: '/image',
+    component: Layout,
+    // redirect: '/user',
+    children: [{
+      path: 'index',
+      name: 'Image',
+      component: () => import('@/views/docker/index'),
+      meta: { title: 'Image', icon: 'dashboard' }
+    }]
+  },
+
+  {
     path: '/hadoop',
     component: Layout,
     // redirect: '/user',
