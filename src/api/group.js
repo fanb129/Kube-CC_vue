@@ -22,6 +22,13 @@ export function viewGroupUser(g_id) {
   })
 }
 
+export function viewGroupByAd(u_id) {
+  return request({
+    url: '/group/vgbyad/' + u_id,
+    method: 'get'
+  })
+}
+
 export function creatGroup(ad_id,data) {
   return request({
     url: '/group/creat/' + ad_id,

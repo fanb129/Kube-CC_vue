@@ -59,6 +59,14 @@ export function editUser(id,data) {
   })
 }
 
+export function allocationUser(id,data) {
+  return request({
+    url: '/user/allocation/' + id,
+    method: 'post',
+    data
+  })
+}
+
 export function updateUser(id,data) {
   return request({
     url: '/user/update/' + id,
