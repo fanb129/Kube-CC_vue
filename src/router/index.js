@@ -78,7 +78,7 @@ export const constantRoutes = [
       path: '主机',
       name: '主机',
       component: () => import('@/views/node/index'),
-      meta: { title: '主机', icon: 'dashboard' }
+      meta: { title: '主机', icon: 'el-icon-s-platform' }
     }]
   },
   { path: '/工作空间',
@@ -88,7 +88,7 @@ export const constantRoutes = [
       path: '/工作空间',
       name: '工作空间',
       component: () => import('@/views/namespace/index'),
-      meta: { title: '工作空间', icon: 'dashboard' }
+      meta: { title: '工作空间', icon: 'el-icon-s-help' }
     }]
   },
   {
@@ -96,32 +96,32 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/应用',
     name: '应用',
-    meta: { title: '应用', icon: 'tree' },
+    meta: { title: '应用', icon: 'el-icon-s-grid' },
     children: [
       {
         path: '/内置模板',
         component: () => import('@/layout/index2'),
         redirect: '/内置模板',
         name: '内置模板',
-        meta: { title: '内置模板', icon: 'tree' },
+        meta: { title: '内置模板', icon: 'el-icon-s-unfold' },
         children: [
           {
             path: 'spark',
             name: 'Spark',
             component: () => import('@/views/spark/index'),
-            meta: { title: 'Spark', icon: 'dashboard' }
+            meta: { title: 'Spark', icon: 'el-icon-magic-stick' }
           },
           {
             path: 'hadoop',
             name: 'Hadoop',
             component: () => import('@/views/hadoop/index'),
-            meta: { title: 'Hadoop', icon: 'dashboard' }
+            meta: { title: 'Hadoop', icon: 'el-icon-connection' }
           },
           {
-            path: 'linux',
-            name: 'Linux',
+            path: '云主机',
+            name: '云主机',
             component: () => import('@/views/linux/index'),
-            meta: { title: 'Linux', icon: 'dashboard' }
+            meta: { title: '云主机', icon: 'el-icon-monitor' }
           }
         ]
       },
@@ -130,19 +130,19 @@ export const constantRoutes = [
         component: () => import('@/layout/index2'),
         redirect: '/自定义应用',
         name: '自定义应用',
-        meta: { title: '自定义应用', icon: 'tree' },
+        meta: { title: '自定义应用', icon: 'el-icon-s-unfold' },
         children: [
           {
-            path: 'deploy',
-            name: 'Deploy',
+            path: '无状态应用',
+            name: '无状态应用',
             component: () => import('@/views/deploy/index'),
-            meta: { title: 'Deploy', icon: 'dashboard' }
+            meta: { title: '无状态应用', icon: 'el-icon-data-line' }
           },
           {
-            path: 'statefulSet',
-            name: 'StatefulSet',
+            path: '有状态应用',
+            name: '有状态应用',
             component: () => import('@/views/statefulSet/index'),
-            meta: { title: 'StatefulSet', icon: 'dashboard' }
+            meta: { title: '有状态应用', icon: 'el-icon-data-analysis' }
           }
         ]
       }

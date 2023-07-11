@@ -17,60 +17,30 @@
         <!--        </template>-->
       </el-table-column>
 
-      <el-table-column label="Name" width="250">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.name }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column width="100" property="name" label="名称" />
+      <el-table-column width="100" property="status" label="状态" />
+      <el-table-column width="150" property="created_at" label="创建时间" />
+      <el-table-column width="100" property="username" label="用户账号" />
+      <el-table-column width="100" property="nickname" label="用户昵称" />
+      <el-table-column width="100" property="u_id" label="UID" />
+      <el-table-column width="150" property="expired_time" label="过期时间" />
 
-      <el-table-column label="Status" width="100">
+      <el-table-column label="规格" width="150">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.status }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="created_at" width="100">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.created_at }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="expired_at" width="100">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.expired_time }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="cpu" width="100">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="memory" width="100">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="username" width="100">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.username }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="nickname" width="100">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.nickname }}</span>
-        </template>
+          <el-popover
+            placement="right"
+            width="700"
+            trigger="click"
+          >
+            <el-table :data="scope.row.ports">
+              <el-table-column width="120" property="cpu" label="cpu" />
+              <el-table-column width="120" property="memory" label="内存" />
+              <el-table-column width="120" property="storage" label="临时存储" />
+              <el-table-column width="120" property="pvc" label="永久存储" />
+              <el-table-column width="120" property="gpu" label="gpu" />
+            </el-table>
+            <el-button slot="reference" size="mini">点击查看</el-button>
+          </el-popover></template>
       </el-table-column>
 
       <el-table-column label="操作">
@@ -164,12 +134,20 @@ export default {
           created_at: '',
           username: '',
           nickname: '',
-          u_id: '',
+          u_id: 1,
+          expired_time: '',
+
           cpu: '',
           memory: '',
-          used_cpu: '',
-          used_memory: '',
-          expired_time: ''
+          storage: '',
+          pvc: '',
+          gpu: ''
+
+          /*      "used_cpu": "1",
+          "used_memory": "500Mi",
+          "used_storage": "1Gi",
+          "used_pvc": "1Gi",
+          "used_gpu": "0"*/
         }
       ]
     }

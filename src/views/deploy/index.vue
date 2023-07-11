@@ -13,7 +13,11 @@
       </el-dropdown>
     </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
-
+      <el-table-column label="编号" width="80">
+        <template slot-scope="scope">
+          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>
+        </template>
+      </el-table-column>
       <!--      <el-table-column label="ID" width="80">-->
       <!--        <template slot-scope="scope">-->
       <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
@@ -121,8 +125,8 @@
             <el-table :data="scope.row.ports">
               <el-table-column width="120" property="cpu" label="cpu" />
               <el-table-column width="120" property="memory" label="内存" />
-              <el-table-column width="120" property="storage" label="磁盘" />
-              <el-table-column width="120" property="pvc" label="pvc卷" />
+              <el-table-column width="120" property="storage" label="临时存储" />
+              <el-table-column width="120" property="pvc" label="永久存储" />
               <el-table-column width="120" property="gpu" label="gpu" />
               <el-table-column width="200" property="pvc_path" label="pvc路径" />
             </el-table>
@@ -216,78 +220,75 @@ export default {
   },
   data() {
     return {
-
       kind: 'Deploy',
-      /* 1基本信息*/
-      name: '',
-      namespace: '',
-      replicas: 0,
-      image: '',
-      created_at: '2023-07-06 13:37:29',
-      volume: 'pvc-a4a5fe70-7c94-44c4-aa7d-85673837322f',
-      /* 2端口*/
-      ports: [
-        {
-          name: '',
-          protocol: '',
-          port: '',
-          targetPort: '',
-          nodePort: ''
-        }
-      ],
-      // yamlName: '',
-      // yamlNs: '',
-      // timer: null,
-      // loading: false,
-      // applyDialog: false,
-      // createDialog: false,
-      // addDialog: false,
-      // ns: this.$route.query.ns,
-      // uid: '',
+      yamlName: '',
+      yamlNs: '',
+      timer: null,
+      loading: false,
+      applyDialog: false,
+      createDialog: false,
+      addDialog: false,
+      ns: this.$route.query.ns,
+      uid: '',
       page: 1,
       // total: 0,
       pagesize: 10,
-
-      /* 3规格*/
-      cpu: '1',
-      memory: '',
-      storage: '',
-      pvc: '',
-      gpu: '',
-      /* used_cpu: '',*/
-      /* used_memory: '',*/
-      /* used_storage: '',*/
-      /* used_pvc: '',*/
-      /* used_gpu: '',*/
-
-      pvc_path: [
-        '/data'
-      ],
-
-      /* 4状态*/
-      updated_replicas: 0,
-      ready_replicas: 1,
-      available_replicas: 1,
-
-      /* 5pod*/
-      pod_list: [
-        {
-          name: '',
-          phase: '',
-          host_ip: '',
-          pod_ip: ''
-        }
-      ],
       tableData: [
         {
-          name: '',
-          namespace: '',
-          created_at: '',
-          replicas: '',
-          updated_replicas: '',
+          /*          updated_replicas: '',
           ready_replicas: '',
           available_replicas: '',
-          u_id: ''
+          u_id: ''*/
+
+          /* 1基本信息*/
+          name: '',
+          namespace: '',
+          replicas: 0,
+          image: '',
+          created_at: '2023-07-06 13:37:29',
+          volume: 'pvc-a4a5fe70-7c94-44c4-aa7d-85673837322f',
+          /* 2端口*/
+          ports: [
+            {
+              name: '',
+              protocol: '',
+              port: '',
+              targetPort: '',
+              nodePort: ''
+            }
+          ],
+
+          /* 3规格*/
+          cpu: '1',
+          memory: '',
+          storage: '',
+          pvc: '',
+          gpu: '',
+          /* used_cpu: '',*/
+          /* used_memory: '',*/
+          /* used_storage: '',*/
+          /* used_pvc: '',*/
+          /* used_gpu: '',*/
+
+          pvc_path: [
+            '/data'
+          ],
+
+          /* 4状态*/
+          updated_replicas: 0,
+          ready_replicas: 1,
+          available_replicas: 1,
+
+          /* 5pod*/
+          pod_list: [
+            {
+              name: '',
+              phase: '',
+              host_ip: '',
+              pod_ip: ''
+            }
+          ]
+
         }
       ]
     }

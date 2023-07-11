@@ -17,78 +17,51 @@
         <!--        </template>-->
       </el-table-column>
 
-      <el-table-column label="名称" width="250">
+      <el-table-column width="100" property="name" label="名称" />
+      <el-table-column width="80" property="status" label="状态" />
+      <el-table-column width="120" property="created_at" label="创建时间" />
+      <el-table-column width="100" property="username" label="用户账号" />
+      <el-table-column width="100" property="nickname" label="用户昵称" />
+      <el-table-column width="80" property="u_id" label="UID" />
+      <el-table-column width="150" property="expired_time" label="过期时间" />
+
+      <el-table-column label="规格" width="150">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.name }}</span>
-        </template>
+          <el-popover
+            placement="right"
+            width="700"
+            trigger="click"
+          >
+            <el-table :data="scope.row.ports">
+              <el-table-column width="120" property="cpu" label="cpu" />
+              <el-table-column width="120" property="memory" label="内存" />
+              <el-table-column width="120" property="storage" label="临时存储" />
+              <el-table-column width="120" property="pvc" label="永久存储" />
+              <el-table-column width="120" property="gpu" label="gpu" />
+            </el-table>
+            <el-button slot="reference" size="mini">点击查看</el-button>
+          </el-popover></template>
       </el-table-column>
 
-      <el-table-column label="状态" width="100">
+      <el-table-column label="deploy表单" width="150">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.status }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建于" width="100">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.created_at }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="失效于" width="100">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.expired_time }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="处理器规格" width="100">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="内存" width="100">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建人" width="100">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.username }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="昵称" width="100">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.nickname }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="Pod集" type="expand" width="80">
-        <template slot-scope="scope">
-          <el-table :data="scope.row.pod_list">
-            <el-table-column label="ID" width="60" type="index" />
-            <el-table-column label="名称" width="150"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
-            <el-table-column label="阶段" width="105"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
-            <el-table-column label="节点Ip" width="130"><template slot-scope="scope"><span>{{ scope.row.node_ip }}</span></template></el-table-column>
-            <el-table-column label="就绪" width="105"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].ready }}</span></template></el-table-column>
-            <el-table-column label="已开始" width="105"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].started }}</span></template></el-table-column>
-            <el-table-column label="重启计数" width="110"><template slot-scope="scope"><span>{{ scope.row.container_statuses[0].restartCount }}</span></template></el-table-column>
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  type="success"
-                  @click="pushTerminal(scope.row)"
-                > 终端</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </template>
+          <el-popover
+            placement="right"
+            width="750"
+            trigger="click"
+          >
+            <el-table :data="scope.row.ports">
+              <el-table-column width="80" property="name" label="名称" />
+              <el-table-column width="100" property="namespace" label="命名空间" />
+              <el-table-column width="120" property="created_at" label="创建于" />
+              <el-table-column width="80" property="replicas" label="副本数" />
+              <el-table-column width="80" property="updated_replicas" label="更新副本" />
+              <el-table-column width="80" property="ready_replicas" label="就绪副本" />
+              <el-table-column width="80" property="available_replicas" label="可用副本" />
+              <el-table-column width="80" property="u_id" label="UID" />
+            </el-table>
+            <el-button slot="reference" size="mini">点击查看</el-button>
+          </el-popover></template>
       </el-table-column>
 
       <el-table-column label="操作">
@@ -171,28 +144,13 @@ export default {
           username: '',
           nickname: '',
           u_id: '',
-          master_replicas: '',
-          worker_replicas: '',
-          pod_list: [
-            {
-              name: '',
-              namespace: '',
-              created_at: '',
-              phase: '',
-              node_ip: '',
-              u_id: '',
-              container_statuses: [
-                {
-                  name: '',
-                  // state: '',
-                  ready: '',
-                  restartCount: '',
-                  image: '',
-                  started: ''
-                }
-              ]
-            }
-          ],
+
+          cpu: '',
+          memory: '',
+          storage: '',
+          pvc: '',
+          gpu: '',
+
           deploy_list: [
             {
               name: '',
@@ -205,25 +163,7 @@ export default {
               u_id: ''
             }
           ],
-          service_list: [
-            {
-              name: '',
-              namespace: '',
-              created_at: '',
-              type: '',
-              cluster_ip: '',
-              u_id: '',
-              ports: [
-                {
-                  name: '',
-                  protocol: '',
-                  port: '',
-                  nodePort: '',
-                  targetPort: ''
-                }
-              ]
-            }
-          ],
+
           ingress_list: []
         }
       ]
