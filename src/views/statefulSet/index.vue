@@ -19,7 +19,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="名称" width="250">
+      <!--      <el-table-column label="名称" width="250">
         <template slot-scope="scope">
           <span>{{ scope.row.name() }}</span>
         </template>
@@ -27,7 +27,7 @@
 
       <el-table-column label="所属命名空间" width="250">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
+          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;
           <span>{{ scope.row.namespace }}</span>
         </template>
       </el-table-column>
@@ -38,11 +38,11 @@
         </template>
       </el-table-column>
 
-      <!--      <el-table-column label="Replicas" width="80">-->
-      <!--        <template slot-scope="scope">-->
-      <!--          <span>{{ scope.row.replicas }}</span>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
+      &lt;!&ndash;      <el-table-column label="Replicas" width="80">&ndash;&gt;
+      &lt;!&ndash;        <template slot-scope="scope">&ndash;&gt;
+      &lt;!&ndash;          <span>{{ scope.row.replicas }}</span>&ndash;&gt;
+      &lt;!&ndash;        </template>&ndash;&gt;
+      &lt;!&ndash;      </el-table-column>&ndash;&gt;
 
       <el-table-column label="已更新" width="80">
         <template slot-scope="scope">
@@ -60,7 +60,7 @@
         <template slot-scope="scope">
           <span>{{ scope.row.available_replicas }}</span>
         </template>
-      </el-table-column>
+      </el-table-column>-->
 
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -121,17 +121,17 @@ export default {
   data() {
     return {
       kind: 'StatefulSet',
-      yamlName: '',
-      yamlNs: '',
-      timer: null,
-      loading: false,
-      applyDialog: false,
-      createDialog: false,
-      addDialog: false,
-      ns: this.$route.query.ns,
-      uid: '',
+      // yamlName: '',
+      // yamlNs: '',
+      // timer: null,
+      // loading: false,
+      // applyDialog: false,
+      // createDialog: false,
+      // addDialog: false,
+      // ns: this.$route.query.ns,
+      // uid: '',
       page: 1,
-      total: 0,
+      // total: 0,
       pagesize: 10,
       tableData: [
         {
@@ -145,6 +145,7 @@ export default {
           u_id: ''
         }
       ]
+
     }
   },
   methods: {
