@@ -178,13 +178,13 @@ export default {
           this.$router.push({ name: 'User' })
           break
         case 1:
-          this.$router.push({ name: 'Node' })
+          this.$router.push({ name: '主机' })
           break
         case 2:
-          this.$router.push({ name: 'Namespace' })
+          this.$router.push({ name: '工作空间' })
           break
         case 3:
-          this.$router.push({ name: 'Deploy' })
+          this.$router.push({ name: '无状态应用' })
           break
         case 4:
           this.$router.push({ name: 'Service' })
@@ -193,13 +193,13 @@ export default {
           this.$router.push({ name: 'Pod' })
           break
         case 6:
-          this.$router.push({ name: 'Spark' })
+          this.$router.push({ name: 'dashboard' })
           break
         case 7:
           this.$router.push({ name: 'Hadoop' })
           break
         case 8:
-          this.$router.push({ name: 'Linux' })
+          this.$router.push({ name: '云主机' })
           break
       }
     },
