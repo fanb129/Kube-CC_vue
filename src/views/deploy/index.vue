@@ -1,7 +1,8 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%">
-      <UserSelector :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
+      <GroupSelector :default-uid="adid" @nsList="changeGid" ref="GroupSelector"></GroupSelector>
+      <UserSelector :default-gid="gid" :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
       <NsSelector :default-uid="uid" :default-ns="ns" @nsList="changeNs" ref="NsSelector"></NsSelector>
 <!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addDeploy">Add-->
 <!--        Deploy-->
@@ -111,13 +112,14 @@ import { mapGetters } from 'vuex'
 import { deleteDeploy, getDeployList } from '@/api/deploy'
 import UserSelector from "@/components/Selector/UserSelector";
 import NsSelector from "@/components/Selector/NsSelector";
+import GroupSelector from '@/components/Selector/GroupSelector.vue';
 import YamlApply from '@/components/YamlEditor/apply'
 import YamlCreate from '@/components/YamlEditor/create'
 import AddDeploy from '@/components/AddDeploy'
 
 export default {
   name: 'Deploy',
-  components: { NsSelector, UserSelector, YamlApply, YamlCreate, AddDeploy },
+  components: { NsSelector, UserSelector, GroupSelector, YamlApply, YamlCreate, AddDeploy },
   computed: {
     ...mapGetters([
       'role',
@@ -126,6 +128,7 @@ export default {
   },
   created() {
     this.uid = this.$route.query.u_id || this.u_id
+    this.adid = this.u_id
     this.getDeployList()
   },
   data() {
@@ -133,6 +136,7 @@ export default {
       kind: 'Deploy',
       yamlName: '',
       yamlNs: '',
+      adid: '',
       timer: null,
       loading: false,
       applyDialog: false,
@@ -164,6 +168,12 @@ export default {
       } else {
         this.yamlCreate()
       }
+    },
+    changeGid: function(g_id){
+      this.gid = g_id
+      this.$refs.UserSelector.u_id = ''
+      this.$refs.UserSelector.g_id = this.gid
+      this.$refs.UserSelector.getUserList()
     },
     changeUid: function (u_id){
       this.uid = u_id

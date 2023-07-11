@@ -21,7 +21,7 @@ import {mapGetters} from "vuex";
 
 export default {
   name: 'UserSelector',
-  props: ['defaultGid', 'defaultUid'],
+  props: ['defaultGid','defaultUid'],
   computed: {
     ...mapGetters([
       'role',
@@ -68,7 +68,7 @@ export default {
             i=i-1
           }
         }
-        console.log(this.options)
+        //console.log(this.options)
       })
     },
   }
