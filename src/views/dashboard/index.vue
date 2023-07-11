@@ -187,13 +187,13 @@ export default {
           this.$router.push({ name: '无状态应用' })
           break
         case 4:
-          this.$router.push({ name: 'Service' })
+          this.$router.push({ name: 'Dashboard' })
           break
         case 5:
-          this.$router.push({ name: 'Pod' })
+          this.$router.push({ name: 'Dashboard' })
           break
         case 6:
-          this.$router.push({ name: 'dashboard' })
+          this.$router.push({ name: 'Spark' })
           break
         case 7:
           this.$router.push({ name: 'Hadoop' })

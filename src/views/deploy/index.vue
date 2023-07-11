@@ -1,11 +1,11 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%">
-      <GroupSelector ref="GroupSelector" :default-uid="adid" @nsList="changeGid" />
-      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" @nsList="changeUid" />
+      <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 50px" @nsList="changeGid" />
+      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
       <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
 
-      <el-dropdown split-button trigger="click" style="margin-left: 30%" type="primary" @command="handleCommand" @click="addDeploy">
+      <el-dropdown split-button trigger="click" style="margin-left: 20%" type="primary" @command="handleCommand" @click="addDeploy">
         Add Deploy
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="a">Form</el-dropdown-item>

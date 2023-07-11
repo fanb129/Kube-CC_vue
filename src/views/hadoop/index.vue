@@ -1,29 +1,25 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
-      <UserSelector :default-uid="uid" @nsList="changeUid" />
-      <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addHadoop">Add
+      <!--      <UserSelector :default-uid="uid" @nsList="changeUid" />-->
+      <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 50px" @nsList="changeGid" />
+      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
+      <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
+      <el-button :disabled="role < 2" style="margin-left: 100px" type="primary" icon="el-icon-edit" @click="addHadoop">Add
         Hadoop
       </el-button>
     </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
-      <!-- <el-table :data='tableData' style='width: 100%'> -->
-      <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="序号" width="100" type="index">
-        <!--        <template slot-scope="scope">-->
-        <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-        <!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
-        <!--        </template>-->
-      </el-table-column>
+      <el-table-column label="序号" width="100" type="index" />
 
-      <el-table-column width="100" property="name" label="名称" />
-      <el-table-column width="80" property="status" label="状态" />
-      <el-table-column width="120" property="created_at" label="创建时间" />
-      <el-table-column width="100" property="username" label="用户账号" />
-      <el-table-column width="100" property="nickname" label="用户昵称" />
-      <el-table-column width="80" property="u_id" label="UID" />
-      <el-table-column width="150" property="expired_time" label="过期时间" />
+      <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+      <el-table-column width="80" property="status" label="状态"><template slot-scope="scope"><span>{{ scope.row.status }}</span></template></el-table-column>
+      <el-table-column width="120" property="created_at" label="创建时间"><template slot-scope="scope"><span>{{ scope.row.created_at }}</span></template></el-table-column>
+      <el-table-column width="100" property="username" label="用户账号"><template slot-scope="scope"><span>{{ scope.row.username }}</span></template></el-table-column>
+      <el-table-column width="100" property="nickname" label="用户昵称"><template slot-scope="scope"><span>{{ scope.row.nickname }}</span></template></el-table-column>
+      <el-table-column width="80" property="u_id" label="UID"><template slot-scope="scope"><span>{{ scope.row.u_id }}</span></template></el-table-column>
+      <el-table-column width="150" property="expired_time" label="过期时间"><template slot-scope="scope"><span>{{ scope.row.expired_time }}</span></template></el-table-column>
 
       <el-table-column label="规格" width="150">
         <template slot-scope="scope">
@@ -43,24 +39,51 @@
           </el-popover></template>
       </el-table-column>
 
-      <el-table-column label="deploy表单" width="150">
+      <el-table-column label="deply表单" width="150">
         <template slot-scope="scope">
-          <el-popover
-            placement="right"
-            width="750"
-            trigger="click"
-          >
-            <el-table :data="scope.row.ports">
-              <el-table-column width="80" property="name" label="名称" />
-              <el-table-column width="100" property="namespace" label="命名空间" />
-              <el-table-column width="120" property="created_at" label="创建于" />
-              <el-table-column width="80" property="replicas" label="副本数" />
-              <el-table-column width="80" property="updated_replicas" label="更新副本" />
-              <el-table-column width="80" property="ready_replicas" label="就绪副本" />
-              <el-table-column width="80" property="available_replicas" label="可用副本" />
-              <el-table-column width="80" property="u_id" label="UID" />
-            </el-table>
-            <el-button slot="reference" size="mini">点击查看</el-button>
+          <el-popover>
+            <el-button slot="reference" size="mini" type="primary" style="margin-left: 16px;" @click="drawer = true">点我打开</el-button>
+            <el-drawer
+              title="deploy表单"
+              :size="size"
+              :visible.sync="drawer"
+              :direction="direction"
+            >
+              <div>
+                <el-table :data="scope.row.deploy_list">
+                  <el-table-column width="100" property="name" label="名称" />
+                  <el-table-column width="150" property="namespace" label="命名空间" />
+                  <el-table-column width="150" property="created_at" label="创建于" />
+                  <el-table-column width="100" property="replicas" label="副本数" />
+                  <el-table-column width="100" property="updated_replicas" label="更新副本" />
+                  <el-table-column width="100" property="ready_replicas" label="就绪副本" />
+                  <el-table-column width="100" property="available_replicas" label="可用副本" />
+                  <el-table-column width="100" property="u_id" label="UID" />
+                  <!--   Pod_list   -->
+                  <el-table-column label="Pod表单" width="150">
+                    <template slot-scope="scope">
+                      <el-popover>
+                        <el-button slot="reference" size="mini" @click="innerDrawer = true">打开里面的!</el-button>
+                        <el-drawer
+                          title="Pod 列表"
+                          :size="size"
+                          :append-to-body="true"
+                          :direction="direction"
+                          :before-close="handleClose"
+                          :visible.sync="innerDrawer"
+                        >
+                          <el-table :data="scope.row.pod_list">
+                            <el-table-column width="150" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+                            <el-table-column width="150" property="phase" label="阶段"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
+                            <el-table-column width="150" property="host_ip" label="主机IP"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
+                            <el-table-column width="150" property="pod_ip" label="Pod IP"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
+                          </el-table>
+                        </el-drawer>
+                      </el-popover>
+                    </template>
+                  </el-table-column>
+
+                </el-table></div></el-drawer>
           </el-popover></template>
       </el-table-column>
 
@@ -73,8 +96,6 @@
               <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <!--          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>-->
-          <!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
           <el-button
             :disabled="role < 2"
             size="mini"
@@ -113,9 +134,11 @@ import { getHadoopList, deleteHadoop } from '@/api/hadoop'
 import AddHadoop from '@/components/AddHadoop'
 import UpdateHadoop from '@/components/AddHadoop/UpdateHadoop'
 import UserSelector from '@/components/Selector/UserSelector'
+import GroupSelector from '@/components/Selector/GroupSelector.vue'
+import NsSelector from '@/components/Selector/NsSelector.vue'
 
 export default {
-  components: { AddHadoop, UserSelector, UpdateHadoop },
+  components: { NsSelector, GroupSelector, AddHadoop, UserSelector, UpdateHadoop },
   computed: {
     ...mapGetters([
       'role',
@@ -128,6 +151,12 @@ export default {
   },
   data() {
     return {
+
+      drawer: false,
+      innerDrawer: false,
+      direction: 'btt',
+      size: '67%',
+
       uid: '',
       timer: null,
       loading: false,
@@ -139,29 +168,38 @@ export default {
       tableData: [
         {
 
-          name: '',
-          status: '',
-          created_at: '',
-          username: '',
-          nickname: '',
-          u_id: '',
+          name: 'hadoop1',
+          status: 'Connection',
+          created_at: '2023',
+          username: 'wqeq',
+          nickname: 'qwee',
+          u_id: '15353',
 
-          cpu: '',
-          memory: '',
-          storage: '',
-          pvc: '',
-          gpu: '',
+          cpu: '1',
+          memory: '2',
+          storage: '3',
+          pvc: '4',
+          gpu: '5',
 
           deploy_list: [
             {
-              name: '',
-              namespace: '',
-              created_at: '',
-              replicas: '',
-              updated_replicas: '',
-              ready_replicas: '',
-              available_replicas: '',
-              u_id: ''
+              name: 'aaaa',
+              namespace: 'asdad',
+              created_at: '2323',
+              replicas: 'adsd',
+              updated_replicas: '1',
+              ready_replicas: '1',
+              available_replicas: '1',
+              u_id: '111',
+
+              pod_list: [
+                {
+                  name: 'hadoop-datanode-c944ddfb7-sxxcm',
+                  phase: 'Running',
+                  host_ip: '192.168.139.143',
+                  pod_ip: '100.125.152.30'
+                }
+              ]
             }
           ],
 
@@ -171,6 +209,13 @@ export default {
     }
   },
   methods: {
+    handleClose(done) {
+      this.$confirm('退出到页面->')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
+    },
     handleCommand(command) {
       if (command.command === 'deploy') {
         this.push2deploy(command.row)
