@@ -1,7 +1,8 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
-      <UserSelector :default-uid="uid" @nsList="changeUid"></UserSelector>
+      <GroupSelector :default-uid="adid" @nsList="changeGid" ref="GroupSelector"></GroupSelector>
+      <UserSelector :default-gid="gid" :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
       <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addNs">Add
         Namespace
       </el-button>
@@ -123,12 +124,15 @@
 
 import {mapGetters} from 'vuex'
 import {getNsList, deleteNs} from '@/api/namespace'
+import { viewGroupByAd } from '@/api/group'
+import { getUserList } from '@/api/user'
 import AddNamespace from '@/components/AddNamespace'
 import UpdateNamespace from '@/components/AddNamespace/UpdateNamespace'
 import UserSelector from "@/components/Selector/UserSelector";
+import GroupSelector from "@/components/Selector/GroupSelector"
 
 export default {
-  components: {AddNamespace, UserSelector, UpdateNamespace},
+  components: {AddNamespace, UserSelector, UpdateNamespace, GroupSelector},
   computed: {
     ...mapGetters([
       'role',
@@ -137,11 +141,14 @@ export default {
   },
   created() {
     this.uid = this.u_id
+    this.adid = this.u_id
     this.getNsList()
   },
   data() {
     return {
       uid: '',
+      adid: '',
+      gid: '',
       timer: null,
       loading: false,
       openDialog: false,
@@ -163,6 +170,15 @@ export default {
           used_memory: '',
           expired_time: ''
         }
+      ],
+      tempData:[
+
+      ],
+      tData:[
+
+      ],
+      tagroup:[
+
       ]
     }
   },
@@ -185,6 +201,12 @@ export default {
     changeUid: function(u_id){
       this.uid = u_id
       this.getNsList()
+    },
+    changeGid: function(g_id){
+      this.gid = g_id
+      this.$refs.UserSelector.u_id = ''
+      this.$refs.UserSelector.g_id = this.gid
+      this.$refs.UserSelector.getUserList()
     },
     push2deploy: function (row){
       this.$router.push({
@@ -270,6 +292,56 @@ export default {
           type: 'info',
           message: '已取消删除'
         })
+      })
+    },
+    viewGroupByAd: function() {
+      viewGroupByAd(this.u_id).then((res) => {
+        //this.tagroup = res.group_list
+        this.tagroup=[]
+        //this.tt=[]
+        //this.tt = res.group_list
+        this.tagroup.push(res.group_list.map(function(item,index){
+            var tmp = {
+              "value" : item.groupid,
+              "label" : item.name,
+            }
+            return tmp
+          }))
+          this.tagroup = this.tagroup[0]
+          // this.tagroup.push({
+          //   "value" : 0,
+          //   "label" : '请选择'
+          // })
+          if(this.role == 3){
+            this.tagroup.push({
+            "value" : 0,
+            "label" : '所有用户'
+          })
+          }
+      })
+    },
+    getUserList: function() {
+      getUserList(this.page).then((res) => {
+        //this.page = res.page
+        //this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
+        this.tData = res.user_list
+        for(let i=0;i<this.tData.length;i++){
+          if(this.tData[i].role==3){
+            this.tempData.push(this.tData[i])
+          }
+        }
+        for(let i=0;i<this.tData.length;i++){
+          if(this.tData[i].role==2){
+            this.tempData.push(this.tData[i])
+          }
+        }
+        for(let i=0;i<this.tData.length;i++){
+          if(this.tData[i].role==1){
+            this.tempData.push(this.tData[i])
+          }
+        }
+        //this.tableData.sort(function(a,b){return a.role > b.role})
+        // console.log(this.total)
       })
     }
   }
