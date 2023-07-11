@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="position:relative;">
-      <span style="position:relative;left: 46%;" :disabled="role <= 1">当前用户管理的组</span>
+      <span style="position:relative;left: 46%;" :disabled="role <= 1">当前用户管理的组 :  </span>
         <el-select style="position:relative;left: 46%;" :disabled="role <= 1" v-model="valueg" placeholder="请选择" @change="changtuser(valueg)">
           <el-option
             v-for="item in tagroup"
@@ -133,7 +133,10 @@ export default {
   created() {
     //this.getUserList()
     this.viewGroupByAd()
-    //console.log(this.tagroup)
+    if(this.role == 3){
+      this.valueg=0
+      this.getUserList()
+    }
   },
   data() {
     return {
@@ -362,8 +365,8 @@ export default {
       viewGroupByAd(this.u_id).then((res) => {
         //this.tagroup = res.group_list
         this.tagroup=[]
-        //this.tt=[]
-        //this.tt = res.group_list
+        // this.tt=[]
+        // this.tt = res.group_list
         this.tagroup.push(res.group_list.map(function(item,index){
             var tmp = {
               "value" : item.groupid,

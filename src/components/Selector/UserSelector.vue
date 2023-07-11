@@ -21,7 +21,7 @@ import {mapGetters} from "vuex";
 
 export default {
   name: 'UserSelector',
-  props: ['defaultUid'],
+  props: ['defaultGid', 'defaultUid'],
   computed: {
     ...mapGetters([
       'role',
@@ -29,17 +29,19 @@ export default {
     ])
   },
   created() {
-    this.getUserList()
+    //this.getUserList(this.g_id)
   },
   data(){
     return {
       u_id: this.defaultUid,
+      g_id: this.defaultGid,
       userPage: 1,
       userTotal: 0,
       options: [{
         id: '',
         nickname: '',
         role: '',
+        gid: ''
       }]
     }
   },
@@ -59,6 +61,14 @@ export default {
         this.options = res.user_list
         // Terminal.log(res)
         this.options.push({id:'',nickname:'All User',role: 3})
+        console.log(this.options)
+        for(let i=0;i<this.options.length;i++){
+          if(this.options[i].gid != this.g_id){
+            this.options.splice(i,1)
+            i=i-1
+          }
+        }
+        console.log(this.options)
       })
     },
   }
