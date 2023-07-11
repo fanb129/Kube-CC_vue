@@ -9,7 +9,7 @@ const getDefaultState = () => {
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     role: 0,
     u_id: 0,
-    username: ''
+    usernameoremail: ''
   }
 }
 
@@ -42,9 +42,9 @@ const mutations = {
 const actions = {
   // user login
   login({commit}, userInfo) {
-    const {username, password} = userInfo
+    const {usernameoremail, password} = userInfo
     return new Promise((resolve, reject) => {
-      login({username: username.trim(), password: password}).then(response => {
+      login({usernameoremail: usernameoremail.trim(), password: password}).then(response => {
         const {token} = response
         commit('SET_TOKEN', token)
         setToken(token)
