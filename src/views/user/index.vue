@@ -137,6 +137,8 @@ export default {
       this.valueg=0
       this.getUserList()
     }
+    console.log(this.tagroup)
+    console.log(this.tableData)
   },
   data() {
     return {
@@ -153,6 +155,8 @@ export default {
       inputpvcstorage: '',
       inputgpu: '',
       rolelist: ['普通用户', '管理员', '超级管理员'],
+      tagroup: [
+      ],
       tableData: [
         // {
         //   id: '',
@@ -173,8 +177,6 @@ export default {
           pvcstorage: '',
           gpu: ''
         }
-      ],
-      tagroup: [
       ],
       tagroupuser: [
       ],
@@ -364,7 +366,7 @@ export default {
     viewGroupByAd: function() {
       viewGroupByAd(this.u_id).then((res) => {
         //this.tagroup = res.group_list
-        this.tagroup=[]
+        //this.tagroup=[]
         // this.tt=[]
         // this.tt = res.group_list
         this.tagroup.push(res.group_list.map(function(item,index){

@@ -74,6 +74,62 @@
         </span>
       </el-form-item>
 
+      <el-form-item prop="email">
+        <div style="float:left">
+          <span class="svg-container" >
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            ref="email"
+            v-model="registerForm.email"
+            placeholder="Email"
+            name="email"
+            type="text"
+            tabindex="1"
+            auto-complete="on"
+          />
+        </div>
+        <div style="float:right;padding-right: 10px;padding-top: 5px;">
+          <el-button v-show="show" @click="getCode" type="info" :disabled="emailsendcode">获取验证码</el-button>
+          <span v-show="!show" class="count" style="color:azure;padding-right:20px">{{ count }}</span>
+        </div>
+      </el-form-item>
+
+      <el-form-item prop="graphcode">
+        <div style="float:left">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            ref="graphcode"
+            v-model="registerForm.emailcode"
+            placeholder="GraphCode"
+            name="graphcode"
+            type="text"
+            tabindex="1"
+            auto-complete="on"
+          />
+        </div>
+        <div style="float:right;background-color: aliceblue;width: 160px;height: 50px;">
+          <img :src="imgUrl" @click="resetImg" style="width:160px;height:50px;"/>
+        </div>
+      </el-form-item>
+
+      <el-form-item prop="emailcode">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+        <el-input
+          ref="emailcode"
+          v-model="registerForm.emailcode"
+          placeholder="EmailCode"
+          name="emailcode"
+          type="text"
+          tabindex="1"
+          auto-complete="on"
+        />
+      </el-form-item>
+
       <el-button :loading="loading" type="primary" style="width: 30%" @click.native.prevent="handleRegister">注册</el-button>
       <el-button style="width: 30%; float: right" @click="back">返回</el-button>
     </el-form>
@@ -81,11 +137,15 @@
 </template>
 
 <script>
-import { register } from '@/api/user'
+import { register, captcha, checkcp } from '@/api/user'
 import { Message } from 'element-ui'
 
 export default {
   name: 'Register',
+  created(){
+    this.resetImg()
+    console.log(this.imgUrl)
+  },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (value.length < 3 || value.length > 16) {
@@ -117,18 +177,48 @@ export default {
         callback()
       }
     }
+    const validateEmail = (rule, value, callback) => {
+      var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+      if ( !myreg.test(value) ) {
+        callback(new Error('邮箱格式错误'))
+        this.emailsendcode=true
+      } else {
+        callback()
+        this.emailsendcode=false
+      }
+    }
+    const validateCpatcha = (rule, value, callback) => {
+      var vt = this.verifyCaptcha(this.imgid,value)
+      if(!vt){
+        callback(new Error('验证码错误'))
+        this.emailsendcode=true
+      } else {
+        callback()
+        this.emailsendcode=false
+      }
+    }
     return {
+      count: 0,
+      show: true,
+      timer: 0,
+      emailsendcode: true,
+      imgUrl: '',
+      imgid: 0,
       registerForm: {
         username: '',
         nickname: '',
         password: '',
-        checkpass: ''
+        checkpass: '',
+        email: '',
+        emailcode: ''
       },
       registerRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         nickname: [{ required: true, trigger: 'blur', validator: validateNickname }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }],
-        checkpass: [{ required: true, trigger: 'blur', validator: validatePass2 }]
+        checkpass: [{ required: true, trigger: 'blur', validator: validatePass2 }],
+        email:[{ required: true, trigger: 'blur', validator: validateEmail }],
+        graphcode:[{ required: true, trigger: 'blur', validator: validateCpatcha }]
       },
       loading: false,
       passwordType: 'password',
@@ -177,6 +267,43 @@ export default {
     },
     back() {
       this.$router.push({ path: '/login' })
+    },
+    getCode() {
+      const TIME_COUNT = 60;
+      if (!this.timer) {
+        this.count = TIME_COUNT;
+        this.show = false;
+        this.timer = setInterval(() => {
+          if (this.count > 0 && this.count <= TIME_COUNT) {
+            this.count--;
+          } else {
+            this.show = true;
+            clearInterval(this.timer);
+            this.timer = null;
+          }
+        }, 1000);
+      }
+    },
+    resetImg() {
+      captcha().then((res)=>{
+        this.imgUrl = res.pic_path
+        this.imgid = res.captcha_id
+      }).catch(()=>{})
+      // captcha().then((res=>{
+      //   this.imgUrl = res.picPath;
+      // }))
+    },
+    verifyCaptcha(id,val) {
+      var t = false
+      checkcp({"captcha_id": id,"captcha_val": val}).then((res)=>{
+        if(res.status == 1){
+          t = true
+          return t
+        }else{
+          t = false
+          return t
+        }
+      })
     }
   }
 }

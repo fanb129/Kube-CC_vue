@@ -21,6 +21,20 @@ export function register(data) {
     data
   })
 }
+export function captcha() {
+  return request({
+    url: '/captcha',
+    method: 'get'
+  })
+}
+export function checkcp(data) {
+  return request({
+    url: '/checkcp',
+    method: 'post',
+    data
+  })
+}
+
 // export function getInfo(token) {
 export function getInfo() {
   return request({
