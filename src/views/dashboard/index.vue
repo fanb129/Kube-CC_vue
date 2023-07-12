@@ -233,6 +233,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 200px;
+  margin: 0;
+}
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
 .dashboard {
   &-container {
     margin: 30px;

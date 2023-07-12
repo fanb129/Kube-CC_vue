@@ -8,54 +8,85 @@
     </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
 
-      <el-table-column label="Spark ID" width="100" type="index" />
+      <el-table-column label="序号" width="100" type="index" />
       <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
-      <el-table-column width="100" property="status" label="状态"><template slot-scope="scope"><span>{{ scope.row.status }}</span></template></el-table-column>
-      <el-table-column width="150" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time"><span>{{ scope.row.created_at }}</span></i></template></el-table-column>
-      <el-table-column width="120" property="username" label="用户账号"><template slot-scope="scope"><span>{{ scope.row.username }}</span></template></el-table-column>
-      <el-table-column width="120" property="nickname" label="用户昵称"><template slot-scope="scope"><span>{{ scope.row.nickname }}</span></template></el-table-column>
-      <el-table-column width="100" property="u_id" label="UID"><template slot-scope="scope"><span>{{ scope.row.u_id }}</span></template></el-table-column>
-      <el-table-column width="150" property="expired_time" label="过期时间"><template slot-scope="scope"><i class="el-icon-time"><span>{{ scope.row.expired_time }}</span></i></template></el-table-column>
+      <el-table-column width="120" property="status" label="状态"><template slot-scope="scope"><span>{{ scope.row.status }}</span></template></el-table-column>
+      <el-table-column width="150" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.created_at }}</span></template></el-table-column>
+      <el-table-column width="80" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
+      <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
+      <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
+      <el-table-column width="80" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
+      <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
+      <el-table-column width="150" property="expired_time" label="过期时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.expired_time }}</span></template></el-table-column>
 
-      <el-table-column label="规格" width="150">
+      <!--      规格    -->
+      <el-table-column label="用户" width="150">
         <template slot-scope="scope">
           <el-popover
             placement="right"
-            width="700"
+            width="350"
             trigger="click"
           >
             <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
-              <el-table-column width="120" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
-              <el-table-column width="120" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
-              <el-table-column width="120" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
-              <el-table-column width="120" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
-              <el-table-column width="120" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
+              <el-table-column width="150" property="username" label="用户账号"><template slot-scope="scope"><span>{{ scope.row.username }}</span></template></el-table-column>
+              <el-table-column width="150" property="nickname" label="用户昵称"><template slot-scope="scope"><span>{{ scope.row.nickname }}</span></template></el-table-column>
             </el-table>
             <el-button slot="reference" size="mini">点击查看</el-button>
-          </el-popover></template>
+          </el-popover>
+        </template>
       </el-table-column>
 
-      <el-table-column label="deploy表单" width="150">
+      <!--   deploy_list   -->
+      <el-table-column label="deply表单" width="150">
         <template slot-scope="scope">
-          <el-popover
-            placement="right"
-            width="1000"
-            trigger="click"
-          >
-            <el-table :data="scope.row.deploy_list">
-              <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
-              <el-table-column width="150" property="namespace" label="命名空间"><template slot-scope="scope"><span>{{ scope.row.namespace }}</span></template></el-table-column>
-              <el-table-column width="150" property="created_at" label="创建于"><template slot-scope="scope"><i class="el-icon-time"><span>{{ scope.row.created_at }}</span></i></template></el-table-column>
-              <el-table-column width="100" property="replicas" label="副本数"><template slot-scope="scope"><span>{{ scope.row.replicas }}</span></template></el-table-column>
-              <el-table-column width="100" property="updated_replicas" label="更新副本"><template slot-scope="scope"><span>{{ scope.row.updated_replicas }}</span></template></el-table-column>
-              <el-table-column width="100" property="ready_replicas" label="就绪副本"><template slot-scope="scope"><span>{{ scope.row.ready_replicas }}</span></template></el-table-column>
-              <el-table-column width="100" property="available_replicas" label="可用副本"><template slot-scope="scope"><span>{{ scope.row.available_replicas }}</span></template></el-table-column>
-              <el-table-column width="100" property="u_id" label="UID"><template slot-scope="scope"><span>{{ scope.row.u_id }}</span></template></el-table-column>
-            </el-table>
-            <el-button slot="reference" size="mini">点击查看</el-button>
+          <el-popover>
+            <el-button slot="reference" size="mini" type="primary" style="margin-left: 16px;" @click="drawer = true">点我打开</el-button>
+            <el-drawer
+              title="deploy表单"
+              :size="size"
+              :visible.sync="drawer"
+              :direction="direction"
+            >
+              <div>
+                <el-table :data="scope.row.deploy_list">
+                  <el-table-column width="100" property="name" label="名称" />
+                  <el-table-column width="150" property="namespace" label="命名空间" />
+                  <el-table-column width="150" property="created_at" label="创建于" />
+                  <el-table-column width="100" property="replicas" label="副本数" />
+                  <el-table-column width="100" property="updated_replicas" label="更新副本" />
+                  <el-table-column width="100" property="ready_replicas" label="就绪副本" />
+                  <el-table-column width="100" property="available_replicas" label="可用副本" />
+                  <el-table-column width="100" property="u_id" label="UID" />
+                  <!--   Pod_list   -->
+                  <el-table-column label="Pod表单" width="150">
+                    <template slot-scope="scope">
+                      <el-popover>
+                        <el-button slot="reference" size="mini" @click="innerDrawer = true">查看</el-button>
+                        <el-drawer
+                          title="Pod 列表"
+                          :size="size"
+                          :append-to-body="true"
+                          :direction="direction"
+                          :before-close="handleClose"
+                          :visible.sync="innerDrawer"
+                        >
+                          <el-table :data="scope.row.pod_list">
+                            <el-table-column width="200" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+                            <el-table-column width="200" property="phase" label="阶段"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
+                            <el-table-column width="200" property="host_ip" label="主机IP"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
+                            <el-table-column width="200" property="pod_ip" label="Pod IP"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
+                          </el-table>
+                        </el-drawer>
+                      </el-popover>
+                    </template>
+                  </el-table-column>
+                  <!--   Pod_list_end  -->
+                </el-table></div></el-drawer>
           </el-popover></template>
       </el-table-column>
+      <!--   deploy_list_end   -->
 
+      <!--      操作   -->
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-dropdown size="mini" split-button trigger="click" type="primary" style="padding: 15px" @command="handleCommand">
@@ -118,6 +149,12 @@ export default {
   },
   data() {
     return {
+      /* 抽屉参数*/
+      drawer: false,
+      innerDrawer: false,
+      direction: 'btt',
+      size: '67%',
+
       uid: 'uid114514',
       timer: null,
       loading: false,
@@ -151,7 +188,16 @@ export default {
               updated_replicas: '2',
               ready_replicas: '2',
               available_replicas: '2',
-              u_id: '222'
+              // u_id: '222'
+
+              pod_list: [
+                {
+                  name: 'hadoop-datanode-c944ddfb7-sxxcm',
+                  phase: 'Running',
+                  host_ip: '192.168.139.143',
+                  pod_ip: '100.125.152.30'
+                }
+              ]
             }
           ],
           ingress_list: []
@@ -160,6 +206,13 @@ export default {
     }
   },
   methods: {
+    handleClose(done) {
+      this.$confirm('退出到页面->')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
+    },
     handleCommand(command) {
       if (command.command === 'deploy') {
         this.push2deploy(command.row)
