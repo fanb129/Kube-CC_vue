@@ -5,13 +5,13 @@
       <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
       <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
 
-      <el-dropdown split-button trigger="click" style="margin-left: 20%" type="primary" @command="handleCommand" @click="addDeploy">
+      <!--      <el-dropdown split-button trigger="click" style="margin-left: 20%" type="primary" @command="handleCommand" @click="addDeploy">
         Add Deploy
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="a">Form</el-dropdown-item>
           <el-dropdown-item command="b">Yaml</el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdown>
+      </el-dropdown>-->
     </div>
     <!--    1规格   -->
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
@@ -151,16 +151,17 @@ export default {
   data() {
     return {
       kind: 'Deploy',
+      uid: '',
+      gid: '',
+      adid: '',
+      ns: this.$route.query.ns,
       yamlName: '',
       yamlNs: '',
-      adid: '',
       timer: null,
       loading: false,
       applyDialog: false,
       createDialog: false,
       addDialog: false,
-      ns: this.$route.query.ns,
-      uid: '',
       page: 1,
       // total: 0,
       pagesize: 10,
@@ -215,16 +216,13 @@ export default {
     }
   },
   methods: {
-    showDeplotPorts: function(row) {
-
-    },
-    handleCommand(command) {
+    /* handleCommand(command) {
       if (command === 'a') {
         this.addDeploy()
       } else {
         this.yamlCreate()
       }
-    },
+    },*/
     changeGid: function(g_id) {
       this.gid = g_id
       this.$refs.UserSelector.u_id = ''
@@ -251,12 +249,12 @@ export default {
         console.log(res)
       })
     },
-    addDeploy: function() {
+    /* addDeploy: function() {
       this.addDialog = true
       this.$nextTick(() => {
         this.$refs.AddDeploy.init()
       })
-    },
+    },*/
     yamlCreate: function() {
       this.createDialog = true
       this.$nextTick(() => {

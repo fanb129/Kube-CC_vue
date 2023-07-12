@@ -1,10 +1,12 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
-      <UserSelector :default-uid="uid" @nsList="changeUid" />
-      <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addSpark">Add
+      <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 50px" @nsList="changeGid" />
+      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
+      <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
+      <!--      <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addSpark">Add
         Spark
-      </el-button>
+      </el-button>-->
     </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
 
@@ -19,8 +21,8 @@
       <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
       <el-table-column width="150" property="expired_time" label="过期时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.expired_time }}</span></template></el-table-column>
 
-      <!--      规格    -->
-      <el-table-column label="用户" width="150">
+      <!--      用户信息    -->
+      <el-table-column label="用户信息" width="150">
         <template slot-scope="scope">
           <el-popover
             placement="right"
@@ -49,14 +51,25 @@
             >
               <div>
                 <el-table :data="scope.row.deploy_list">
-                  <el-table-column width="100" property="name" label="名称" />
-                  <el-table-column width="150" property="namespace" label="命名空间" />
-                  <el-table-column width="150" property="created_at" label="创建于" />
-                  <el-table-column width="100" property="replicas" label="副本数" />
-                  <el-table-column width="100" property="updated_replicas" label="更新副本" />
-                  <el-table-column width="100" property="ready_replicas" label="就绪副本" />
-                  <el-table-column width="100" property="available_replicas" label="可用副本" />
-                  <el-table-column width="100" property="u_id" label="UID" />
+                  <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+                  <el-table-column width="120" property="namespace" label="命名空间"><template slot-scope="scope"><span>{{ scope.row.namespace }}</span></template></el-table-column>
+                  <el-table-column width="150" property="created_at" label="创建时间"><template slot-scope="scope"><span>{{ scope.row.created_at }}</span></template></el-table-column>
+                  <el-table-column width="80" property="replicas" label="副本数"><template slot-scope="scope"><span>{{ scope.row.replicas }}</span></template></el-table-column>
+                  <!--配置信息-->
+                  <el-table-column width="200" property="image" label="映像"><template slot-scope="scope"><span>{{ scope.row.image }}</span></template></el-table-column>
+                  <el-table-column width="100" property="ports" label="端口"><template slot-scope="scope"><span>{{ scope.row.ports }}</span></template></el-table-column>
+                  <el-table-column width="80" property="cpu" label="处理器"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
+                  <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
+                  <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
+                  <el-table-column width="80" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
+                  <el-table-column width="80" property="gpu" label="显卡"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
+                  <el-table-column width="80" property="pvc_path" label="pvc路径"><template slot-scope="scope"><span>{{ scope.row.pvc_path }}</span></template></el-table-column>
+                  <el-table-column width="200" property="volume" label="数据卷"><template slot-scope="scope"><span>{{ scope.row.volume }}</span></template></el-table-column>
+                  <!--状态信息-->
+                  <el-table-column width="80" property="updated_replicas" label="更新副本"><template slot-scope="scope"><span>{{ scope.row.updated_replicas }}</span></template></el-table-column>
+                  <el-table-column width="80" property="ready_replicas" label="就绪副本"><template slot-scope="scope"><span>{{ scope.row.ready_replicas }}</span></template></el-table-column>
+                  <el-table-column width="80" property="available_replicas" label="可用副本"><template slot-scope="scope"><span>{{ scope.row.available_replicas }}</span></template></el-table-column>
+
                   <!--   Pod_list   -->
                   <el-table-column label="Pod表单" width="150">
                     <template slot-scope="scope">
@@ -134,9 +147,12 @@ import { getSparkList, deleteSpark } from '@/api/spark'
 import AddSpark from '@/components/AddSpark'
 import UserSelector from '@/components/Selector/UserSelector'
 import UpdateSpark from '@/components/AddSpark/UpdateSpark'
+import GroupSelector from '@/components/Selector/GroupSelector.vue'
+import NsSelector from '@/components/Selector/NsSelector.vue'
 
 export default {
-  components: { AddSpark, UserSelector, UpdateSpark },
+  // eslint-disable-next-line vue/no-unused-components
+  components: { NsSelector, AddSpark, UserSelector, GroupSelector, UpdateSpark },
   computed: {
     ...mapGetters([
       'role',
@@ -145,10 +161,12 @@ export default {
   },
   created() {
     this.uid = this.u_id
+    this.adid = this.u_id
     this.getSparkList()
   },
   data() {
     return {
+
       /* 抽屉参数*/
       drawer: false,
       innerDrawer: false,
@@ -156,6 +174,9 @@ export default {
       size: '67%',
 
       uid: 'uid114514',
+      gid: '',
+      adid: '',
+      ns: this.$route.query.ns,
       timer: null,
       loading: false,
       openDialog: false,
@@ -185,6 +206,17 @@ export default {
               namespace: 'test1',
               created_at: '2023-07-11',
               replicas: '2',
+              /* 配置*/
+              image: 'kubeguide/spark:latest',
+              ports: null,
+              cpu: '1',
+              memory: '1Gi',
+              storage: '1Gi',
+              pvc: '1Gi',
+              gpu: '',
+              pvc_path: [],
+              volume: '',
+              /* 状态*/
               updated_replicas: '2',
               ready_replicas: '2',
               available_replicas: '2',
@@ -206,6 +238,20 @@ export default {
     }
   },
   methods: {
+    changeGid: function(g_id) {
+      this.gid = g_id
+      this.$refs.UserSelector.u_id = ''
+      this.$refs.UserSelector.g_id = this.gid
+      this.$refs.UserSelector.getUserList()
+    },
+    changeUid: function(u_id) {
+      this.uid = u_id
+      this.getSparkList()
+    },
+    changeNs: function(ns) {
+      this.ns = ns
+      this.getSparkList()
+    },
     handleClose(done) {
       this.$confirm('退出到页面->')
         .then(_ => {
@@ -254,10 +300,6 @@ export default {
           u_id: row['u_id']
         }
       })
-    },
-    changeUid: function(u_id) {
-      this.uid = u_id
-      this.getSparkList()
     },
     changePageNum: function(val) {
       this.page = val

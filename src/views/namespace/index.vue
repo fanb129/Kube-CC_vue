@@ -1,48 +1,48 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
-      <UserSelector :default-uid="uid" @nsList="changeUid" />
-      <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addNs">Add
+      <GroupSelector ref="GroupSelector" :default-uid="adid" @nsList="changeGid" />
+      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-left: 100px" @nsList="changeUid" />
+      <!--      <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addNs">Add
         Namespace
-      </el-button>
+      </el-button>-->
     </div>
+    <!--    显示页   -->
+    <!--    基本信息    -->
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
-      <!-- <el-table :data='tableData' style='width: 100%'> -->
-      <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
+      <el-table-column label="ID" width="50" type="index" />
+      <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+      <el-table-column width="100" property="status" label="状态"><template slot-scope="scope"><span>{{ scope.row.status }}</span></template></el-table-column>
+      <el-table-column width="150" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.created_at }}</span></template></el-table-column>
+      <el-table-column width="150" property="expired_time" label="过期时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.expired_time }}</span></template></el-table-column>
+      <!--    基本信息end-->
 
-      <el-table-column label="ID" width="50" type="index">
-        <!--        <template slot-scope="scope">-->
-        <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-        <!--          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>-->
-        <!--        </template>-->
-      </el-table-column>
+      <!--      规格    -->
+      <el-table-column width="120" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
+      <el-table-column width="120" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
+      <el-table-column width="120" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
+      <el-table-column width="120" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
+      <el-table-column width="120" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
+      <!--      规格end    -->
 
-      <el-table-column width="100" property="name" label="名称" />
-      <el-table-column width="100" property="status" label="状态" />
-      <el-table-column width="150" property="created_at" label="创建时间" />
-      <el-table-column width="100" property="username" label="用户账号" />
-      <el-table-column width="100" property="nickname" label="用户昵称" />
-      <el-table-column width="100" property="u_id" label="UID" />
-      <el-table-column width="150" property="expired_time" label="过期时间" />
-
-      <el-table-column label="规格" width="150">
+      <!--      用户信息    -->
+      <el-table-column label="用户信息" width="150">
         <template slot-scope="scope">
           <el-popover
             placement="right"
-            width="700"
+            width="350"
             trigger="click"
           >
-            <el-table :data="scope.row.ports">
-              <el-table-column width="120" property="cpu" label="cpu" />
-              <el-table-column width="120" property="memory" label="内存" />
-              <el-table-column width="120" property="storage" label="临时存储" />
-              <el-table-column width="120" property="pvc" label="永久存储" />
-              <el-table-column width="120" property="gpu" label="gpu" />
+            <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
+              <el-table-column width="150" property="username" label="用户账号"><template slot-scope="scope"><span>{{ scope.row.username }}</span></template></el-table-column>
+              <el-table-column width="150" property="nickname" label="用户昵称"><template slot-scope="scope"><span>{{ scope.row.nickname }}</span></template></el-table-column>
             </el-table>
             <el-button slot="reference" size="mini">点击查看</el-button>
-          </el-popover></template>
+          </el-popover>
+        </template>
       </el-table-column>
 
+      <!--      操作     -->
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-dropdown size="mini" split-button trigger="click" type="primary" style="padding: 15px" @command="handleCommand">
@@ -53,9 +53,6 @@
               <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <!--          <el-button size="mini" type="primary" @click="push2pod(scope.row)">pod</el-button>-->
-          <!--          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>-->
-          <!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
           <el-button
             :disabled="scope.row.name==='default'
               || scope.row.name==='kube-node-lease'
@@ -81,7 +78,10 @@
           </el-button>
         </template>
       </el-table-column>
+      <!--      操作end     -->
     </el-table>
+    <!--    显示页end    -->
+
     <div style="position: absolute;bottom: 2%">
       <el-pagination
         background
@@ -104,9 +104,12 @@ import { getNsList, deleteNs } from '@/api/namespace'
 import AddNamespace from '@/components/AddNamespace'
 import UpdateNamespace from '@/components/AddNamespace/UpdateNamespace'
 import UserSelector from '@/components/Selector/UserSelector'
+import GroupSelector from '@/components/Selector/GroupSelector.vue'
+import { viewGroupByAd } from '@/api/group'
+import { getUserList } from '@/api/user'
 
 export default {
-  components: { AddNamespace, UserSelector, UpdateNamespace },
+  components: { AddNamespace, UserSelector, GroupSelector, UpdateNamespace },
   computed: {
     ...mapGetters([
       'role',
@@ -115,11 +118,14 @@ export default {
   },
   created() {
     this.uid = this.u_id
+    this.adid = this.u_id
     this.getNsList()
   },
   data() {
     return {
       uid: '',
+      gid: '',
+      adid: '',
       timer: null,
       loading: false,
       openDialog: false,
@@ -143,16 +149,17 @@ export default {
           pvc: '',
           gpu: ''
 
-          /*      "used_cpu": "1",
-          "used_memory": "500Mi",
-          "used_storage": "1Gi",
-          "used_pvc": "1Gi",
-          "used_gpu": "0"*/
         }
       ]
     }
   },
   methods: {
+    changeGid: function(g_id) {
+      this.gid = g_id
+      this.$refs.UserSelector.u_id = ''
+      this.$refs.UserSelector.g_id = this.gid
+      this.$refs.UserSelector.getUserList()
+    },
     handleCommand(command) {
       if (command.command === 'deploy') {
         this.push2deploy(command.row)
@@ -256,6 +263,56 @@ export default {
           type: 'info',
           message: '已取消删除'
         })
+      })
+    },
+    viewGroupByAd: function() {
+      viewGroupByAd(this.u_id).then((res) => {
+        // this.tagroup = res.group_list
+        this.tagroup = []
+        // this.tt=[]
+        // this.tt = res.group_list
+        this.tagroup.push(res.group_list.map(function(item, index) {
+          var tmp = {
+            'value': item.groupid,
+            'label': item.name
+          }
+          return tmp
+        }))
+        this.tagroup = this.tagroup[0]
+        // this.tagroup.push({
+        //   "value" : 0,
+        //   "label" : '请选择'
+        // })
+        if (this.role === 3) {
+          this.tagroup.push({
+            'value': 0,
+            'label': '所有用户'
+          })
+        }
+      })
+    },
+    getUserList: function() {
+      getUserList(this.page).then((res) => {
+        // this.page = res.page
+        // this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
+        this.tData = res.user_list
+        for (let i = 0; i < this.tData.length; i++) {
+          if (this.tData[i].role === 3) {
+            this.tempData.push(this.tData[i])
+          }
+        }
+        for (let i = 0; i < this.tData.length; i++) {
+          if (this.tData[i].role === 2) {
+            this.tempData.push(this.tData[i])
+          }
+        }
+        for (let i = 0; i < this.tData.length; i++) {
+          if (this.tData[i].role === 1) {
+            this.tempData.push(this.tData[i])
+          }
+        }
+        // this.tableData.sort(function(a,b){return a.role > b.role})
+        // console.log(this.total)
       })
     }
   }

@@ -1,7 +1,9 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
-      <UserSelector :default-uid="uid" @nsList="changeUid" />
+      <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 50px" @nsList="changeGid" />
+      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
+
       <div style="display: inline; margin-left: 2%">
         <span>OS镜像：</span>
         <el-select v-model="os" filterable placeholder="请选择" @change="change">
@@ -13,9 +15,10 @@
           />
         </el-select>
       </div>
-      <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addLinux">Add
+
+      <!--      <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addLinux">Add
         Linux
-      </el-button>
+      </el-button>-->
     </div>
 
     <!--    1规格   -->
@@ -88,29 +91,80 @@
           </el-popover></template>
       </el-table-column>
 
-      <!--   5Pod_list   -->
-      <el-table-column label="Pod表单" type="expand" width="120">
+      <!--   5deploy_list   -->
+      <el-table-column label="deply表单" width="150">
         <template slot-scope="scope">
-          <el-table :data="scope.row.pod_list">
-            <el-table-column label="名称"   width="200"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
-            <el-table-column label="阶段"   width="200"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
-            <el-table-column label="主机Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
-            <el-table-column label="节点Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.node_ip }}</span></template></el-table-column>
-          </el-table>
+          <el-popover>
+            <el-button slot="reference" size="mini" type="primary" style="margin-left: 16px;" @click="drawer = true">点我打开</el-button>
+            <el-drawer
+              title="deploy表单"
+              :size="size"
+              :visible.sync="drawer"
+              :before-close="handleClose"
+              :direction="direction"
+            >
+              <div>
+                <el-table :data="scope.row.deploy_list">
+                  <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+                  <el-table-column width="120" property="namespace" label="命名空间"><template slot-scope="scope"><span>{{ scope.row.namespace }}</span></template></el-table-column>
+                  <el-table-column width="150" property="created_at" label="创建时间"><template slot-scope="scope"><span>{{ scope.row.created_at }}</span></template></el-table-column>
+                  <el-table-column width="80" property="replicas" label="副本数"><template slot-scope="scope"><span>{{ scope.row.replicas }}</span></template></el-table-column>
+                  <!--配置信息-->
+                  <el-table-column width="200" property="image" label="映像"><template slot-scope="scope"><span>{{ scope.row.image }}</span></template></el-table-column>
+                  <el-table-column width="100" property="ports" label="端口"><template slot-scope="scope"><span>{{ scope.row.ports }}</span></template></el-table-column>
+                  <el-table-column width="80" property="cpu" label="处理器"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
+                  <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
+                  <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
+                  <el-table-column width="80" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
+                  <el-table-column width="80" property="gpu" label="显卡"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
+                  <el-table-column width="80" property="pvc_path" label="pvc路径"><template slot-scope="scope"><span>{{ scope.row.pvc_path }}</span></template></el-table-column>
+                  <el-table-column width="200" property="volume" label="数据卷"><template slot-scope="scope"><span>{{ scope.row.volume }}</span></template></el-table-column>
+                  <!--状态信息-->
+                  <el-table-column width="80" property="updated_replicas" label="更新副本"><template slot-scope="scope"><span>{{ scope.row.updated_replicas }}</span></template></el-table-column>
+                  <el-table-column width="80" property="ready_replicas" label="就绪副本"><template slot-scope="scope"><span>{{ scope.row.ready_replicas }}</span></template></el-table-column>
+                  <el-table-column width="80" property="available_replicas" label="可用副本"><template slot-scope="scope"><span>{{ scope.row.available_replicas }}</span></template></el-table-column>
+
+                  <!--   Pod_list   -->
+                  <el-table-column label="Pod表单" width="150">
+                    <template slot-scope="scope">
+                      <el-popover>
+                        <el-button slot="reference" size="mini" @click="innerDrawer = true">查看</el-button>
+                        <el-drawer
+                          title="Pod 列表"
+                          :size="size"
+                          :append-to-body="true"
+                          :direction="direction"
+                          :before-close="handleClose"
+                          :visible.sync="innerDrawer"
+                        >
+                          <el-table :data="scope.row.pod_list">
+                            <el-table-column width="200" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+                            <el-table-column width="200" property="phase" label="阶段"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
+                            <el-table-column width="200" property="host_ip" label="主机IP"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
+                            <el-table-column width="200" property="pod_ip" label="Pod IP"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
+                          </el-table>
+                        </el-drawer>
+                      </el-popover>
+                    </template>
+                  </el-table-column>
+                  <!--   Pod_list_end  -->
+                </el-table>
+              </div>
+            </el-drawer>
+          </el-popover>
         </template>
       </el-table-column>
 
+      <!--      操作    -->
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-dropdown size="mini" split-button trigger="click" type="primary" style="padding: 15px" @command="handleCommand">
+          <!--          <el-dropdown size="mini" split-button trigger="click" type="primary" style="padding: 15px" @command="handleCommand">
             更多
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :command="beforeHandleCommand('deploy',scope.row)">deploy</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
             </el-dropdown-menu>
-          </el-dropdown>
-          <!--          <el-button size='mini' type="primary" @click='push2deploy(scope.row)'>deploy</el-button>-->
-          <!--          <el-button size="mini" type="primary" @click="push2service(scope.row)">service</el-button>-->
+          </el-dropdown>-->
           <el-button
             :disabled="role < 2"
             size="mini"
@@ -149,9 +203,10 @@ import { getLinuxList, deleteLinux } from '@/api/linux'
 import AddLinux from '@/components/AddLinux'
 import UpdateLinux from '@/components/AddLinux/UpdateLinux'
 import UserSelector from '@/components/Selector/UserSelector'
+import GroupSelector from '@/components/Selector/GroupSelector.vue'
 
 export default {
-  components: { AddLinux, UserSelector, UpdateLinux },
+  components: { GroupSelector, AddLinux, UserSelector, UpdateLinux },
   computed: {
     ...mapGetters([
       'role',
@@ -160,13 +215,22 @@ export default {
   },
   created() {
     // this.os = '1'
-    this.uid = this.u_id
+    this.uid = this.$route.query.u_id || this.u_id
+    this.adid = this.u_id
     this.getLinuxList()
   },
   data() {
     return {
+      /* 抽屉参数*/
+      drawer: false,
+      innerDrawer: false,
+      direction: 'btt',
+      size: '67%',
+
       os: '1',
       uid: '',
+      gid: '',
+      adid: '',
       timer: null,
       loading: false,
       openDialog: false,
@@ -209,14 +273,25 @@ export default {
 
           deploy_list: [
             {
-              name: '',
-              namespace: '',
-              created_at: '',
-              replicas: '',
+              name: 'l1',
+              namespace: 'test1',
+              created_at: '2023',
+              replicas: 1,
+              /* 配置*/
+              image: 'kubeguide/linux:latest',
+              ports: null,
+              cpu: '1',
+              memory: '1Gi',
+              storage: '1Gi',
+              pvc: '1Gi',
+              gpu: '8Gi',
+              pvc_path: ['/linux/index'],
+              volume: '',
+              /* 状态*/
               updated_replicas: '',
               ready_replicas: '',
-              available_replicas: '',
-              u_id: ''
+              available_replicas: ''
+              // u_id: ''
             }
           ],
           pod_list: [
@@ -234,6 +309,33 @@ export default {
     }
   },
   methods: {
+    changeGid: function(g_id) {
+      this.gid = g_id
+      this.$refs.UserSelector.u_id = ''
+      this.$refs.UserSelector.g_id = this.gid
+      this.$refs.UserSelector.getUserList()
+    },
+    changeUid: function(u_id) {
+      this.uid = u_id
+      this.getLinuxList()
+    },
+    handleClose(done) {
+      if (this.loading) {
+        return
+      }
+      this.$confirm('退出到页面->')
+        .then(_ => {
+          this.loading = true
+          this.timer = setTimeout(() => {
+            done()
+            // 设置关闭时间
+            setTimeout(() => {
+              this.loading = false
+            }, 100)
+          }, 100)
+        })
+        .catch(_ => {})
+    },
     handleCommand(command) {
       if (command.command === 'deploy') {
         this.push2deploy(command.row)
@@ -279,10 +381,6 @@ export default {
           u_id: row['u_id']
         }
       })
-    },
-    changeUid: function(u_id) {
-      this.uid = u_id
-      this.getLinuxList()
     },
     changePageNum: function(val) {
       this.page = val

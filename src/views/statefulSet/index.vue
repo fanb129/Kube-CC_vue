@@ -1,16 +1,10 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%">
+      <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 50px" @nsList="changeGid" />
       <UserSelector ref="UserSelector" :default-uid="uid" @nsList="changeUid" />
       <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
 
-      <el-dropdown split-button trigger="click" style="margin-left: 30%" type="primary" @command="handleCommand" @click="addStatefulSet">
-        Add StatefulSet
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="a">Form</el-dropdown-item>
-          <el-dropdown-item command="b">Yaml</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
     </div>
     <!--    1规格   -->
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
@@ -131,12 +125,12 @@ import NsSelector from '@/components/Selector/NsSelector'
 import YamlApply from '@/components/YamlEditor/apply'
 import YamlCreate from '@/components/YamlEditor/create'
 import AddStatefulSet from '@/components/AddStatefulSet/index.vue'
-import AddDeploy from '@/components/AddDeploy/index.vue'
+import GroupSelector from '@/components/Selector/GroupSelector.vue'
 
 export default {
   name: 'StatefulSet',
   // eslint-disable-next-line vue/no-unused-components
-  components: { AddDeploy, NsSelector, UserSelector, YamlApply, YamlCreate, AddStatefulSet },
+  components: { NsSelector, UserSelector, GroupSelector, YamlApply, YamlCreate, AddStatefulSet },
   computed: {
     ...mapGetters([
       'role',
@@ -145,6 +139,7 @@ export default {
   },
   created() {
     this.uid = this.$route.query.u_id || this.u_id
+    this.adid = this.u_id
     this.getDeployList()
   },
   data() {
@@ -152,6 +147,7 @@ export default {
       kind: 'StatefulSet',
       yamlName: '',
       yamlNs: '',
+      adid: '',
       timer: null,
       loading: false,
       applyDialog: false,
@@ -213,12 +209,11 @@ export default {
     }
   },
   methods: {
-    handleCommand(command) {
-      if (command === 'a') {
-        this.addStatefulSet()
-      } else {
-        this.yamlCreate()
-      }
+    changeGid: function(g_id) {
+      this.gid = g_id
+      this.$refs.UserSelector.u_id = ''
+      this.$refs.UserSelector.g_id = this.gid
+      this.$refs.UserSelector.getUserList()
     },
     changeUid: function(u_id) {
       this.uid = u_id
@@ -238,12 +233,6 @@ export default {
         this.total = res.length
         this.tableData = res.statefulSet_list
         console.log(res)
-      })
-    },
-    addStatefulSet: function() {
-      this.addDialog = true
-      this.$nextTick(() => {
-        this.$refs.AddStatefulset.init()
       })
     },
     yamlCreate: function() {

@@ -15,6 +15,7 @@
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
 import { getUserList } from '@/api/user'
 import { viewGroupByAd } from '@/api/group'
 import { mapGetters } from 'vuex'
