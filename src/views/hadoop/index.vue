@@ -55,7 +55,7 @@
                   <el-table-column label="序号" width="100" type="index" />
                   <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
                   <el-table-column width="120" property="namespace" label="命名空间"><template slot-scope="scope"><span>{{ scope.row.namespace }}</span></template></el-table-column>
-                  <el-table-column width="150" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.created_at }}</span></template></el-table-column>
+                  <el-table-column width="180" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.created_at }}</span></template></el-table-column>
                   <el-table-column width="80" property="replicas" label="副本数"><template slot-scope="scope"><span>{{ scope.row.replicas }}</span></template></el-table-column>
                   <!--配置信息-->
                   <el-table-column width="200" property="image" label="映像"><template slot-scope="scope"><span>{{ scope.row.image }}</span></template></el-table-column>
@@ -229,7 +229,6 @@ export default {
               ]
             }
           ],
-
           ingress_list: []
         }
       ]
