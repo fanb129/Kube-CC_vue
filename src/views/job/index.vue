@@ -188,11 +188,14 @@ export default {
       })
     },
     restartJob: function(row) {
-      this.yamlName = row['name']
-      this.yamlNs = row['namespace']
-      this.applyDialog = true
-      this.$nextTick(() => {
-        this.$refs.YamlApply.init()
+      this.$alert('确认重启？', '重启Job', {
+        confirmButtomText: '确定',
+        callback: action => {
+          this.$message({
+            type: 'info',
+            message: `action:${'重启完成'}`
+          })
+        }
       })
     },
     /* 查询Job工作日志*/
