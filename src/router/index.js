@@ -258,6 +258,7 @@ export const constantRoutes = [
       meta: { title: 'Linux', icon: 'dashboard' }
     }]
   },
+
   {
     path: '/terminal',
     component: Layout,
@@ -267,6 +268,17 @@ export const constantRoutes = [
       name: 'Terminal',
       component: () => import('@/components/Terminal/index'),
       meta: { title: 'Terminal', icon: 'terminal_icon' }
+    }]
+  },
+
+  {
+    path: '/monitor',
+    component: Layout,
+    children: [{
+      path: '/index',
+      name: '监控',
+      component: () => import('@/views/monitor/index'),
+      meta: { title: '监控', icon: 'dashboard' }
     }]
   },
 

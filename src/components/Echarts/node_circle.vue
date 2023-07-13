@@ -17,7 +17,7 @@
       label="CPU"
     >
       <template slot-scope='scope'>
-        <div :id="'cpu'+scope.row.node" style="width: 300px;height: 300px"/>
+        <div :id="'cpu'+scope.row.node" style="width: 300px;height: 300px" />
       </template>
     </el-table-column>
     <el-table-column
