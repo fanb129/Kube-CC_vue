@@ -39,6 +39,13 @@
             @click="restartJob(scope.row)"
           >重新启动
           </el-button>
+          <el-button
+            size="mini"
+            type="info"
+            @click="openLog(scope.row)"
+          >打开日志
+          </el-button>
+
         </template>
       </el-table-column>
     </el-table>
@@ -100,6 +107,7 @@ export default {
       addDialog: false,
       uid: '',
       page: 1,
+
       // total: 0,
       pagesize: 10,
       tableData: [
@@ -186,6 +194,9 @@ export default {
       this.$nextTick(() => {
         this.$refs.YamlApply.init()
       })
+    },
+    /* 查询Job工作日志*/
+    openLog: function(row) {
     }
 
   }

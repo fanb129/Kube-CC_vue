@@ -80,6 +80,11 @@
             <el-table-column label="阶段" width="200"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
             <el-table-column label="主机Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
             <el-table-column label="节点Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button :disabled="role <= 2 " size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </template>
       </el-table-column>
@@ -280,6 +285,24 @@ export default {
           type: 'info',
           message: '已取消删除'
         })
+      })
+    },
+    pushTerminal: function(row) {
+      this.$router.push({
+        name: 'Terminal',
+        query: {
+          // r: 'node/ssh',
+          // user: 'root',
+          // pwd: '1234567890',
+          ip: row['ip'],
+          port: '22'
+        },
+        params: {
+          user: 'root',
+          pwd: '1234567890'
+          // ip: row['ip'],
+          // port: '22'
+        }
       })
     }
   }
