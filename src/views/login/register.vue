@@ -6,73 +6,87 @@
         <h3 class="title">Kube-CC</h3>
       </div>
 
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="username"
-          v-model="registerForm.username"
-          placeholder="Username"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
-      </el-form-item>
+      <el-row :gutter="10">
+        <el-col :span="12">
+          <el-form-item prop="username">
+            <span class="svg-container">
+              <svg-icon icon-class="user" />
+            </span>
+            <el-input
+              ref="username"
+              v-model="registerForm.username"
+              placeholder="Username"
+              name="username"
+              type="text"
+              tabindex="1"
+              auto-complete="on"
+            />
+          </el-form-item>
+        </el-col>
+        
+        <el-col :span="12">
+          <el-form-item prop="nickname">
+            <span class="svg-container">
+              <svg-icon icon-class="user" />
+            </span>
+            <el-input
+              ref="nickname"
+              v-model="registerForm.nickname"
+              placeholder="Nickname"
+              name="nickname"
+              type="text"
+              tabindex="1"
+              auto-complete="on"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      
+      <el-row :gutter="10">
+        <el-col :span="12">
+          <el-form-item prop="password">
+            <span class="svg-container">
+              <svg-icon icon-class="password" />
+            </span>
+            <el-input
+              :key="passwordType"
+              ref="password"
+              v-model="registerForm.password"
+              :type="passwordType"
+              placeholder="Password"
+              name="password"
+              tabindex="2"
+              auto-complete="on"
+            />
+            <span class="show-pwd" @click="showPwd">
+              <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+            </span>
+          </el-form-item>
+        </el-col>
 
-      <el-form-item prop="nickname">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="nickname"
-          v-model="registerForm.nickname"
-          placeholder="Nickname"
-          name="nickname"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
-      </el-form-item>
+        <el-col :span="12">
+          <el-form-item prop="checkpass">
+            <span class="svg-container">
+              <svg-icon icon-class="password" />
+            </span>
+            <el-input
+              :key="passwordType"
+              ref="checkpass"
+              v-model="registerForm.checkpass"
+              :type="passwordType"
+              placeholder="Password"
+              name="checkpass"
+              tabindex="2"
+              auto-complete="on"
+              @keyup.enter.native="handleRegister"
+            />
+            <span class="show-pwd" @click="showPwd">
+              <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+            </span>
+          </el-form-item>
+        </el-col>
+      </el-row>
 
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :key="passwordType"
-          ref="password"
-          v-model="registerForm.password"
-          :type="passwordType"
-          placeholder="Password"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
-      </el-form-item>
-      <el-form-item prop="checkpass">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :key="passwordType"
-          ref="checkpass"
-          v-model="registerForm.checkpass"
-          :type="passwordType"
-          placeholder="Password"
-          name="checkpass"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleRegister"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
-      </el-form-item>
 
       <el-form-item prop="graphcode">
         <div style="float:left">
@@ -94,70 +108,56 @@
         </div>
       </el-form-item>
 
-      <el-form-item prop="email">
-        <div style="float:left">
-          <span class="svg-container" >
-            <svg-icon icon-class="password" />
-          </span>
-          <el-input
-            ref="email"
-            v-model="registerForm.email"
-            placeholder="Email"
-            name="email"
-            type="text"
-            tabindex="1"
-            auto-complete="on"
-          />
-        </div>
-        <div style="float:right;padding-right: 10px;padding-top: 5px;">
-          <el-button v-show="show" @click="getCode" type="info" :disabled="emailsendcode">获取验证码</el-button>
-          <span v-show="!show" class="count" style="color:azure;padding-right:20px">{{ count }}</span>
-        </div>
-      </el-form-item>
+      <el-row :gutter="10">
+        <el-col :span="18">
+          <el-form-item prop="email">
+            <div style="float:left">
+              <span class="svg-container" >
+                <svg-icon icon-class="password" />
+              </span>
+              <el-input
+                ref="email"
+                v-model="registerForm.email"
+                placeholder="Email"
+                name="email"
+                type="text"
+                tabindex="1"
+                auto-complete="on"
+              />
+            </div>
+            <div style="float:right;padding-right: 10px;padding-top: 5px;">
+              <el-button v-show="show" @click="getCode" type="primary" :disabled="emailsendcode">获取验证码</el-button>
+              <span v-show="!show" class="count" style="color:azure;padding-right:20px">{{ count }}</span>
+            </div>
+          </el-form-item>
+        </el-col>
 
-      <!-- <el-form-item prop="graphcode">
-        <div style="float:left">
-          <span class="svg-container">
-            <svg-icon icon-class="password" />
-          </span>
-          <el-input
-            ref="graphcode"
-            v-model="registerForm.graphcode"
-            placeholder="GraphCode"
-            name="graphcode"
-            type="text"
-            tabindex="1"
-            auto-complete="on"
-          />
-        </div>
-        <div style="float:right;background-color: aliceblue;width: 160px;height: 50px;">
-          <img :src="imgUrl" @click="resetImg" style="width:160px;height:50px;"/>
-        </div>
-      </el-form-item> -->
+        <el-col :span="6">
+          <el-form-item prop="emailcode">
+            <!-- <span class="svg-container">
+              <svg-icon icon-class="password" />
+            </span> -->
+            <el-input
+              ref="emailcode"
+              v-model="registerForm.emailcode"
+              placeholder="emailcode"
+              name="emailcode"
+              type="text"
+              tabindex="1"
+              auto-complete="on"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
 
-      <el-form-item prop="emailcode">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          ref="emailcode"
-          v-model="registerForm.emailcode"
-          placeholder="EmailCode"
-          name="emailcode"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
-      </el-form-item>
-
-      <el-button :loading="loading" type="primary" style="width: 30%" @click.native.prevent="handleRegister">注册</el-button>
+      <el-button :loading="loading" type="primary" style="width: 30%" @click.native.prevent="handleRegister" :disabled="this.registerbutton">注册</el-button>
       <el-button style="width: 30%; float: right" @click="back">返回</el-button>
     </el-form>
   </div>
 </template>
 
 <script>
-import { register, captcha, checkcp } from '@/api/user'
+import { register, captcha, checkcp, emailcaptcha, verifyemail } from '@/api/user'
 import { Message } from 'element-ui'
 
 export default {
@@ -227,6 +227,14 @@ export default {
         }
       }
     }
+    const validateEmailCpatcha = (rule, value, callback) => {
+      if(value == ""){
+        callback(new Error('邮箱验证码未填写'))
+      } else {
+        this.emailverify()
+        callback()
+      }
+    }
     return {
       count: 0,
       lastvalue:'',
@@ -238,6 +246,7 @@ export default {
       imgUrl: '',
       imgid: 0,
       captchaverify: false,
+      registerbutton: true,
       registerForm: {
         username: '',
         nickname: '',
@@ -253,7 +262,8 @@ export default {
         password: [{ required: true, trigger: 'blur', validator: validatePassword }],
         checkpass: [{ required: true, trigger: 'blur', validator: validatePass2 }],
         email:[{ required: true, trigger: 'blur', validator: validateEmail }],
-        graphcode:[{ required: true, trigger: 'blur', validator: validateCpatcha }]
+        graphcode:[{ required: true, trigger: 'blur', validator: validateCpatcha }],
+        emailcode:[{ required:true,trigger:'blur', validator: validateEmailCpatcha }]
       },
       loading: false,
       passwordType: 'password',
@@ -283,7 +293,7 @@ export default {
       this.$refs.registerForm.validate(valid => {
         if (valid) {
           this.loading = true
-          register({ username: this.registerForm.username, password: this.registerForm.password, nickname: this.registerForm.nickname }).then(() => {
+          register({ username: this.registerForm.username, password: this.registerForm.password, nickname: this.registerForm.nickname, email: this.registerForm.email }).then(() => {
             Message({
               message: '注册成功',
               type: 'success',
@@ -304,6 +314,8 @@ export default {
       this.$router.push({ path: '/login' })
     },
     getCode() {
+      emailcaptcha(this.registerForm.email).then((res)=>{
+      }).catch(()=>{})
       const TIME_COUNT = 60;
       if (!this.timer) {
         this.count = TIME_COUNT;
@@ -318,6 +330,15 @@ export default {
           }
         }, 1000);
       }
+    },
+    emailverify(){
+      verifyemail({email: this.registerForm.email,vcode: this.registerForm.emailcode}).then((res)=>{
+        if(res.code==1){
+          this.registerbutton=false
+        }else{
+          this.registerbutton=true
+        }
+      }).catch(()=>{})
     },
     resetImg() {
       captcha().then((res)=>{

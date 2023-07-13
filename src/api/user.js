@@ -35,6 +35,20 @@ export function checkcp(data) {
   })
 }
 
+export function emailcaptcha(email) {
+  return request({
+    url: '/emailcaptcha/'+email,
+    method: 'get'
+  })
+}
+export function verifyemail(data) {
+  return request({
+    url: '/verifyemail',
+    method: 'post',
+    data
+  })
+}
+
 // export function getInfo(token) {
 export function getInfo() {
   return request({
