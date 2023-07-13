@@ -74,6 +74,26 @@
         </span>
       </el-form-item>
 
+      <el-form-item prop="graphcode">
+        <div style="float:left">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            ref="graphcode"
+            v-model="registerForm.graphcode"
+            placeholder="GraphCode"
+            name="graphcode"
+            type="text"
+            tabindex="1"
+            auto-complete="on"
+          />
+        </div>
+        <div style="float:right;background-color: aliceblue;width: 160px;height: 50px;">
+          <img :src="imgUrl" @click="resetImg" style="width:160px;height:50px;"/>
+        </div>
+      </el-form-item>
+
       <el-form-item prop="email">
         <div style="float:left">
           <span class="svg-container" >
@@ -95,14 +115,14 @@
         </div>
       </el-form-item>
 
-      <el-form-item prop="graphcode">
+      <!-- <el-form-item prop="graphcode">
         <div style="float:left">
           <span class="svg-container">
             <svg-icon icon-class="password" />
           </span>
           <el-input
             ref="graphcode"
-            v-model="registerForm.emailcode"
+            v-model="registerForm.graphcode"
             placeholder="GraphCode"
             name="graphcode"
             type="text"
@@ -113,7 +133,7 @@
         <div style="float:right;background-color: aliceblue;width: 160px;height: 50px;">
           <img :src="imgUrl" @click="resetImg" style="width:160px;height:50px;"/>
         </div>
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item prop="emailcode">
         <span class="svg-container">
@@ -183,33 +203,48 @@ export default {
         callback(new Error('邮箱格式错误'))
         this.emailsendcode=true
       } else {
-        callback()
-        this.emailsendcode=false
+        if(!this.captchaverify) {
+          callback(new Error('图片验证码错误'))
+          this.emailsendcode=true
+        } else {
+          callback()
+          this.emailsendcode=false
+        }
       }
     }
     const validateCpatcha = (rule, value, callback) => {
-      var vt = this.verifyCaptcha(this.imgid,value)
-      if(!vt){
-        callback(new Error('验证码错误'))
-        this.emailsendcode=true
-      } else {
+      if((this.captchaverify && value == this.lastvalue) ||(this.empty && value == this.truevalue) ){
         callback()
-        this.emailsendcode=false
+        this.captchaverify = true
+      }else{
+        this.lastvalue = ''
+        this.lastvalue = value
+        this.verifyCaptcha(this.imgid,value)
+        if(value == ""){
+          callback(new Error('图片验证码未填写'))
+        } else {
+          callback()
+        }
       }
     }
     return {
       count: 0,
+      lastvalue:'',
+      truevalue:'jhghj',
+      empty:false,
       show: true,
       timer: 0,
       emailsendcode: true,
       imgUrl: '',
       imgid: 0,
+      captchaverify: false,
       registerForm: {
         username: '',
         nickname: '',
         password: '',
         checkpass: '',
         email: '',
+        graphcode:'',
         emailcode: ''
       },
       registerRules: {
@@ -294,15 +329,22 @@ export default {
       // }))
     },
     verifyCaptcha(id,val) {
-      var t = false
-      checkcp({"captcha_id": id,"captcha_val": val}).then((res)=>{
-        if(res.status == 1){
-          t = true
-          return t
-        }else{
-          t = false
-          return t
+      this.captchaverify = false
+      checkcp({captcha_id: id,captcha_val: val}).then((res)=>{
+        if(res.code == 1){
+          this.captchaverify = true
+          this.truevalue = val
+          this.empty =false
+        }else if(res.code ==0){
+          this.captchaverify = false
+          this.empty = true
         }
+        else{
+          this.captchaverify = false
+          this.empty = false
+        }
+      }).catch(()=>{
+        this.resetImg()
       })
     }
   }
