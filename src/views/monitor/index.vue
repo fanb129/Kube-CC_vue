@@ -1,7 +1,8 @@
 <template>
   <div class="monitor">
     <div class="selector">
-      <span><p>这是用来选择用户的地方</p></span>
+      <GroupSelector ref="GroupSelector" :default-uid="adid" @nsList="changeGid" />
+      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" @nsList="changeUid" />
     </div>
     <div class="dashboard">
       <el-table :data="cur_res" stripe style="width: 100%">
@@ -34,27 +35,27 @@
       <el-table :data="cur_res_ns" stripe style="width: 100%">
         <el-table-column label="CPU占比" align="center">
           <template slot-scope="scope">
-            <div :id="scope.row.cpu_ns" style="width: 300px;height: 300px" />
+            <div :id="scope.row.cpu_ns" style="width: 220px;height: 200px" />
           </template>
         </el-table-column>
-        <el-table-column label="CPU占比" align="center">
+        <el-table-column label="GPU占比" align="center">
           <template slot-scope="scope">
-            <div :id="scope.row.gpu_ns" style="width: 300px;height: 300px" />
+            <div :id="scope.row.gpu_ns" style="width: 220px;height: 200px" />
           </template>
         </el-table-column>
-        <el-table-column label="CPU占比" align="center">
+        <el-table-column label="内存占比" align="center">
           <template slot-scope="scope">
-            <div :id="scope.row.memory_ns" style="width: 300px;height: 300px" />
+            <div :id="scope.row.memory_ns" style="width: 220px;height: 200px" />
           </template>
         </el-table-column>
-        <el-table-column label="CPU占比" align="center">
+        <el-table-column label="存储占比" align="center">
           <template slot-scope="scope">
-            <div :id="scope.row.pvc_ns" style="width: 300px;height: 300px" />
+            <div :id="scope.row.pvc_ns" style="width: 220px;height: 200px" />
           </template>
         </el-table-column>
-        <el-table-column label="CPU占比" align="center">
+        <el-table-column label="缓存占比" align="center">
           <template slot-scope="scope">
-            <div :id="scope.row.storage_ns" style="width: 300px;height: 300px" />
+            <div :id="scope.row.storage_ns" style="width: 220px;height: 200px" />
           </template>
         </el-table-column>
       </el-table>
@@ -63,7 +64,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import UserSelector from '@/components/Selector/UserSelector'
+import GroupSelector from '@/components/Selector/GroupSelector.vue'
+
 export default {
+  components: { UserSelector, GroupSelector },
   data() {
     return {
       cur_res: [
@@ -86,8 +92,16 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapGetters([
+      'role',
+      'u_id'
+    ])
+  },
   // 钩子函数，挂载初始化函数
   created() {
+    this.uid = this.$route.query.u_id || this.u_id
+    this.adid = this.u_id
     this.init()
   },
   methods: {
@@ -117,7 +131,7 @@ export default {
         series: [
           {
             radius: '95%',
-            center: ['50%', '50%'],
+            center: ['50%', '55%'],
             type: 'gauge',
             axisLine: {
               lineStyle: {
@@ -199,7 +213,7 @@ export default {
         series: [
           {
             radius: '95%',
-            center: ['50%', '50%'],
+            center: ['50%', '55%'],
             type: 'gauge',
             axisLine: {
               lineStyle: {
@@ -281,7 +295,7 @@ export default {
         series: [
           {
             radius: '95%',
-            center: ['50%', '50%'],
+            center: ['50%', '55%'],
             type: 'gauge',
             axisLine: {
               lineStyle: {
@@ -363,7 +377,7 @@ export default {
         series: [
           {
             radius: '95%',
-            center: ['50%', '50%'],
+            center: ['50%', '55%'],
             type: 'gauge',
             axisLine: {
               lineStyle: {
@@ -445,7 +459,7 @@ export default {
         series: [
           {
             radius: '95%',
-            center: ['50%', '50%'],
+            center: ['50%', '55%'],
             type: 'gauge',
             axisLine: {
               lineStyle: {
@@ -527,7 +541,8 @@ export default {
         tooltip: {
           trigger: 'item'
         },
-        legend: {
+        legend: { // 图例
+          show: false,
           top: '5%',
           left: 'center'
         },
@@ -544,16 +559,17 @@ export default {
             },
             label: {
               show: false,
-              position: 'center'
+              position: 'center',
+              fontSize: 15
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: 40,
+                fontSize: 14,
                 fontWeight: 'bold'
               }
             },
-            labelLine: {
+            labelLine: { // 引导线
               show: false
             },
             data: [
@@ -579,6 +595,7 @@ export default {
           trigger: 'item'
         },
         legend: {
+          show: false,
           top: '5%',
           left: 'center'
         },
@@ -595,12 +612,13 @@ export default {
             },
             label: {
               show: false,
-              position: 'center'
+              position: 'center',
+              fontSize: 15
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: 40,
+                fontSize: 14,
                 fontWeight: 'bold'
               }
             },
@@ -630,6 +648,7 @@ export default {
           trigger: 'item'
         },
         legend: {
+          show: false,
           top: '5%',
           left: 'center'
         },
@@ -646,12 +665,13 @@ export default {
             },
             label: {
               show: false,
-              position: 'center'
+              position: 'center',
+              fontSize: 15
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: 40,
+                fontSize: 14,
                 fontWeight: 'bold'
               }
             },
@@ -681,6 +701,7 @@ export default {
           trigger: 'item'
         },
         legend: {
+          show: false,
           top: '5%',
           left: 'center'
         },
@@ -697,12 +718,13 @@ export default {
             },
             label: {
               show: false,
-              position: 'center'
+              position: 'center',
+              fontSize: 15
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: 40,
+                fontSize: 14,
                 fontWeight: 'bold'
               }
             },
@@ -732,6 +754,7 @@ export default {
           trigger: 'item'
         },
         legend: {
+          show: false,
           top: '5%',
           left: 'center'
         },
@@ -748,12 +771,13 @@ export default {
             },
             label: {
               show: false,
-              position: 'center'
+              position: 'center',
+              fontSize: 15
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: 40,
+                fontSize: 14,
                 fontWeight: 'bold'
               }
             },
@@ -773,18 +797,19 @@ export default {
       // 防止越界，重绘canvas
       window.onresize = Storage_NS.resize
       Storage_NS.setOption(option)// 设置option
+    },
+    changeGid: function(g_id) {
+      this.gid = g_id
+      this.$refs.UserSelector.u_id = ''
+      this.$refs.UserSelector.g_id = this.gid
+      this.$refs.UserSelector.getUserList()
+    },
+    changeUid: function(u_id) {
+      this.uid = u_id
+      this.$refs.NsSelector.u_id = this.uid
+      this.$refs.NsSelector.getNsList()
+      this.getDeployList()
     }
   }
 }
 </script>
-
-<style>
-    /* .monitor {
-        width: 100%;
-        height: 900px;
-    }
-    .dashboard {
-        width: 100%;
-        height: 40%;
-    } */
-</style>

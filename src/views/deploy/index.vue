@@ -1,14 +1,13 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%">
-      <GroupSelector :default-uid="adid" @nsList="changeGid" ref="GroupSelector"></GroupSelector>
-      <UserSelector :default-gid="gid" :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
-      <NsSelector :default-uid="uid" :default-ns="ns" @nsList="changeNs" ref="NsSelector"></NsSelector>
-<!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addDeploy">Add-->
-<!--        Deploy-->
-<!--      </el-button>-->
-
-      <el-dropdown split-button trigger="click" @command="handleCommand" style="margin-left: 30%" type="primary" @click="addDeploy">
+      <GroupSelector ref="GroupSelector" :default-uid="adid" @nsList="changeGid" />
+      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" @nsList="changeUid" />
+      <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
+      <!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addDeploy">Add-->
+      <!--        Deploy-->
+      <!--      </el-button>-->
+      <el-dropdown split-button trigger="click" type="primary" style="margin-left: 30%" @command="handleCommand" @click="addDeploy">
         Add Deploy
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="a">Form</el-dropdown-item>
@@ -78,9 +77,12 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-<!--          <el-button size="mini" type="primary" @click="pushTerminal(scope.row)">pod</el-button>-->
+          <!--          <el-button size="mini" type="primary" @click="pushTerminal(scope.row)">pod</el-button>-->
           <el-button
-            size="mini" type="warning" @click="editDeploy(scope.row)">编辑</el-button>
+            size="mini"
+            type="warning"
+            @click="editDeploy(scope.row)"
+          >编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
@@ -101,18 +103,18 @@
         @current-change="changePageNum"
       />
     </div>
-    <YamlApply :visible.sync="applyDialog" ref="YamlApply" :kind="kind" :name="yamlName" :ns="yamlNs"/>
-    <YamlCreate :visible.sync="createDialog" ref="YamlCreate" :kind="kind"/>
-    <AddDeploy :visible.sync="addDialog" ref="AddDeploy"/>
+    <YamlApply ref="YamlApply" :visible.sync="applyDialog" :kind="kind" :name="yamlName" :ns="yamlNs" />
+    <YamlCreate ref="YamlCreate" :visible.sync="createDialog" :kind="kind" />
+    <AddDeploy ref="AddDeploy" :visible.sync="addDialog" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { deleteDeploy, getDeployList } from '@/api/deploy'
-import UserSelector from "@/components/Selector/UserSelector";
-import NsSelector from "@/components/Selector/NsSelector";
-import GroupSelector from '@/components/Selector/GroupSelector.vue';
+import UserSelector from '@/components/Selector/UserSelector'
+import NsSelector from '@/components/Selector/NsSelector'
+import GroupSelector from '@/components/Selector/GroupSelector.vue'
 import YamlApply from '@/components/YamlEditor/apply'
 import YamlCreate from '@/components/YamlEditor/create'
 import AddDeploy from '@/components/AddDeploy'
@@ -120,17 +122,6 @@ import AddDeploy from '@/components/AddDeploy'
 export default {
   name: 'Deploy',
   components: { NsSelector, UserSelector, GroupSelector, YamlApply, YamlCreate, AddDeploy },
-  computed: {
-    ...mapGetters([
-      'role',
-      'u_id'
-    ])
-  },
-  created() {
-    this.uid = this.$route.query.u_id || this.u_id
-    this.adid = this.u_id
-    this.getDeployList()
-  },
   data() {
     return {
       kind: 'Deploy',
@@ -161,6 +152,17 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapGetters([
+      'role',
+      'u_id'
+    ])
+  },
+  created() {
+    this.uid = this.$route.query.u_id || this.u_id
+    this.adid = this.u_id
+    this.getDeployList()
+  },
   methods: {
     handleCommand(command) {
       if (command === 'a') {
@@ -169,19 +171,19 @@ export default {
         this.yamlCreate()
       }
     },
-    changeGid: function(g_id){
+    changeGid: function(g_id) {
       this.gid = g_id
       this.$refs.UserSelector.u_id = ''
       this.$refs.UserSelector.g_id = this.gid
       this.$refs.UserSelector.getUserList()
     },
-    changeUid: function (u_id){
+    changeUid: function(u_id) {
       this.uid = u_id
       this.$refs.NsSelector.u_id = this.uid
       this.$refs.NsSelector.getNsList()
       this.getDeployList()
     },
-    changeNs: function (ns){
+    changeNs: function(ns) {
       this.ns = ns
       this.getDeployList()
     },
@@ -189,7 +191,7 @@ export default {
       this.page = val
     },
     getDeployList: function() {
-      getDeployList(this.uid,this.ns).then((res) => {
+      getDeployList(this.uid, this.ns).then((res) => {
         this.total = res.length
         this.tableData = res.deploy_list
         console.log(res)
@@ -207,7 +209,7 @@ export default {
         this.$refs.YamlCreate.init()
       })
     },
-    editDeploy: function(row){
+    editDeploy: function(row) {
       this.yamlName = row['name']
       this.yamlNs = row['namespace']
       this.applyDialog = true

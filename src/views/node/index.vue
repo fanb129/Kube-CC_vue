@@ -1,11 +1,6 @@
 <template>
   <div>
     <el-tabs v-model="activeName" @tab-click="handleClick" style="margin-left: 1vh; margin-right: 1vh">
-      <el-tab-pane name="first" label="资源面板">
-        <div>
-          <node-column></node-column>
-        </div>
-      </el-tab-pane>
       <el-tab-pane name="second" label="控制面板">
         <div>
           <div style="margin-left: 10%; margin-top: 1%; flex: auto">
@@ -90,11 +85,8 @@
 import { mapGetters } from 'vuex'
 import { deleteNode, getNodeList } from '@/api/node'
 import AddNode from '@/components/AddNode'
-// import nodeColumn from '@/components/Echarts/node';
-import nodeColumn from '@/components/Echarts/node_circle';
 
 export default {
-  components: { AddNode, nodeColumn },
   computed: {
     ...mapGetters([
       'role'
