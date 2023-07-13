@@ -140,7 +140,7 @@ export default {
   created() {
     this.uid = this.$route.query.u_id || this.u_id
     this.adid = this.u_id
-    this.getDeployList()
+    this.getStatefulSetList()
   },
   data() {
     return {

@@ -143,6 +143,12 @@ export const constantRoutes = [
             name: '有状态应用',
             component: () => import('@/views/statefulSet/index'),
             meta: { title: '有状态应用', icon: 'el-icon-data-analysis' }
+          },
+          {
+            path: '一次性任务',
+            name: '一次性任务',
+            component: () => import('@/views/job/index'),
+            meta: { title: '一次性任务', icon: 'el-icon-data-board' }
           }
         ]
       }

@@ -24,12 +24,8 @@
     <!--    1规格   -->
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
       <el-table-column label="序号" width="100" type="index" />
-      <el-table-column width="100" property="name" label="名称"><template slot-scope="scope">
-        <span style="margin-left: 1%">{{ scope.row.name }}</span>
-      </template></el-table-column>
-      <el-table-column width="150" property="namespace" label="命名空间"><template slot-scope="scope">
-        <span style="margin-left: 1%">{{ scope.row.namespace }}</span>
-      </template></el-table-column>
+      <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.name }}</span></template></el-table-column>
+      <el-table-column width="150" property="namespace" label="命名空间"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.namespace }}</span></template></el-table-column>
       <el-table-column width="150" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span style="margin-left: 1%">{{ scope.row.created_at }}</span></template></el-table-column>
       <el-table-column width="80" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
       <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
@@ -100,14 +96,14 @@
               title="deploy表单"
               :size="size"
               :visible.sync="drawer"
-              :before-close="handleClose"
               :direction="direction"
             >
               <div>
                 <el-table :data="scope.row.deploy_list">
+                  <el-table-column label="序号" width="100" type="index" />
                   <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
                   <el-table-column width="120" property="namespace" label="命名空间"><template slot-scope="scope"><span>{{ scope.row.namespace }}</span></template></el-table-column>
-                  <el-table-column width="150" property="created_at" label="创建时间"><template slot-scope="scope"><span>{{ scope.row.created_at }}</span></template></el-table-column>
+                  <el-table-column width="150" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.created_at }}</span></template></el-table-column>
                   <el-table-column width="80" property="replicas" label="副本数"><template slot-scope="scope"><span>{{ scope.row.replicas }}</span></template></el-table-column>
                   <!--配置信息-->
                   <el-table-column width="200" property="image" label="映像"><template slot-scope="scope"><span>{{ scope.row.image }}</span></template></el-table-column>
@@ -125,26 +121,15 @@
                   <el-table-column width="80" property="available_replicas" label="可用副本"><template slot-scope="scope"><span>{{ scope.row.available_replicas }}</span></template></el-table-column>
 
                   <!--   Pod_list   -->
-                  <el-table-column label="Pod表单" width="150">
+                  <el-table-column label="Pod表单" type="expand" width="150">
                     <template slot-scope="scope">
-                      <el-popover>
-                        <el-button slot="reference" size="mini" @click="innerDrawer = true">查看</el-button>
-                        <el-drawer
-                          title="Pod 列表"
-                          :size="size"
-                          :append-to-body="true"
-                          :direction="direction"
-                          :before-close="handleClose"
-                          :visible.sync="innerDrawer"
-                        >
-                          <el-table :data="scope.row.pod_list">
-                            <el-table-column width="200" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
-                            <el-table-column width="200" property="phase" label="阶段"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
-                            <el-table-column width="200" property="host_ip" label="主机IP"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
-                            <el-table-column width="200" property="pod_ip" label="Pod IP"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
-                          </el-table>
-                        </el-drawer>
-                      </el-popover>
+                      <el-table :data="scope.row.pod_list">
+                        <el-table-column label="序号" width="100" type="index" />
+                        <el-table-column width="300" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+                        <el-table-column width="200" property="phase" label="阶段"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
+                        <el-table-column width="200" property="host_ip" label="主机IP"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
+                        <el-table-column width="200" property="pod_ip" label="Pod IP"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
+                      </el-table>
                     </template>
                   </el-table-column>
                   <!--   Pod_list_end  -->
@@ -290,16 +275,16 @@ export default {
               /* 状态*/
               updated_replicas: '',
               ready_replicas: '',
-              available_replicas: ''
+              available_replicas: '',
               // u_id: ''
-            }
-          ],
-          pod_list: [
-            {
-              name: 'centos1-dc5b585b9-6c4zl',
-              phase: 'Pending',
-              host_ip: '111',
-              pod_ip: '111'
+              pod_list: [
+                {
+                  name: 'centos1-dc5b585b9-6c4zl',
+                  phase: 'Pending',
+                  host_ip: '111',
+                  pod_ip: '111'
+                }
+              ]
             }
           ],
 
@@ -319,7 +304,7 @@ export default {
       this.uid = u_id
       this.getLinuxList()
     },
-    handleClose(done) {
+    /* handleClose(done) {
       if (this.loading) {
         return
       }
@@ -335,7 +320,7 @@ export default {
           }, 100)
         })
         .catch(_ => {})
-    },
+    },*/
     handleCommand(command) {
       if (command.command === 'deploy') {
         this.push2deploy(command.row)
