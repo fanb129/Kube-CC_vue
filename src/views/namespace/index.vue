@@ -324,6 +324,7 @@ export default {
       getUserList(this.page).then((res) => {
         //this.page = res.page
         //this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
+        this.tData = []
         this.tData = res.user_list
         for(let i=0;i<this.tData.length;i++){
           if(this.tData[i].role==3){

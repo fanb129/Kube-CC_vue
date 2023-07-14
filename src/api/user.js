@@ -72,6 +72,13 @@ export function getUserList(page) {
   })
 }
 
+export function getAllUser() {
+  return request({
+    url :'/user/getall',
+    method: 'get'
+  })
+}
+
 export function deleteUser(id) {
   return request({
     url: '/user/delete/' + id,
