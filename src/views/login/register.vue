@@ -126,7 +126,7 @@
               />
             </div>
             <div style="float:right;padding-right: 10px;padding-top: 5px;">
-              <el-button v-show="show" @click="getCode" type="primary" :disabled="emailsendcode">获取验证码</el-button>
+              <el-button v-show="show" @click="getCode" type="primary" >获取验证码</el-button>
               <span v-show="!show" class="count" style="color:azure;padding-right:20px">{{ count }}</span>
             </div>
           </el-form-item>
@@ -150,7 +150,7 @@
         </el-col>
       </el-row>
 
-      <el-button :loading="loading" type="primary" style="width: 30%" @click.native.prevent="handleRegister" :disabled="this.registerbutton">注册</el-button>
+      <el-button :loading="loading" type="primary" style="width: 30%" @click.native.prevent="handleRegister" >注册</el-button>
       <el-button style="width: 30%; float: right" @click="back">返回</el-button>
     </el-form>
   </div>
@@ -198,18 +198,23 @@ export default {
       }
     }
     const validateEmail = (rule, value, callback) => {
-      var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
-      if ( !myreg.test(value) ) {
-        callback(new Error('邮箱格式错误'))
-        this.emailsendcode=true
-      } else {
-        if(!this.captchaverify) {
-          callback(new Error('图片验证码错误'))
-          this.emailsendcode=true
-        } else {
-          callback()
-          this.emailsendcode=false
-        }
+      // var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+      // if ( !myreg.test(value) ) {
+      //   callback(new Error('邮箱格式错误'))
+      //   this.emailsendcode=true
+      // } else {
+      //   if(!this.captchaverify) {
+      //     callback(new Error('图片验证码错误'))
+      //     this.emailsendcode=true
+      //   } else {
+      //     callback()
+      //     this.emailsendcode=false
+      //   }
+      // }
+      if(value == ""){
+        callback(new Error('邮箱未填写'))
+      }else{
+        callback()
       }
     }
     const validateCpatcha = (rule, value, callback) => {
@@ -231,7 +236,7 @@ export default {
       if(value == ""){
         callback(new Error('邮箱验证码未填写'))
       } else {
-        this.emailverify()
+        //this.emailverify()
         callback()
       }
     }
@@ -246,7 +251,7 @@ export default {
       imgUrl: '',
       imgid: 0,
       captchaverify: false,
-      registerbutton: true,
+      //registerbutton: true,
       registerForm: {
         username: '',
         nickname: '',
@@ -290,45 +295,113 @@ export default {
       })
     },
     handleRegister() {
-      this.$refs.registerForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          register({ username: this.registerForm.username, password: this.registerForm.password, nickname: this.registerForm.nickname, email: this.registerForm.email }).then(() => {
-            Message({
-              message: '注册成功',
-              type: 'success',
-              duration: 3 * 1000
-            })
-            this.$router.push({ path: '/login' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
+      if(this.registerForm.emailcode === ''){
+        this.$message({
+            type: 'error',
+            message: '邮箱验证码为空'
           })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+      }
+      else{
+        verifyemail({email: this.registerForm.email,vcode: this.registerForm.emailcode}).then((res)=>{
+          if(res.code==1){
+            this.$refs.registerForm.validate(valid => {
+              if (valid) {
+                this.loading = true
+                register({ username: this.registerForm.username, password: this.registerForm.password, nickname: this.registerForm.nickname, email: this.registerForm.email }).then(() => {
+                  Message({
+                    message: '注册成功',
+                    type: 'success',
+                    duration: 3 * 1000
+                  })
+                  this.$router.push({ path: '/login' })
+                  this.loading = false
+                }).catch(() => {
+                  this.loading = false
+                })
+              } else {
+                console.log('error submit!!')
+                return false
+              }
+            })
+          }
+        }).catch(()=>{})
+      }
+      
+      // this.$refs.registerForm.validate(valid => {
+      //   if (valid) {
+      //     this.loading = true
+      //     register({ username: this.registerForm.username, password: this.registerForm.password, nickname: this.registerForm.nickname, email: this.registerForm.email }).then(() => {
+      //       Message({
+      //         message: '注册成功',
+      //         type: 'success',
+      //         duration: 3 * 1000
+      //       })
+      //       this.$router.push({ path: '/login' })
+      //       this.loading = false
+      //     }).catch(() => {
+      //       this.loading = false
+      //     })
+      //   } else {
+      //     console.log('error submit!!')
+      //     return false
+      //   }
+      // })
     },
     back() {
       this.$router.push({ path: '/login' })
     },
     getCode() {
-      emailcaptcha(this.registerForm.email).then((res)=>{
-      }).catch(()=>{})
-      const TIME_COUNT = 60;
-      if (!this.timer) {
-        this.count = TIME_COUNT;
-        this.show = false;
-        this.timer = setInterval(() => {
-          if (this.count > 0 && this.count <= TIME_COUNT) {
-            this.count--;
-          } else {
-            this.show = true;
-            clearInterval(this.timer);
-            this.timer = null;
+      var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+      if ( !myreg.test(this.registerForm.email) ) {
+        //callback(new Error('邮箱格式错误'))
+        this.$message({
+            type: 'error',
+            message: '邮箱格式错误'
+          })
+        //this.emailsendcode=true
+      } else {
+        if(!this.captchaverify) {
+          //callback(new Error('图片验证码错误'))
+          this.$message({
+            type: 'error',
+            message: '图片验证码错误'
+          })
+          //this.emailsendcode=true
+        } else {
+          emailcaptcha(this.registerForm.email).then((res)=>{
+          }).catch(()=>{})
+          const TIME_COUNT = 60;
+          if (!this.timer) {
+            this.count = TIME_COUNT;
+            this.show = false;
+            this.timer = setInterval(() => {
+              if (this.count > 0 && this.count <= TIME_COUNT) {
+                this.count--;
+              } else {
+                this.show = true;
+                clearInterval(this.timer);
+                this.timer = null;
+              }
+            }, 1000);
+          //callback()
+          //this.emailsendcode=false
           }
-        }, 1000);
+        }
+      // emailcaptcha(this.registerForm.email).then((res)=>{
+      // }).catch(()=>{})
+      // const TIME_COUNT = 60;
+      // if (!this.timer) {
+      //   this.count = TIME_COUNT;
+      //   this.show = false;
+      //   this.timer = setInterval(() => {
+      //     if (this.count > 0 && this.count <= TIME_COUNT) {
+      //       this.count--;
+      //     } else {
+      //       this.show = true;
+      //       clearInterval(this.timer);
+      //       this.timer = null;
+      //     }
+      //   }, 1000);
       }
     },
     emailverify(){
