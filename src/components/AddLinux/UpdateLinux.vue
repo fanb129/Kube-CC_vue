@@ -43,7 +43,7 @@
 
 <script>
 import { getUserList } from '@/api/user'
-import { updateLinux } from '@/api/linux'
+import { updateLinux } from '@/api/app/linux'
 import { mapGetters } from 'vuex'
 
 export default {

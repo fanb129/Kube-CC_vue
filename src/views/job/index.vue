@@ -69,11 +69,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getJobList } from '@/api/job'
+import { getJobList } from '@/api/app/job'
 import UserSelector from '@/components/Selector/UserSelector'
 import NsSelector from '@/components/Selector/NsSelector'
-import YamlApply from '@/components/YamlEditor/apply'
-import YamlCreate from '@/components/YamlEditor/create'
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
 import row from 'element-ui/packages/row'
 
@@ -181,12 +179,6 @@ export default {
         this.total = res.length
         this.tableData = res.job_list
         console.log(res)
-      })
-    },
-    yamlCreate: function() {
-      this.createDialog = true
-      this.$nextTick(() => {
-        this.$refs.YamlCreate.init()
       })
     },
     restartJob: function(row) {

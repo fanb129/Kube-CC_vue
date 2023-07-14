@@ -184,7 +184,7 @@
 <script>
 
 import { mapGetters } from 'vuex'
-import { getLinuxList, deleteLinux } from '@/api/linux'
+import { getLinuxList, deleteLinux } from '@/api/app/linux'
 import AddLinux from '@/components/AddLinux'
 import UpdateLinux from '@/components/AddLinux/UpdateLinux'
 import UserSelector from '@/components/Selector/UserSelector'

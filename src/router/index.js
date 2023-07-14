@@ -32,34 +32,6 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
-    path: '/log',
-    component: Layout,
-    redirect: '',
-    name: 'Log',  
-    meta: { title: 'Log', icon: 'tree' },
-    children: [
-      {
-        path: 'login-log',
-        name: 'Login-log',
-        component: () => import('@/views/sys-login-log/index'),
-        meta: { title: 'LoginLog', icon: '' }
-      },
-      {
-        path: 'oper-log',
-        name: 'Oper-log',
-        component: () => import('@/views/sys-login-log/index'),
-        meta: { title: 'OperationLog', icon: '' }
-      },
-      {
-        path: 'run-log',
-        name: 'Run-log',
-        component: () => import('@/views/user/index'),
-        meta: { title: 'RunningLog', icon: '' }
-      },
-     
-    ]
-  },
-  {
     path: '/podterminal',
     component: Layout,
     // hidden: true,
@@ -220,6 +192,33 @@ export const constantRoutes = [
         name: 'User',
         component: () => import('@/views/user/index'),
         meta: { title: 'User', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/log',
+    component: Layout,
+    redirect: '',
+    name: 'Log',
+    meta: { title: 'Log', icon: 'tree' },
+    children: [
+      {
+        path: 'login-log',
+        name: 'Login-log',
+        component: () => import('@/views/sys-login-log/index'),
+        meta: { title: 'LoginLog', icon: '' }
+      },
+      {
+        path: 'oper-log',
+        name: 'Oper-log',
+        component: () => import('@/views/sys-login-log/index'),
+        meta: { title: 'OperationLog', icon: '' }
+      },
+      {
+        path: 'run-log',
+        name: 'Run-log',
+        component: () => import('@/views/user/index'),
+        meta: { title: 'RunningLog', icon: '' }
       }
     ]
   },

@@ -135,7 +135,7 @@
 <script>
 
 import { mapGetters } from 'vuex'
-import { getHadoopList, deleteHadoop } from '@/api/hadoop'
+import { getHadoopList, deleteHadoop } from '@/api/app/hadoop'
 import AddHadoop from '@/components/AddHadoop'
 import UpdateHadoop from '@/components/AddHadoop/UpdateHadoop'
 import UserSelector from '@/components/Selector/UserSelector'

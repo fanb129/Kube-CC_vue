@@ -89,12 +89,11 @@ import EditPwd from '@/components/EditPwd'
 import { updateUser, getUserList } from '@/api/user'
 import { getNodeList } from '@/api/node'
 import { getNsList } from '@/api/namespace'
-import { getDeployList } from '@/api/deploy'
-import { getServiceList } from '@/api/service'
+import { getDeployList } from '@/api/app/deploy'
 import { getPodList } from '@/api/pod'
-import { getSparkList } from '@/api/spark'
-import { getHadoopList } from '@/api/hadoop'
-import { getLinuxList } from '@/api/linux'
+import { getSparkList } from '@/api/app/spark'
+import { getHadoopList } from '@/api/app/hadoop'
+import { getLinuxList } from '@/api/app/linux'
 import { Message } from 'element-ui'
 
 export default {
@@ -151,9 +150,6 @@ export default {
     })
     getDeployList(this.u_id, '').then(res => {
       this.dashboardData[3].value = res.length
-    })
-    getServiceList(this.u_id, '').then(res => {
-      this.dashboardData[4].value = res.length
     })
     getPodList(this.u_id, '').then(res => {
       this.dashboardData[5].value = res.length

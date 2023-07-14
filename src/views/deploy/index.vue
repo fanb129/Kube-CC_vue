@@ -134,12 +134,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { deleteDeploy, getDeployList } from '@/api/deploy'
+import { deleteDeploy, getDeployList } from '@/api/app/deploy'
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
 import UserSelector from '@/components/Selector/UserSelector'
 import NsSelector from '@/components/Selector/NsSelector'
-import YamlApply from '@/components/YamlEditor/apply'
-import YamlCreate from '@/components/YamlEditor/create'
 import AddDeploy from '@/components/AddDeploy'
 import addDeploy from '@/components/AddDeploy/index.vue'
 
@@ -267,20 +265,6 @@ export default {
         this.$refs.AddDeploy.init()
       })
     },*/
-    yamlCreate: function() {
-      this.createDialog = true
-      this.$nextTick(() => {
-        this.$refs.YamlCreate.init()
-      })
-    },
-    editDeploy: function(row) {
-      this.yamlName = row['name']
-      this.yamlNs = row['namespace']
-      this.applyDialog = true
-      this.$nextTick(() => {
-        this.$refs.YamlApply.init()
-      })
-    },
     handleDelete: function(row) {
       /* 提示消息*/
       this.$confirm('确认永久删除此deploy及其所含pod', '提示', {
