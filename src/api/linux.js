@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getLinuxList(u_id,os) {
+export function getLinuxList(u_id, os) {
   return request({
     url: '/linux',
     methd: 'get',

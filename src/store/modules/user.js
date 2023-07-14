@@ -1,6 +1,6 @@
-import {login, logout, getInfo} from '@/api/user'
-import {getToken, setToken, removeToken} from '@/utils/auth'
-import {resetRouter} from '@/router'
+import { login, logout, getInfo } from '@/api/user'
+import { getToken, setToken, removeToken } from '@/utils/auth'
+import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
@@ -27,7 +27,7 @@ const mutations = {
   SET_NAME: (state, name) => {
     state.name = name
   },
-  SET_USERNAME: (state,username) => {
+  SET_USERNAME: (state, username) => {
     state.username = username
   },
   SET_UID: (state, uid) => {
@@ -49,11 +49,11 @@ const mutations = {
 
 const actions = {
   // user login
-  login({commit}, userInfo) {
-    const {usernameoremail, password} = userInfo
+  login({ commit }, userInfo) {
+    const { usernameoremail, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({usernameoremail: usernameoremail.trim(), password: password}).then(response => {
-        const {token} = response
+      login({ usernameoremail: usernameoremail.trim(), password: password }).then(response => {
+        const { token } = response
         commit('SET_TOKEN', token)
         setToken(token)
         resolve()
@@ -65,14 +65,14 @@ const actions = {
   },
 
   // get user info
-  getInfo({commit, state}) {
+  getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
         if (!response) {
           return reject('Verification failed, please Login again.')
         }
 
-        const {nickname, username ,avatar, role, id, email, gid} = response.user_info
+        const { nickname, username, avatar, role, id, email, gid } = response.user_info
         commit('SET_NAME', nickname)
         commit('SET_USERNAME', username)
         commit('SET_UID', id)
@@ -89,7 +89,7 @@ const actions = {
   },
 
   // user logout
-  logout({commit, state}) {
+  logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         removeToken() // must remove  token  first
@@ -104,7 +104,7 @@ const actions = {
   },
 
   // remove token
-  resetToken({commit}) {
+  resetToken({ commit }) {
     return new Promise(resolve => {
       removeToken() // must remove  token  first
       commit('RESET_STATE')

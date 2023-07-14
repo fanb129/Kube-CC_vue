@@ -38,8 +38,8 @@
 import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
 import UserSelectorNoNil from '@/components/Selector/UserSelectorNoNil'
 import { mapGetters } from 'vuex'
-import {createYaml} from "@/api/yaml";
-import {yaml2json} from "@/utils/yaml";
+import { createYaml } from '@/api/yaml'
+import { yaml2json } from '@/utils/yaml'
 
 export default {
   name: 'AddService',
@@ -135,13 +135,13 @@ export default {
     }
   },
   methods: {
-    resetFields () {
+    resetFields() {
       this.$refs['dynamic-form'].resetFields()
     },
     async validate() {
       const valid = await this.$refs['dynamic-form'].validate()
       if (this.service.metadata.namespace !== '' && valid) {
-        createYaml({ yaml: this.service,kind: 'service',ns: this.ns }).then(res => {
+        createYaml({ yaml: this.service, kind: 'service', ns: this.ns }).then(res => {
           if (res.code === 1) {
             this.$message({
               type: 'success',

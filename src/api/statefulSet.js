@@ -1,19 +1,19 @@
 import request from '@/utils/request'
 
-export function getServiceList(u_id, ns) {
+export function getStatefulSetList(u_id, ns) {
   return request({
-    url: '/service',
+    url: '/statefulSet',
     method: 'get',
     params: {
-      'u_id': u_id,
-      'ns': ns
+      'ns': ns,
+      'u_id': u_id
     }
   })
 }
 
-export function deleteService(ns, name) {
+export function deleteStatefulSet(ns, name) {
   return request({
-    url: '/service/delete',
+    url: '/statefulSet/delete',
     method: 'get',
     params: {
       'ns': ns,
@@ -22,9 +22,9 @@ export function deleteService(ns, name) {
   })
 }
 
-export function getServiceYaml(name, ns) {
+export function getStatefulSetYaml(name, ns) {
   return request({
-    url: '/service/info',
+    url: '/statefulSet/info',
     method: 'get',
     params: {
       'name': name,

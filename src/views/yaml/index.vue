@@ -9,22 +9,22 @@
 </template>
 
 <script>
-import YamlEditor from '@/components/YamlEditor/index.vue';
-import {applyYaml, createYaml } from "@/api/yaml";
-import {yaml2json} from "@/utils/yaml";
+import YamlEditor from '@/components/YamlEditor/index.vue'
+import { applyYaml, createYaml } from '@/api/yaml'
+import { yaml2json } from '@/utils/yaml'
 
 export default {
   name: 'YamlEditorDemo',
   components: { YamlEditor },
   data() {
     return {
-      yamlValue: '',
-    };
+      yamlValue: ''
+    }
   },
-  methods:{
+  methods: {
     applyYaml() {
-      console.log(yaml2json(this.yamlValue,false).data)
-      applyYaml({yaml: yaml2json(this.yamlValue,false).data}).then(res => {
+      console.log(yaml2json(this.yamlValue, false).data)
+      applyYaml({ yaml: yaml2json(this.yamlValue, false).data }).then(res => {
         if (res.code === 1) {
           this.$message({
             type: 'success',
@@ -33,9 +33,9 @@ export default {
         }
       })
     },
-    createYaml(){
+    createYaml() {
       console.log(this.yamlValue)
-      createYaml({yaml: yaml2json(this.yamlValue,false).data}).then(res => {
+      createYaml({ yaml: yaml2json(this.yamlValue, false).data }).then(res => {
         if (res.code === 1) {
           this.$message({
             type: 'success',
@@ -45,6 +45,6 @@ export default {
       })
     }
   }
-};
+}
 </script>
 

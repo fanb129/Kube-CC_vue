@@ -24,14 +24,14 @@
         <el-date-picker
           v-model="form.expired_time"
           type="datetime"
-          placeholder="选择日期时间">
-        </el-date-picker>
+          placeholder="选择日期时间"
+        />
       </el-form-item>
       <el-form-item label="CPU" prop="cpu">
-        <el-input v-model="form.cpu"></el-input>
+        <el-input v-model="form.cpu" />
       </el-form-item>
       <el-form-item label="memory" prop="memory">
-        <el-input v-model="form.memory"></el-input>
+        <el-input v-model="form.memory" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">更新</el-button>
@@ -44,13 +44,13 @@
 <script>
 import { getUserList } from '@/api/user'
 import { updateLinux } from '@/api/linux'
-import {mapGetters} from "vuex";
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'UpdateLinux',
   computed: {
     ...mapGetters([
-      'role',
+      'role'
       // 'u_id'
     ])
   },
@@ -75,15 +75,15 @@ export default {
         cpu: '',
         memory: ''
       },
-      formRules:{
-        u_id: [{ required: true, trigger: 'blur'}],
-        cpu: [{ required: true,trigger: 'blur'}],
-        memory: [{ required: true,trigger: 'blur'}],
+      formRules: {
+        u_id: [{ required: true, trigger: 'blur' }],
+        cpu: [{ required: true, trigger: 'blur' }],
+        memory: [{ required: true, trigger: 'blur' }]
       }
     }
   },
   methods: {
-    init(name,uid,expired_time,cpu,memory) {
+    init(name, uid, expired_time, cpu, memory) {
       this.form.name = name
       this.form.u_id = uid
       this.form.expired_time = new Date(expired_time)
@@ -145,7 +145,7 @@ export default {
         this.userPage = res.page
         this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.options = res.user_list
-        this.options.push({nickname:'',id: '0',username:'Null',role: 0})
+        this.options.push({ nickname: '', id: '0', username: 'Null', role: 0 })
         // console.log(res)
       })
     },

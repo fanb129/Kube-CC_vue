@@ -8,7 +8,7 @@
       label="Node"
       width="130"
     >
-      <template slot-scope='scope'>
+      <template slot-scope="scope">
         <span style="font-size: large">{{ scope.row.node }}</span>
       </template>
     </el-table-column>
@@ -16,14 +16,14 @@
     <el-table-column
       label="CPU"
     >
-      <template slot-scope='scope'>
-        <div :id="'cpu'+scope.row.node" style="width: 300px;height: 300px"/>
+      <template slot-scope="scope">
+        <div :id="'cpu'+scope.row.node" style="width: 300px;height: 300px" />
       </template>
     </el-table-column>
     <el-table-column
       label="Memory"
     >
-      <template slot-scope='scope'>
+      <template slot-scope="scope">
         <div :id="'memory'+scope.row.node" style="width: 300px;height: 300px" />
         <div style="width: 300px;text-align: center">
           <span style="font-size: large">{{ scope.row.usedMemory }} G / {{ scope.row.totalMemory }} G</span>
@@ -33,7 +33,7 @@
     <el-table-column
       label="Storage"
     >
-      <template slot-scope='scope'>
+      <template slot-scope="scope">
         <div :id="'storage'+scope.row.node" style="width: 300px;height: 300px" />
         <div style="width: 300px;text-align: center">
           <span style="font-size: large">{{ scope.row.usedStorage }} G / {{ scope.row.totalStorage }} G</span>

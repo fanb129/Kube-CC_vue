@@ -1,13 +1,13 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%">
-      <UserSelector :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
-      <NsSelector :default-uid="uid" :default-ns="ns" @nsList="changeNs" ref="NsSelector"></NsSelector>
-<!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addPod">Add-->
-<!--        Pod-->
-<!--      </el-button>-->
+      <UserSelector ref="UserSelector" :default-uid="uid" @nsList="changeUid" />
+      <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
+      <!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addPod">Add-->
+      <!--        Pod-->
+      <!--      </el-button>-->
 
-      <el-dropdown split-button trigger="click" @command="handleCommand" style="margin-left: 30%" type="primary" @click="addPod">
+      <el-dropdown split-button trigger="click" style="margin-left: 30%" type="primary" @command="handleCommand" @click="addPod">
         Add Pod
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="a">Form</el-dropdown-item>
@@ -19,7 +19,7 @@
       <!-- <el-table :data='tableData' style='width: 100%'> -->
       <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-      <el-table-column label="ID" width="40" type="index"></el-table-column>
+      <el-table-column label="ID" width="40" type="index" />
 
       <el-table-column label="Name" width="115">
         <template slot-scope="scope">
@@ -98,9 +98,15 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
-            size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
+            size="mini"
+            type="success"
+            @click="pushTerminal(scope.row)"
+          > 终端</el-button>
           <el-button
-            size="mini" type="warning" @click="editPod(scope.row)">编辑</el-button>
+            size="mini"
+            type="warning"
+            @click="editPod(scope.row)"
+          >编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
@@ -121,18 +127,18 @@
         @current-change="changePageNum"
       />
     </div>
-    <YamlApply :visible.sync="applyDialog" ref="YamlApply" :kind="kind" :name="yamlName" :ns="yamlNs"/>
-    <YamlCreate :visible.sync="createDialog" ref="YamlCreate" :kind="kind"/>
-    <AddPod :visible.sync="addDialog" ref="AddPod" />
+    <YamlApply ref="YamlApply" :visible.sync="applyDialog" :kind="kind" :name="yamlName" :ns="yamlNs" />
+    <YamlCreate ref="YamlCreate" :visible.sync="createDialog" :kind="kind" />
+    <AddPod ref="AddPod" :visible.sync="addDialog" />
   </div>
 </template>
 
 <script>
-import  { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import { deletePod, getPodList } from '@/api/pod'
 import { getNsList } from '@/api/namespace'
-import UserSelector from "@/components/Selector/UserSelector";
-import NsSelector from "@/components/Selector/NsSelector";
+import UserSelector from '@/components/Selector/UserSelector'
+import NsSelector from '@/components/Selector/NsSelector'
 import YamlApply from '@/components/YamlEditor/apply'
 import YamlCreate from '@/components/YamlEditor/create'
 import AddPod from '@/components/AddPod'
@@ -195,13 +201,13 @@ export default {
         this.yamlCreate()
       }
     },
-    changeUid: function (u_id){
+    changeUid: function(u_id) {
       this.uid = u_id
       this.$refs.NsSelector.u_id = this.uid
       this.$refs.NsSelector.getNsList()
       this.getPodList()
     },
-    changeNs: function (ns){
+    changeNs: function(ns) {
       this.ns = ns
       this.getPodList()
     },
@@ -217,7 +223,7 @@ export default {
       this.page = val
     },
     getPodList: function() {
-      getPodList(this.uid,this.ns).then((res) => {
+      getPodList(this.uid, this.ns).then((res) => {
         this.total = res.length
         this.tableData = res.pod_list
         console.log(res)
@@ -235,7 +241,7 @@ export default {
         this.$refs.YamlCreate.init()
       })
     },
-    editPod: function(row){
+    editPod: function(row) {
       this.yamlName = row['name']
       this.yamlNs = row['namespace']
       this.applyDialog = true

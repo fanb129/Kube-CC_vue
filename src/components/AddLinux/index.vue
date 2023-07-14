@@ -7,8 +7,8 @@
             v-for="item,index in osOptions"
             :key="index"
             :label="item.osName"
-            :value="item.os">
-          </el-option>
+            :value="item.os"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="用户">
@@ -34,14 +34,14 @@
         <el-date-picker
           v-model="form.expired_time"
           type="datetime"
-          placeholder="选择日期时间">
-        </el-date-picker>
+          placeholder="选择日期时间"
+        />
       </el-form-item>
       <el-form-item label="CPU" prop="cpu">
-        <el-input v-model="form.cpu"></el-input>
+        <el-input v-model="form.cpu" />
       </el-form-item>
       <el-form-item label="memory" prop="memory">
-        <el-input v-model="form.memory"></el-input>
+        <el-input v-model="form.memory" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -82,10 +82,10 @@ export default {
         cpu: '',
         memory: ''
       },
-      formRules:{
-        u_id: [{ required: true, trigger: 'blur'}],
-        cpu: [{ required: true,trigger: 'blur'}],
-        memory: [{ required: true,trigger: 'blur'}],
+      formRules: {
+        u_id: [{ required: true, trigger: 'blur' }],
+        cpu: [{ required: true, trigger: 'blur' }],
+        memory: [{ required: true, trigger: 'blur' }]
       }
     }
   },
@@ -128,7 +128,7 @@ export default {
               })
             }
           })
-        }else{
+        } else {
           return false
         }
       })
@@ -142,7 +142,7 @@ export default {
         this.userPage = res.page
         this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.options = res.user_list
-        this.options.push({nickname:'',id: '0',username:'Null',role: 0})
+        this.options.push({ nickname: '', id: '0', username: 'Null', role: 0 })
         // console.log(res)
       })
     },

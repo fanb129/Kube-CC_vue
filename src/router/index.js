@@ -96,42 +96,98 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'el-icon-s-home' }
+      meta: { title: ' Dashboard', icon: 'el-icon-s-home' }
     }]
   },
-
-  {
-    path: '/kubernetes',
+  { path: '/主机',
     component: Layout,
-    redirect: '/kubernetes/node',
-    name: 'Kubernetes',
-    meta: { title: 'Kubernetes', icon: 'tree' },
+    redirect: '/主机',
+    children: [{
+      path: '主机',
+      name: '主机',
+      component: () => import('@/views/node/index'),
+      meta: { title: ' 主机', icon: 'el-icon-s-platform' }
+    }]
+  },
+  { path: '/工作空间',
+    component: Layout,
+    redirect: '/工作空间',
+    children: [{
+      path: '/工作空间',
+      name: '工作空间',
+      component: () => import('@/views/namespace/index'),
+      meta: { title: ' 工作空间', icon: 'el-icon-s-help' }
+    }]
+  },
+  {
+    path: '/应用',
+    component: Layout,
+    redirect: '/应用',
+    name: '应用',
+    meta: { title: ' 应用', icon: 'el-icon-s-grid' },
     children: [
+      {
+        path: '/内置模板',
+        component: () => import('@/layout/index2'),
+        redirect: '/内置模板',
+        name: '内置模板',
+        meta: { title: '内置模板', icon: 'el-icon-s-unfold' },
+        children: [
+          {
+            path: 'spark',
+            name: 'Spark',
+            component: () => import('@/views/spark/index'),
+            meta: { title: 'Spark', icon: 'el-icon-magic-stick' }
+          },
+          {
+            path: 'hadoop',
+            name: 'Hadoop',
+            component: () => import('@/views/hadoop/index'),
+            meta: { title: 'Hadoop', icon: 'el-icon-connection' }
+          },
+          {
+            path: '云主机',
+            name: '云主机',
+            component: () => import('@/views/linux/index'),
+            meta: { title: '云主机', icon: 'el-icon-monitor' }
+          }
+        ]
+      },
+      {
+        path: '/自定义应用',
+        component: () => import('@/layout/index2'),
+        redirect: '/自定义应用',
+        name: '自定义应用',
+        meta: { title: '自定义应用', icon: 'el-icon-s-unfold' },
+        children: [
+          {
+            path: '无状态应用',
+            name: '无状态应用',
+            component: () => import('@/views/deploy/index'),
+            meta: { title: '无状态应用', icon: 'el-icon-data-line' }
+          },
+          {
+            path: '有状态应用',
+            name: '有状态应用',
+            component: () => import('@/views/statefulSet/index'),
+            meta: { title: '有状态应用', icon: 'el-icon-data-analysis' }
+          },
+          {
+            path: '一次性任务',
+            name: '一次性任务',
+            component: () => import('@/views/job/index'),
+            meta: { title: '一次性任务', icon: 'el-icon-data-board' }
+          }
+        ]
+      }
+      /* children1: [
       {
         path: 'yaml',
         name: 'Yaml',
         component: () => import('@/views/yaml/index'),
         meta: { title: 'Yaml', icon: 'el-icon-upload' }
       },
-      {
-        path: 'node',
-        name: 'Node',
-        component: () => import('@/views/node/index'),
-        meta: { title: 'Node', icon: 'dashboard' }
-      },
-      {
-        path: 'namespace',
-        name: 'Namespace',
-        component: () => import('@/views/namespace/index'),
-        meta: { title: 'Namespace', icon: 'dashboard' }
-      },
-      {
-        path: 'deploy',
-        name: 'Deploy',
-        component: () => import('@/views/deploy/index'),
-        meta: { title: 'Deploy', icon: 'dashboard' }
-      },
-      {
+       {
         path: 'service',
         name: 'Service',
         component: () => import('@/views/service/index'),
@@ -142,21 +198,9 @@ export const constantRoutes = [
         name: 'Pod',
         component: () => import('@/views/pod/index'),
         meta: { title: 'Pod', icon: 'dashboard' }
-      }
+      }*/
     ]
   },
-
-  // {
-  //   path: '/user',
-  //   component: Layout,
-  //   // redirect: '/user',
-  //   children: [{
-  //     path: 'index',
-  //     name: 'User',
-  //     component: () => import('@/views/user/index'),
-  //     meta: { title: 'User', icon: 'user' }
-  //   }]
-  // },
 
   {
     path: '/users',
@@ -180,112 +224,6 @@ export const constantRoutes = [
     ]
   },
 
-  // {
-  //   path: '/form',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Form',
-  //       component: () => import('@/views/form/index'),
-  //       meta: { title: 'Form', icon: 'form' }
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '/nested',
-  //   component: Layout,
-  //   redirect: '/nested/menu1',
-  //   name: 'Nested',
-  //   meta: {
-  //     title: 'Nested',
-  //     icon: 'nested'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'menu1',
-  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
-  //       name: 'Menu1',
-  //       meta: { title: 'Menu1' },
-  //       children: [
-  //         {
-  //           path: 'menu1-1',
-  //           component: () => import('@/views/nested/menu1/menu1-1'),
-  //           name: 'Menu1-1',
-  //           meta: { title: 'Menu1-1' }
-  //         },
-  //         {
-  //           path: 'menu1-2',
-  //           component: () => import('@/views/nested/menu1/menu1-2'),
-  //           name: 'Menu1-2',
-  //           meta: { title: 'Menu1-2' },
-  //           children: [
-  //             {
-  //               path: 'menu1-2-1',
-  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-  //               name: 'Menu1-2-1',
-  //               meta: { title: 'Menu1-2-1' }
-  //             },
-  //             {
-  //               path: 'menu1-2-2',
-  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-  //               name: 'Menu1-2-2',
-  //               meta: { title: 'Menu1-2-2' }
-  //             }
-  //           ]
-  //         },
-  //         {
-  //           path: 'menu1-3',
-  //           component: () => import('@/views/nested/menu1/menu1-3'),
-  //           name: 'Menu1-3',
-  //           meta: { title: 'Menu1-3' }
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       path: 'menu2',
-  //       component: () => import('@/views/nested/menu2/index'),
-  //       name: 'Menu2',
-  //       meta: { title: 'menu2' }
-  //     }
-  //   ]
-  // },
-  {
-    path: '/spark',
-    component: Layout,
-    // redirect: '/user',
-    children: [{
-      path: 'index',
-      name: 'Spark',
-      component: () => import('@/views/spark/index'),
-      meta: { title: 'Spark', icon: 'dashboard' }
-    }]
-  },
-
-  {
-    path: '/hadoop',
-    component: Layout,
-    // redirect: '/user',
-    children: [{
-      path: 'index',
-      name: 'Hadoop',
-      component: () => import('@/views/hadoop/index'),
-      meta: { title: 'Hadoop', icon: 'dashboard' }
-    }]
-  },
-
-  {
-    path: '/linux',
-    component: Layout,
-    // redirect: '/user',
-    children: [{
-      path: 'index',
-      name: 'Linux',
-      component: () => import('@/views/linux/index'),
-      meta: { title: 'Linux', icon: 'dashboard' }
-    }]
-  },
   {
     path: '/terminal',
     component: Layout,
