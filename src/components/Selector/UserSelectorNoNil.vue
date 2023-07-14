@@ -7,31 +7,37 @@
         :key="index"
         :label="item.nickname"
         :value="item.id"
-        :disabled="role < item.role">
-      </el-option>
-      <el-pagination background layout="prev, pager, next" :current-page="userPage" :page-size="1" :total="userTotal"
-                     @current-change="changeUserPageNum"></el-pagination>
+        :disabled="role < item.role"
+      />
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :current-page="userPage"
+        :page-size="1"
+        :total="userTotal"
+        @current-change="changeUserPageNum"
+      />
     </el-select>
   </div>
 </template>
 
 <script>
-import {getUserList} from "@/api/user";
-import {mapGetters} from "vuex";
+import { getUserList } from '@/api/user'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'UserSelectorNoNil',
   props: ['defaultUid'],
   computed: {
     ...mapGetters([
-      'role',
+      'role'
       // 'u_id'
     ])
   },
   created() {
     this.getUserList()
   },
-  data(){
+  data() {
     return {
       u_id: this.defaultUid,
       userPage: 1,
@@ -39,20 +45,20 @@ export default {
       options: [{
         id: '',
         nickname: '',
-        role: '',
+        role: ''
       }]
     }
   },
   methods: {
     change() {
       this.$forceUpdate()
-      this.$emit('nsList',this.u_id)
+      this.$emit('nsList', this.u_id)
     },
-    changeUserPageNum: function (val) {
+    changeUserPageNum: function(val) {
       this.userPage = val
       this.getUserList()
     },
-    getUserList: function () {
+    getUserList: function() {
       getUserList(this.userPage).then((res) => {
         this.userPage = res.page
         this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
@@ -60,7 +66,7 @@ export default {
         // Terminal.log(res)
         // this.options.push({id:'',nickname:'All User',role: 3})
       })
-    },
+    }
   }
 }
 </script>

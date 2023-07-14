@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%">
-    <textarea ref="textarea"></textarea>
+    <textarea ref="textarea" />
   </div>
 </template>
 <script>
@@ -81,7 +81,7 @@ export default {
         theme: 'rubyblue',
         scrollbarStyle: 'overlay'
       })
-      this.codeMirrorEditor.setSize('99%','100%')
+      this.codeMirrorEditor.setSize('99%', '100%')
       if (this.value) this.setCodeMirrorEditorValue(this.value) // 设置值
       this.codeMirrorEditor.on('change', () => {
         const EditorValue = this.getCodeMirrorEditorValue()

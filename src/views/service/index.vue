@@ -7,17 +7,17 @@
       <!--        Service-->
       <!--      </el-button>-->
 
-<!--      <el-dropdown trigger="click" @command="handleCommand" style="margin-left: 30%">-->
-<!--        <span class="el-dropdown-link">-->
-<!--          Add Service<i class="el-icon-arrow-down el-icon&#45;&#45;right" />-->
-<!--        </span>-->
-<!--        <el-dropdown-menu slot="dropdown">-->
-<!--          <el-dropdown-item command="a">Form</el-dropdown-item>-->
-<!--          <el-dropdown-item command="b">Yaml</el-dropdown-item>-->
-<!--        </el-dropdown-menu>-->
-<!--      </el-dropdown>-->
+      <!--      <el-dropdown trigger="click" @command="handleCommand" style="margin-left: 30%">-->
+      <!--        <span class="el-dropdown-link">-->
+      <!--          Add Service<i class="el-icon-arrow-down el-icon&#45;&#45;right" />-->
+      <!--        </span>-->
+      <!--        <el-dropdown-menu slot="dropdown">-->
+      <!--          <el-dropdown-item command="a">Form</el-dropdown-item>-->
+      <!--          <el-dropdown-item command="b">Yaml</el-dropdown-item>-->
+      <!--        </el-dropdown-menu>-->
+      <!--      </el-dropdown>-->
 
-      <el-dropdown split-button trigger="click" @command="handleCommand" style="margin-left: 30%" type="primary" @click="addService">
+      <el-dropdown split-button trigger="click" style="margin-left: 30%" type="primary" @command="handleCommand" @click="addService">
         Add Service
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="a">Form</el-dropdown-item>
@@ -111,7 +111,7 @@
       />
     </div>
     <YamlApply ref="YamlApply" :visible.sync="applyDialog" :kind="kind" :name="yamlName" :ns="yamlNs" />
-    <YamlCreate :visible.sync="createDialog" ref="YamlCreate" :kind="kind"/>
+    <YamlCreate ref="YamlCreate" :visible.sync="createDialog" :kind="kind" />
     <AddService ref="AddService" :visible.sync="addDialog" />
   </div>
 </template>
