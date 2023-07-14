@@ -15,13 +15,16 @@
           </div>
           <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
 
-            <el-table-column label="ID" width="100" type="index" />
-            <el-table-column label="主机名" width="120"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
-            <el-table-column label="ip地址" width="150"><template slot-scope="scope"><span>{{ scope.row.ip }}</span></template></el-table-column>
-            <el-table-column label="就绪" width="120"><template slot-scope="scope"><span>{{ scope.row.ready }}</span></template></el-table-column>
-            <el-table-column label="创建时间" width="200"><template slot-scope="scope"><span>{{ scope.row.created_at }}</span></template></el-table-column>
-            <el-table-column label="CPU" width="100"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
-            <el-table-column label="内存" width="200"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
+            <el-table-column label="ID" width="60" type="index" />
+            <el-table-column label="主机名" width="100"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+            <el-table-column label="ip地址" width="130"><template slot-scope="scope"><span>{{ scope.row.ip }}</span></template></el-table-column>
+            <el-table-column label="就绪" width="100"><template slot-scope="scope"><span>{{ scope.row.ready }}</span></template></el-table-column>
+            <el-table-column label="创建时间" width="150"><template slot-scope="scope"><span>{{ scope.row.created_at }}</span></template></el-table-column>
+            <el-table-column label="CPU" width="80"><template slot-scope="scope"><span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span></template></el-table-column>
+            <el-table-column label="内存" width="100"><template slot-scope="scope"><span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span></template></el-table-column>
+            <el-table-column label="GPU" width="100"><template slot-scope="scope"><span>{{ scope.row.used_gpu }}/{{ scope.row.gpu }}</span></template></el-table-column>
+            <el-table-column label="临时存储" width="100"><template slot-scope="scope"><span>{{ scope.row.used_storage }}/{{ scope.row.storage }}</span></template></el-table-column>
+            <el-table-column label="持久存储" width="100"><template slot-scope="scope"><span>{{ scope.row.used_pvc }}/{{ scope.row.pvc }}</span></template></el-table-column>
 
             <el-table-column label="操作">
               <template slot-scope="scope">
@@ -76,7 +79,15 @@ export default {
           os_image: '',
           kubelet_version: '',
           cpu: '',
-          memory: ''
+          used_cpu: '',
+          memory: '',
+          used_memory: '',
+          storage: '',
+          used_storage: '',
+          pvc: '',
+          used_pvc: '',
+          gpu: '',
+          used_gpu: '',
         }
       ]
     }
