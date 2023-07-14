@@ -55,7 +55,7 @@
 
 <script>
 import { getUserList } from '@/api/user'
-import { updateHadoop } from '@/api/hadoop'
+import { updateHadoop } from '@/api/app/hadoop'
 import { mapGetters } from 'vuex'
 
 export default {

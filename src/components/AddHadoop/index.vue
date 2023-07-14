@@ -55,7 +55,7 @@
 
 <script>
 import { getUserList } from '@/api/user'
-import { addHadoop } from '@/api/hadoop'
+import { addHadoop } from '@/api/app/hadoop'
 
 export default {
   name: 'AddHadoop',
