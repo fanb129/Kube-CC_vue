@@ -2,8 +2,12 @@
   <div>
     <div style="margin-left: 10%; margin-top: 1%">
       <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 50px" @nsList="changeGid" />
-      <UserSelector ref="UserSelector" :default-uid="uid" @nsList="changeUid" />
+      <UserSelector ref="UserSelector" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
       <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
+
+      <el-button split-button trigger="click" style="margin-left: 100px" type="primary" @command="handleCommand" @click="addStatefulSet">
+        新增无状态应用
+      </el-button>
 
     </div>
     <!--    1规格   -->
@@ -133,12 +137,16 @@ import YamlApply from '@/components/YamlEditor/apply'
 import YamlCreate from '@/components/YamlEditor/create'
 import AddStatefulSet from '@/components/AddStatefulSet/index.vue'
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
+import addStatefulSet from '@/components/AddStatefulSet/index.vue'
 
 export default {
   name: 'StatefulSet',
   // eslint-disable-next-line vue/no-unused-components
   components: { NsSelector, UserSelector, GroupSelector, YamlApply, YamlCreate, AddStatefulSet },
   computed: {
+    addStatefulSet() {
+      return addStatefulSet
+    },
     ...mapGetters([
       'role',
       'u_id'

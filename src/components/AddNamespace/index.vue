@@ -5,24 +5,9 @@
         <el-input v-model="form.name" style="width: 400px" />
       </el-form-item>
       <el-form-item label="用户" prop="u_id">
-        <el-select v-model="form.u_id" filterable placeholder="请选择分配用户" @change="change">
-          <el-option
-            v-for="item in options"
-            :key="item.id"
-            :label="item.username + '\t' + item.nickname"
-            :value="item.id"
-            :disabled="role < item.role"
-          />
-          <el-pagination
-            background
-            layout="prev, pager, next"
-            :current-page="userPage"
-            :page-size="1"
-            :total="userTotal"
-            @current-change="changeUserPageNum"
-          />
-        </el-select>
+        <el-input v-model="form.name" style="width: 400px" disabled @change="change" />
       </el-form-item>
+
       <el-form-item label="过期时间" prop="expired_time">
         <el-date-picker
           v-model="form.expired_time"
@@ -31,11 +16,21 @@
         />
       </el-form-item>
       <el-form-item label="CPU" prop="cpu">
-        <el-input v-model="form.cpu" />
+        <el-input v-model="form.cpu" style="width: 400px" />
       </el-form-item>
       <el-form-item label="memory" prop="memory">
-        <el-input v-model="form.memory" />
+        <el-input v-model="form.memory" style="width: 400px" />
       </el-form-item>
+      <el-form-item label="storage" prop="storage">
+        <el-input v-model="form.storage" style="width: 400px" />
+      </el-form-item>
+      <el-form-item label="pvc" prop="pvc">
+        <el-input v-model="form.pvc" style="width: 400px" />
+      </el-form-item>
+      <el-form-item label="gpu" prop="gpu">
+        <el-input v-model="form.gpu" style="width: 400px" />
+      </el-form-item>
+
       <el-form-item label="容器数量">
         <el-input-number v-model="form.num" :min="1" @change="change" />
       </el-form-item>
@@ -75,22 +70,39 @@ export default {
         role: ''
       }],
       form: {
-        name: '',
+        /*        name: '',
         u_id: '',
+        cpu: '',
+        memory: '',*/
+
+        u_id: 1,
+        nickname: '',
         expired_time: null,
+        name: '',
+        num: '',
         cpu: '',
         memory: '',
-        num: ''
+        storage: '',
+        pvc: '',
+        gpu: ''
+
       },
       formRules: {
         name: [{ required: true, trigger: 'blur' }],
         u_id: [{ required: true, trigger: 'blur' }],
+        status: [{ required: true, trigger: 'blur' }],
         cpu: [{ required: true, trigger: 'blur' }],
-        memory: [{ required: true, trigger: 'blur' }]
+        memory: [{ required: true, trigger: 'blur' }],
+        storage: [{ required: true, trigger: 'blur' }],
+        pvc: [{ required: true, trigger: 'blur' }],
+        gpu: [{ required: true, trigger: 'blur' }]
       }
     }
   },
   methods: {
+    created() {
+      this.form = { nickname: this.name }
+    },
     init() {
       this.open = true
       this.$nextTick(() => {

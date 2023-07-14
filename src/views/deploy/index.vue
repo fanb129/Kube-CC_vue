@@ -5,13 +5,10 @@
       <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
       <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
 
-      <!--      <el-dropdown split-button trigger="click" style="margin-left: 20%" type="primary" @command="handleCommand" @click="addDeploy">
-        Add Deploy
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="a">Form</el-dropdown-item>
-          <el-dropdown-item command="b">Yaml</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>-->
+      <el-button trigger="click" style="margin-left: 100px" type="primary" @command="handleCommand" @click="addDeploy">
+        新增有状态应用
+      </el-button>
+
     </div>
     <!--    1规格   -->
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
@@ -144,11 +141,15 @@ import NsSelector from '@/components/Selector/NsSelector'
 import YamlApply from '@/components/YamlEditor/apply'
 import YamlCreate from '@/components/YamlEditor/create'
 import AddDeploy from '@/components/AddDeploy'
+import addDeploy from '@/components/AddDeploy/index.vue'
 
 export default {
   name: 'Deploy',
   components: { NsSelector, UserSelector, GroupSelector, YamlApply, YamlCreate, AddDeploy },
   computed: {
+    addDeploy() {
+      return addDeploy
+    },
     ...mapGetters([
       'role',
       'u_id'
