@@ -139,7 +139,7 @@ import { mapGetters } from 'vuex'
 import { getSparkList, deleteSpark } from '@/api/spark'
 import AddSpark from '@/components/AddSpark'
 import UserSelector from '@/components/Selector/UserSelector'
-import UpdateSpark from '@/components/AddSpark/UpdateSpark';
+import UpdateSpark from '@/components/AddSpark/UpdateSpark'
 
 export default {
   components: { AddSpark, UserSelector, UpdateSpark },
