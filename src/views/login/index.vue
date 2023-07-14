@@ -49,7 +49,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
-import {Message} from "element-ui";
+import{Message}from "element-ui";
 
 export default {
   name: 'Login',
