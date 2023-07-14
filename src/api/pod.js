@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getPodList(u_id,ns) {
+export function getPodList(u_id, ns) {
   return request({
     url: '/pod',
     method: 'get',
@@ -22,7 +22,7 @@ export function deletePod(ns, name) {
   })
 }
 
-export function getPodYaml(name,ns){
+export function getPodYaml(name, ns) {
   return request({
     url: '/pod/info',
     method: 'get',

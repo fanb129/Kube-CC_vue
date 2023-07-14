@@ -164,7 +164,7 @@ export default {
         //   avatar: ''
         // }
       ],
-      tData:[],
+      tData: [],
       allocation: [
         {
           cpu: '',
@@ -342,22 +342,22 @@ export default {
         this.page = res.page
         this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.tData = res.user_list
-        for(let i=0;i<this.tData.length;i++){
-          if(this.tData[i].role==3){
+        for (let i = 0; i < this.tData.length; i++) {
+          if (this.tData[i].role == 3) {
             this.tableData.push(this.tData[i])
           }
         }
-        for(let i=0;i<this.tData.length;i++){
-          if(this.tData[i].role==2){
+        for (let i = 0; i < this.tData.length; i++) {
+          if (this.tData[i].role == 2) {
             this.tableData.push(this.tData[i])
           }
         }
-        for(let i=0;i<this.tData.length;i++){
-          if(this.tData[i].role==1){
+        for (let i = 0; i < this.tData.length; i++) {
+          if (this.tData[i].role == 1) {
             this.tableData.push(this.tData[i])
           }
         }
-        //this.tableData.sort(function(a,b){return a.role > b.role})
+        // this.tableData.sort(function(a,b){return a.role > b.role})
         // console.log(this.total)
       })
     },
@@ -367,7 +367,7 @@ export default {
         this.tagroup=[]
         // this.tt=[]
         // this.tt = res.group_list
-        this.tagroup.push(res.group_list.map(function(item,index){
+        this.tagroup.push(res.group_list.map(function(item, index) {
             var tmp = {
               "value" : item.groupid,
               "label" : item.name,

@@ -10,6 +10,16 @@ export function getNsList(u_id) {
   })
 }
 
+export function getUserNsTotal(u_id) {
+  return request({
+    url: '/ns/total',
+    methd: 'get',
+    params: {
+      'u_id': u_id
+    }
+  })
+}
+
 export function deleteNs(ns) {
   return request({
     url: '/ns/delete/' + ns,

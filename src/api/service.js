@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getServiceList(u_id,ns) {
+export function getServiceList(u_id, ns) {
   return request({
     url: '/service',
     method: 'get',
@@ -22,7 +22,7 @@ export function deleteService(ns, name) {
   })
 }
 
-export function getServiceYaml(name,ns){
+export function getServiceYaml(name, ns) {
   return request({
     url: '/service/info',
     method: 'get',
