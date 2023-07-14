@@ -94,12 +94,14 @@
           <el-button
             size="mini"
             type="warning"
+            style="margin-left: 10px"
             @click="editDeploy(scope.row)"
           >编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
             type="danger"
+            style="margin-top: 2px"
             @click="handleDelete(scope.row)"
           >删除
           </el-button>

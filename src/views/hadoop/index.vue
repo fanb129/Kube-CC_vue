@@ -2,12 +2,11 @@
   <div>
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
       <!--      <UserSelector :default-uid="uid" @nsList="changeUid" />-->
-      <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 50px" @nsList="changeGid" />
-      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
-      <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
-      <!--      <el-button :disabled="role < 2" style="margin-left: 100px" type="primary" icon="el-icon-edit" @click="addHadoop">Add
-        Hadoop
-      </el-button>-->
+      <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 100px" @nsList="changeGid" />
+      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 100px" @nsList="changeUid" />
+      <el-button :disabled="role < 2" style="margin-left: 100px" type="primary" icon="el-icon-edit" @click="addHadoop">
+       新建 Hadoop
+      </el-button>
     </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
 
@@ -20,7 +19,6 @@
       <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
       <el-table-column width="80" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
       <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
-      <el-table-column width="150" property="expired_time" label="过期时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.expired_time }}</span></template></el-table-column>
 
       <!--      规格    -->
       <el-table-column label="用户" width="150">
@@ -101,23 +99,18 @@
       <!--   操作  -->
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-dropdown size="mini" split-button trigger="click" type="primary" style="padding: 15px" @command="handleCommand">
-            更多
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item :command="beforeHandleCommand('deploy',scope.row)">deploy</el-dropdown-item>
-              <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
           <el-button
             :disabled="role < 2"
             size="mini"
             type="warning"
+            style="margin-left: 10px"
             @click="updateHadoop(scope.row)"
           >编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
             type="danger"
+            style="margin-top: 2px"
             @click="handleDelete(scope.row)"
           >删除
           </el-button>
@@ -147,10 +140,9 @@ import AddHadoop from '@/components/AddHadoop'
 import UpdateHadoop from '@/components/AddHadoop/UpdateHadoop'
 import UserSelector from '@/components/Selector/UserSelector'
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
-import NsSelector from '@/components/Selector/NsSelector.vue'
 
 export default {
-  components: { NsSelector, GroupSelector, AddHadoop, UserSelector, UpdateHadoop },
+  components: { GroupSelector, AddHadoop, UserSelector, UpdateHadoop },
   computed: {
     ...mapGetters([
       'role',
@@ -173,7 +165,6 @@ export default {
       uid: 'uid1919810',
       gid: '',
       adid: '',
-      ns: this.$route.query.ns,
       timer: null,
       loading: false,
       openDialog: false,
@@ -186,10 +177,11 @@ export default {
 
           name: 'hadoop1',
           status: 'Connection',
-          created_at: '2023',
+          /* created_at: '2023',*/
           username: 'wqeq',
           nickname: 'qwee',
           u_id: '15353',
+          ns: this.$route.query.ns,
 
           cpu: '1',
           memory: '2',
@@ -245,10 +237,7 @@ export default {
       this.uid = u_id
       this.getHadoopList()
     },
-    changeNs: function(ns) {
-      this.ns = ns
-      this.getHadoopList()
-    },
+
     handleClose(done) {
       this.$confirm('退出到页面->')
         .then(_ => {
@@ -261,12 +250,6 @@ export default {
         this.push2deploy(command.row)
       } else if (command.command === 'service') {
         this.push2service(command.row)
-      }
-    },
-    beforeHandleCommand(item, row) {
-      return {
-        'command': item,
-        'row': row
       }
     },
     push2deploy: function(row) {

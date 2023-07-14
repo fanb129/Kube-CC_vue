@@ -1,12 +1,11 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
-      <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 50px" @nsList="changeGid" />
-      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
-      <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
-      <!--      <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addSpark">Add
-        Spark
-      </el-button>-->
+      <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 100px" @nsList="changeGid" />
+      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 100px" @nsList="changeUid" />
+      <el-button :disabled="role < 2" style="margin-left: 100px" type="primary" icon="el-icon-edit" @click="addSpark">
+        新建 Spark
+      </el-button>
     </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
 
@@ -97,23 +96,18 @@
       <!--      操作   -->
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-dropdown size="mini" split-button trigger="click" type="primary" style="padding: 15px" @command="handleCommand">
-            更多
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item :command="beforeHandleCommand('deploy',scope.row)">deploy</el-dropdown-item>
-              <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
           <el-button
             :disabled="role < 2"
             size="mini"
             type="warning"
+            style="margin-left: 10px"
             @click="updateSpark(scope.row)"
           >编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
             type="danger"
+            style="margin-top: 2px"
             @click="handleDelete(scope.row)"
           >删除
           </el-button>
@@ -187,7 +181,7 @@ export default {
           username: 'ABdoge',
           nickname: 'ABD',
           u_id: 'ABD114',
-          expired_time: null,
+          /* expired_time: null,*/
 
           cpu: '1',
           memory: '2',

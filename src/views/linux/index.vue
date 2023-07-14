@@ -148,23 +148,18 @@
       <!--      操作    -->
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <!--          <el-dropdown size="mini" split-button trigger="click" type="primary" style="padding: 15px" @command="handleCommand">
-            更多
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item :command="beforeHandleCommand('deploy',scope.row)">deploy</el-dropdown-item>
-              <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>-->
           <el-button
             :disabled="role < 2"
             size="mini"
             type="warning"
+            style="margin-left: 10px"
             @click="updateLinux(scope.row)"
           >编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
             type="danger"
+            style="margin-top: 2px"
             @click="handleDelete(scope.row)"
           >删除
           </el-button>

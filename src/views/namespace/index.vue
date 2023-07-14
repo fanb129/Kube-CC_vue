@@ -3,9 +3,9 @@
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
       <GroupSelector ref="GroupSelector" :default-uid="adid" @nsList="changeGid" />
       <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-left: 100px" @nsList="changeUid" />
-      <!--      <el-button :disabled="role < 2" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addNs">Add
-        Namespace
-      </el-button>-->
+      <el-button :disabled="role < 2" style="margin-left: 100px" type="primary" icon="el-icon-edit" @click="addNs">
+        新增工作空间
+      </el-button>
     </div>
     <!--    显示页   -->
     <!--    基本信息    -->
@@ -14,7 +14,6 @@
       <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
       <el-table-column width="100" property="status" label="状态"><template slot-scope="scope"><span>{{ scope.row.status }}</span></template></el-table-column>
       <el-table-column width="150" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.created_at }}</span></template></el-table-column>
-      <el-table-column width="150" property="expired_time" label="过期时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.expired_time }}</span></template></el-table-column>
       <!--    基本信息end-->
 
       <!--      规格    -->
@@ -45,14 +44,6 @@
       <!--      操作     -->
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-dropdown size="mini" split-button trigger="click" type="primary" style="padding: 15px" @command="handleCommand">
-            更多
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item :command="beforeHandleCommand('pod',scope.row)">pod</el-dropdown-item>
-              <el-dropdown-item :command="beforeHandleCommand('deploy',scope.row)">deploy</el-dropdown-item>
-              <el-dropdown-item :command="beforeHandleCommand('service',scope.row)">service</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
           <el-button
             :disabled="scope.row.name==='default'
               || scope.row.name==='kube-node-lease'
@@ -62,6 +53,7 @@
               || role < 2"
             size="mini"
             type="warning"
+            style="margin-left: 10px"
             @click="updateNs(scope.row)"
           >编辑</el-button>
           <el-button
@@ -73,6 +65,7 @@
               || scope.row.name==='ingress-nginx'"
             size="mini"
             type="danger"
+            style="margin-top: 2px"
             @click="handleDelete(scope.row)"
           >删除
           </el-button>
@@ -141,7 +134,7 @@ export default {
           username: '',
           nickname: '',
           u_id: 1,
-          expired_time: '',
+          /* expired_time: '',*/
 
           cpu: '',
           memory: '',

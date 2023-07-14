@@ -36,12 +36,14 @@
           <el-button
             size="mini"
             type="success"
+            style="margin-left: 10px"
             @click="restartJob(scope.row)"
           >重新启动
           </el-button>
           <el-button
             size="mini"
             type="info"
+            style="margin-top: 2px"
             @click="openLog(scope.row)"
           >打开日志
           </el-button>

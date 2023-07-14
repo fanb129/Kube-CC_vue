@@ -25,8 +25,8 @@
 
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button :disabled="role <= 2 " size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
-                <el-button :disabled="role <= 2 || scope.row.name === 'master'" size="mini" type="danger" @click="deleteNode(scope.row.name)">删除</el-button>
+                <el-button :disabled="role <= 2 " size="mini" type="success" style="margin-left: 10px" @click="pushTerminal(scope.row)"> 终端</el-button>
+                <el-button :disabled="role <= 2 || scope.row.name === 'master'" size="mini" type="danger" style="margin-top: 2px" @click="deleteNode(scope.row.name)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
