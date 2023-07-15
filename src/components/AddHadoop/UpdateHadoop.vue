@@ -81,46 +81,40 @@ export default {
       }],
       form: {
         name: '',
-        hdfs_master_replicas: '',
-        datanode_replicas: '',
-        yarn_master_replicas: '',
-        yarn_node_replicas: '',
-        u_id: '',
-        expired_time: null,
         cpu: '',
-        memory: ''
+        memory: '',
+        storage: '',
+        pvc_storage: '',
+        gpu: ''
       },
       formRules: {
-        u_id: [{ required: true, trigger: 'blur' }],
+        name: [{ required: true, trigger: 'blur' }],
+        // u_id: [{ required: true, trigger: 'blur' }],
         cpu: [{ required: true, trigger: 'blur' }],
-        memory: [{ required: true, trigger: 'blur' }]
+        memory: [{ required: true, trigger: 'blur' }],
+        storage: [{ required: true, trigger: 'blur' }],
+        pvc_storage: [{ required: true, trigger: 'blur' }],
+        gpu: [{ required: true, trigger: 'blur' }]
       }
     }
   },
   methods: {
-    init(name, uid, hdfsMaster, datanode, yarnMaster, yarnNode, expired_time, cpu, memory) {
+    init(name, cpu, memory, storage, pvc_storage, gpu) {
+      this.open = true
       this.form.name = name
-      this.form.u_id = uid
-      this.form.hdfs_master_replicas = hdfsMaster
-      this.form.datanode_replicas = datanode
-      this.form.yarn_master_replicas = yarnMaster
-      this.form.yarn_node_replicas = yarnNode
-      this.form.expired_time = new Date(expired_time)
       this.form.cpu = cpu
       this.form.memory = memory
-      this.open = true
+      this.form.storage = storage
+      this.form.pvc_storage = pvc_storage
+      this.form.gpu = gpu
       this.$nextTick(() => {
-        this.getUserList()
+        this.open = true
         this.form.name = name
-        this.form.u_id = uid
-        this.form.hdfs_master_replicas = hdfsMaster
-        this.form.datanode_replicas = datanode
-        this.form.yarn_master_replicas = yarnMaster
-        this.form.yarn_node_replicas = yarnNode
-        this.form.expired_time = new Date(expired_time)
         this.form.cpu = cpu
         this.form.memory = memory
-        this.open = true
+        this.form.storage = storage
+        this.form.pvc_storage = pvc_storage
+        this.form.gpu = gpu
       })
     },
     // 取消按钮

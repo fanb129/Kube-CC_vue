@@ -4,20 +4,23 @@
       <el-form-item label="名称" prop="name">
         <el-input v-model="form.name" style="width: 400px" />
       </el-form-item>
-      <el-form-item label='CPU' prop="cpu">
-        <el-input v-model="form.cpu" placeholder="示例:5"></el-input>
+      <el-form-item label="uid" prop="uid">
+        <el-input v-model="form.u_id" style="width: 400px" />
       </el-form-item>
-      <el-form-item label='内存' prop="memory">
-        <el-input v-model="form.memory" placeholder="示例:10Gi"></el-input>
+      <el-form-item label="CPU" prop="cpu">
+        <el-input v-model="form.cpu" placeholder="示例:5" style="width: 200px"/>
       </el-form-item>
-      <el-form-item label='存储' prop="storage">
-        <el-input v-model="form.storage" placeholder="示例:20Gi"></el-input>
+      <el-form-item label="内存" prop="memory">
+        <el-input v-model="form.memory" placeholder="示例:10Gi" style="width: 200px" /> Gi
       </el-form-item>
-      <el-form-item label='持久存储' prop="pvc_storage">
-        <el-input v-model="form.pvc_storage" placeholder="示例:20Gi"></el-input>
+      <el-form-item label="存储" prop="storage">
+        <el-input v-model="form.storage" placeholder="示例:20Gi" style="width: 200px"/> Gi
       </el-form-item>
-      <el-form-item label='Gpu' prop="gpu">
-        <el-input v-model="form.gpu" placeholder="示例:5Gi"></el-input>
+      <el-form-item label="持久存储" prop="pvc_storage">
+        <el-input v-model="form.pvc_storage" placeholder="示例:20Gi" style="width: 200px"/> Gi
+      </el-form-item>
+      <el-form-item label="Gpu" prop="gpu">
+        <el-input v-model="form.gpu" placeholder="示例:5Gi" style="width: 200px"/> Gi
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -55,7 +58,7 @@ export default {
       },
       formRules: {
         name: [{ required: true, trigger: 'blur' }],
-        // u_id: [{ required: true, trigger: 'blur' }],
+        u_id: [{ required: true, trigger: 'blur' }],
         cpu: [{ required: true, trigger: 'blur' }],
         memory: [{ required: true, trigger: 'blur' }],
         storage: [{ required: true, trigger: 'blur' }],
@@ -112,7 +115,7 @@ export default {
           return false
         }
       })
-    },
+    }
   }
 }
 </script>

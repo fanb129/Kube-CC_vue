@@ -34,7 +34,7 @@ export function updateNs(data) {
   })
 }
 
-// 用于健监控
+// 用于键监控
 export function totalNs(u_id) {
   return request({
     url: '/ns/total',

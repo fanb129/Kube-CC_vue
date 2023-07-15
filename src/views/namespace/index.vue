@@ -20,7 +20,7 @@
       <el-table-column label="CPU" width="80"><template slot-scope="scope"><span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span></template></el-table-column>
       <el-table-column label="内存" width="100"><template slot-scope="scope"><span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span></template></el-table-column>
       <el-table-column label="GPU" width="100"><template slot-scope="scope"><span>{{ scope.row.used_gpu }}/{{ scope.row.gpu }}</span></template></el-table-column>
-      <el-table-column label="临时存储" width="100"><template slot-scope="scope"><span>{{ scope.row.used_storage }}/{{ scope.row.storage }}</span></template></el-table-column>
+      <el-table-column label="存储" width="100"><template slot-scope="scope"><span>{{ scope.row.used_storage }}/{{ scope.row.storage }}</span></template></el-table-column>
       <el-table-column label="持久存储" width="100"><template slot-scope="scope"><span>{{ scope.row.used_pvc }}/{{ scope.row.pvc }}</span></template></el-table-column>
       <!--      规格end    -->
 
@@ -144,15 +144,15 @@ export default {
       this.$refs.UserSelector.g_id = this.gid
       this.$refs.UserSelector.getUserList()
     },
+    changeUid: function(u_id) {
+      this.uid = u_id
+      this.getNsList()
+    },
     beforeHandleCommand(item, row) {
       return {
         'command': item,
         'row': row
       }
-    },
-    changeUid: function(u_id) {
-      this.uid = u_id
-      this.getNsList()
     },
     changePageNum: function(val) {
       this.page = val
@@ -175,7 +175,13 @@ export default {
       console.log(row['name'])
       this.updateDialog = true
       this.$nextTick(() => {
-        this.$refs.UpdateNamespace.init(row['name'], row['cpu'], row['memory'], row['storage'], row['pvc'], row['gpu'])
+        this.$refs.UpdateNamespace.init(
+          row['name'],
+          row['cpu'],
+          row['memory'],
+          row['storage'],
+          row['pvc'],
+          row['gpu'])
       })
     },
     handleDelete: function(row) {

@@ -126,8 +126,6 @@
         @current-change="changePageNum"
       />
     </div>
-    <YamlApply ref="YamlApply" :visible.sync="applyDialog" :kind="kind" :name="yamlName" :ns="yamlNs" />
-    <YamlCreate ref="YamlCreate" :visible.sync="createDialog" :kind="kind" />
     <AddDeploy ref="AddDeploy" :visible.sync="addDialog" />
   </div>
 </template>
@@ -143,7 +141,7 @@ import addDeploy from '@/components/AddDeploy/index.vue'
 
 export default {
   name: 'Deploy',
-  components: { NsSelector, UserSelector, GroupSelector, YamlApply, YamlCreate, AddDeploy },
+  components: { NsSelector, UserSelector, GroupSelector, AddDeploy },
   computed: {
     addDeploy() {
       return addDeploy

@@ -5,7 +5,7 @@
       <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 100px" @nsList="changeGid" />
       <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 100px" @nsList="changeUid" />
       <el-button :disabled="role < 2" style="margin-left: 100px" type="primary" icon="el-icon-edit" @click="addHadoop">
-       新建 Hadoop
+        新建 Hadoop
       </el-button>
     </div>
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
@@ -174,7 +174,6 @@ export default {
       pagesize: 10,
       tableData: [
         {
-
           name: 'hadoop1',
           status: 'Connection',
           /* created_at: '2023',*/
@@ -237,38 +236,18 @@ export default {
       this.uid = u_id
       this.getHadoopList()
     },
-
+    beforeHandleCommand(item, row) {
+      return {
+        'command': item,
+        'row': row
+      }
+    },
     handleClose(done) {
       this.$confirm('退出到页面->')
         .then(_ => {
           done()
         })
         .catch(_ => {})
-    },
-    handleCommand(command) {
-      if (command.command === 'deploy') {
-        this.push2deploy(command.row)
-      } else if (command.command === 'service') {
-        this.push2service(command.row)
-      }
-    },
-    push2deploy: function(row) {
-      this.$router.push({
-        name: 'Deploy',
-        query: {
-          ns: row['name'],
-          u_id: row['u_id']
-        }
-      })
-    },
-    push2service: function(row) {
-      this.$router.push({
-        name: 'Service',
-        query: {
-          ns: row['name'],
-          u_id: row['u_id']
-        }
-      })
     },
     changePageNum: function(val) {
       this.page = val
@@ -291,14 +270,11 @@ export default {
       this.$nextTick(() => {
         this.$refs.UpdateHadoop.init(
           row['name'],
-          row['u_id'],
-          row['hdfs_master_replicas'],
-          row['datanode_replicas'],
-          row['yarn_master_replicas'],
-          row['yarn_node_replicas'],
-          row['expired_time'],
           row['cpu'],
-          row['memory']
+          row['memory'],
+          row['storage'],
+          row['pvc'],
+          row['gpu']
         )
       })
     },

@@ -122,8 +122,8 @@
         @current-change="changePageNum"
       />
     </div>
-    <YamlApply ref="YamlApply" :visible.sync="applyDialog" :kind="kind" :name="yamlName" :ns="yamlNs" />
-    <YamlCreate ref="YamlCreate" :visible.sync="createDialog" :kind="kind" />
+    <!--    <YamlApply ref="YamlApply" :visible.sync="applyDialog" :kind="kind" :name="yamlName" :ns="yamlNs" />
+    <YamlCreate ref="YamlCreate" :visible.sync="createDialog" :kind="kind" />-->
     <AddDeploy ref="AddDeploy" :visible.sync="addDialog" />
   </div>
 </template>
@@ -140,7 +140,7 @@ import addStatefulSet from '@/components/AddStatefulSet/index.vue'
 export default {
   name: 'StatefulSet',
   // eslint-disable-next-line vue/no-unused-components
-  components: { NsSelector, UserSelector, GroupSelector, YamlApply, YamlCreate, AddStatefulSet },
+  components: { NsSelector, UserSelector, GroupSelector, AddStatefulSet },
   computed: {
     addStatefulSet() {
       return addStatefulSet

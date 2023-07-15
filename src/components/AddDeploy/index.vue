@@ -1,24 +1,9 @@
 <template>
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="60%">
-    <!--    <el-form ref="service" :model="service" label-width="100px">-->
-    <!--      <span>Metadata</span>-->
-    <!--      <el-form-item label="Name">-->
-    <!--        <el-input v-model="service.metadata.name"></el-input>-->
-    <!--      </el-form-item>-->
-    <!--      <el-form-item label="Namespace">-->
     <div>
       <UserSelectorNoNil ref="UserSelector" :default-uid="uid" @nsList="changeUid" />
       <NsSelectorNoNil ref="NsSelector" v-model="form.metadata.namespace" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
     </div>
-    <!--      </el-form-item>-->
-    <!--      <el-form-item label="Labels">-->
-    <!--        <el-input v-model="service.metadata.labels"></el-input>-->
-    <!--      </el-form-item>-->
-    <!--    </el-form>-->
-    <!--    <div>-->
-    <!--      <el-button type="primary" @click="createYaml">Create</el-button>-->
-    <!--      <el-button @click="cancel">Cancel</el-button>-->
-    <!--    </div>-->
 
     <dynamic-form
       ref="dynamic-form"

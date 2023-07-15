@@ -61,8 +61,6 @@
         @current-change="changePageNum"
       />
     </div>
-    <YamlApply ref="YamlApply" :visible.sync="applyDialog" :kind="kind" :name="yamlName" :ns="yamlNs" />
-    <YamlCreate ref="YamlCreate" :visible.sync="createDialog" :kind="kind" />
     <AddDeploy ref="AddDeploy" :visible.sync="addDialog" />
   </div>
 </template>
@@ -78,7 +76,7 @@ import row from 'element-ui/packages/row'
 export default {
   name: 'Job',
   // eslint-disable-next-line vue/no-unused-components
-  components: { NsSelector, UserSelector, GroupSelector, YamlApply, YamlCreate },
+  components: { NsSelector, UserSelector, GroupSelector },
   computed: {
     row() {
       return row
