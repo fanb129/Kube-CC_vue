@@ -1,60 +1,62 @@
 <template>
   <div class="monitor">
     <div class="selector">
-      <span><p>这是用来选择用户的地方</p></span>
+      <!-- <GroupSelector ref="GroupSelector" :default-uid="adid" @nsList="changeGid" />
+      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" @nsList="changeUid" /> -->
+      <p>这是超管按钮的地方</p>
     </div>
     <div class="dashboard">
       <el-table :data="cur_res" stripe style="width: 100%">
-        <el-table-column label="CPU使用率" align="center">
+        <el-table-column label="当前CPU使用率" align="center">
           <template slot-scope="scope">
             <div :id="scope.row.cpu" style="width: 180px;height: 180px" />
           </template>
         </el-table-column>
-        <el-table-column label="GPU使用率" align="center">
+        <el-table-column label="当前GPU使用率" align="center">
           <template slot-scope="scope">
             <div :id="scope.row.gpu" style="width: 180px;height: 180px" />
           </template>
         </el-table-column>
-        <el-table-column label="内存使用率" align="center">
+        <el-table-column label="当前内存使用率" align="center">
           <template slot-scope="scope">
             <div :id="scope.row.memory" style="width: 180px;height: 180px" />
           </template>
         </el-table-column>
-        <el-table-column label="存储使用率" align="center">
+        <el-table-column label="当前存储使用率" align="center">
           <template slot-scope="scope">
             <div :id="scope.row.pvc" style="width: 180px;height: 180px" />
           </template>
         </el-table-column>
-        <el-table-column label="缓存使用率" align="center">
+        <el-table-column label="当前缓存使用率" align="center">
           <template slot-scope="scope">
             <div :id="scope.row.storage" style="width: 180px;height: 180px" />
           </template>
         </el-table-column>
       </el-table>
       <el-table :data="cur_res_ns" stripe style="width: 100%">
-        <el-table-column label="CPU占比" align="center">
+        <el-table-column label="当前CPU工作空间占比" align="center">
           <template slot-scope="scope">
-            <div :id="scope.row.cpu_ns" style="width: 300px;height: 300px" />
+            <div :id="scope.row.cpu_ns" style="width: 220px;height: 200px" />
           </template>
         </el-table-column>
-        <el-table-column label="CPU占比" align="center">
+        <el-table-column label="当前GPU工作空间占比" align="center">
           <template slot-scope="scope">
-            <div :id="scope.row.gpu_ns" style="width: 300px;height: 300px" />
+            <div :id="scope.row.gpu_ns" style="width: 220px;height: 200px" />
           </template>
         </el-table-column>
-        <el-table-column label="CPU占比" align="center">
+        <el-table-column label="当前内存工作空间占比" align="center">
           <template slot-scope="scope">
-            <div :id="scope.row.memory_ns" style="width: 300px;height: 300px" />
+            <div :id="scope.row.memory_ns" style="width: 220px;height: 200px" />
           </template>
         </el-table-column>
-        <el-table-column label="CPU占比" align="center">
+        <el-table-column label="当前存储工作空间占比" align="center">
           <template slot-scope="scope">
-            <div :id="scope.row.pvc_ns" style="width: 300px;height: 300px" />
+            <div :id="scope.row.pvc_ns" style="width: 220px;height: 200px" />
           </template>
         </el-table-column>
-        <el-table-column label="CPU占比" align="center">
+        <el-table-column label="当前缓存工作空间占比" align="center">
           <template slot-scope="scope">
-            <div :id="scope.row.storage_ns" style="width: 300px;height: 300px" />
+            <div :id="scope.row.storage_ns" style="width: 220px;height: 200px" />
           </template>
         </el-table-column>
       </el-table>
@@ -63,9 +65,24 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { getNsList, getUserNsTotal } from '@/api/namespace'
+// import UserSelector from '@/components/Selector/UserSelector'
+// import GroupSelector from '@/components/Selector/GroupSelector.vue'
+
 export default {
+  // components: { UserSelector, GroupSelector },
   data() {
     return {
+      // 饼图
+      uid: '',
+      ns_length: '',
+      ns_list: [],
+      cpu_ns_list: [],
+      gpu_ns_list: [],
+      memory_ns_list: [],
+      pvc_ns_list: [],
+      storage_ns_list: [],
       cur_res: [
         {
           cpu: 'CPU',
@@ -86,14 +103,22 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapGetters([
+      'role',
+      'u_id'
+    ])
+  },
   // 钩子函数，挂载初始化函数
   created() {
+    this.uid = this.$route.query.u_id || this.u_id
     this.init()
   },
   methods: {
     init() {
       setTimeout(_ => {
         this.cur_res.forEach(_ => {
+          this.getUserNsTotal(this.uid)
           this.draw_cpu()
           this.draw_gpu()
           this.draw_memory()
@@ -101,13 +126,14 @@ export default {
           this.draw_storage()
         })
         this.cur_res_ns.forEach(_ => {
+          this.getNsList(this.uid)
           this.draw_cpu_ns()
           this.draw_gpu_ns()
           this.draw_memory_ns()
           this.draw_pvc_ns()
           this.draw_storage_ns()
         })
-      }, 1000)
+      }, 500)
     },
     draw_cpu() {
       // 初始化Echarts实例
@@ -117,7 +143,7 @@ export default {
         series: [
           {
             radius: '95%',
-            center: ['50%', '50%'],
+            center: ['50%', '55%'],
             type: 'gauge',
             axisLine: {
               lineStyle: {
@@ -167,8 +193,7 @@ export default {
             },
             data: [
               {
-                value: 70,
-                name: CPU
+                value: 70
               }
             ]
           }
@@ -199,7 +224,7 @@ export default {
         series: [
           {
             radius: '95%',
-            center: ['50%', '50%'],
+            center: ['50%', '55%'],
             type: 'gauge',
             axisLine: {
               lineStyle: {
@@ -281,7 +306,7 @@ export default {
         series: [
           {
             radius: '95%',
-            center: ['50%', '50%'],
+            center: ['50%', '55%'],
             type: 'gauge',
             axisLine: {
               lineStyle: {
@@ -363,7 +388,7 @@ export default {
         series: [
           {
             radius: '95%',
-            center: ['50%', '50%'],
+            center: ['50%', '55%'],
             type: 'gauge',
             axisLine: {
               lineStyle: {
@@ -445,7 +470,7 @@ export default {
         series: [
           {
             radius: '95%',
-            center: ['50%', '50%'],
+            center: ['50%', '55%'],
             type: 'gauge',
             axisLine: {
               lineStyle: {
@@ -527,7 +552,8 @@ export default {
         tooltip: {
           trigger: 'item'
         },
-        legend: {
+        legend: { // 图例
+          show: false,
           top: '5%',
           left: 'center'
         },
@@ -544,25 +570,27 @@ export default {
             },
             label: {
               show: false,
-              position: 'center'
+              position: 'center',
+              fontSize: 15
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: 40,
+                fontSize: 14,
                 fontWeight: 'bold'
               }
             },
-            labelLine: {
+            labelLine: { // 引导线
               show: false
             },
-            data: [
-              { value: 1048, name: 'Search Engine' },
-              { value: 735, name: 'Direct' },
-              { value: 580, name: 'Email' },
-              { value: 484, name: 'Union Ads' },
-              { value: 300, name: 'Video Ads' }
-            ]
+            data: this.cpu_ns_list
+            // data: [
+            //   { value: 1048, name: 'Search Engine' },
+            //   { value: 735, name: 'Direct' },
+            //   { value: 580, name: 'Email' },
+            //   { value: 484, name: 'Union Ads' },
+            //   { value: 300, name: 'Video Ads' }
+            // ]
           }
         ]
       }
@@ -579,6 +607,7 @@ export default {
           trigger: 'item'
         },
         legend: {
+          show: false,
           top: '5%',
           left: 'center'
         },
@@ -595,25 +624,27 @@ export default {
             },
             label: {
               show: false,
-              position: 'center'
+              position: 'center',
+              fontSize: 15
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: 40,
+                fontSize: 14,
                 fontWeight: 'bold'
               }
             },
             labelLine: {
               show: false
             },
-            data: [
-              { value: 1048, name: 'Search Engine' },
-              { value: 735, name: 'Direct' },
-              { value: 580, name: 'Email' },
-              { value: 484, name: 'Union Ads' },
-              { value: 300, name: 'Video Ads' }
-            ]
+            data: this.gpu_ns_list
+            // data: [
+            //   { value: 1048, name: 'Search Engine' },
+            //   { value: 735, name: 'Direct' },
+            //   { value: 580, name: 'Email' },
+            //   { value: 484, name: 'Union Ads' },
+            //   { value: 300, name: 'Video Ads' }
+            // ]
           }
         ]
       }
@@ -630,6 +661,7 @@ export default {
           trigger: 'item'
         },
         legend: {
+          show: false,
           top: '5%',
           left: 'center'
         },
@@ -646,25 +678,27 @@ export default {
             },
             label: {
               show: false,
-              position: 'center'
+              position: 'center',
+              fontSize: 15
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: 40,
+                fontSize: 14,
                 fontWeight: 'bold'
               }
             },
             labelLine: {
               show: false
             },
-            data: [
-              { value: 1048, name: 'Search Engine' },
-              { value: 735, name: 'Direct' },
-              { value: 580, name: 'Email' },
-              { value: 484, name: 'Union Ads' },
-              { value: 300, name: 'Video Ads' }
-            ]
+            data: this.memory_ns_list
+            // data: [
+            //   { value: 1048, name: 'Search Engine' },
+            //   { value: 735, name: 'Direct' },
+            //   { value: 580, name: 'Email' },
+            //   { value: 484, name: 'Union Ads' },
+            //   { value: 300, name: 'Video Ads' }
+            // ]
           }
         ]
       }
@@ -681,6 +715,7 @@ export default {
           trigger: 'item'
         },
         legend: {
+          show: false,
           top: '5%',
           left: 'center'
         },
@@ -697,25 +732,27 @@ export default {
             },
             label: {
               show: false,
-              position: 'center'
+              position: 'center',
+              fontSize: 15
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: 40,
+                fontSize: 14,
                 fontWeight: 'bold'
               }
             },
             labelLine: {
               show: false
             },
-            data: [
-              { value: 1048, name: 'Search Engine' },
-              { value: 735, name: 'Direct' },
-              { value: 580, name: 'Email' },
-              { value: 484, name: 'Union Ads' },
-              { value: 300, name: 'Video Ads' }
-            ]
+            data: this.pvc_ns_list
+            // data: [
+            //   { value: 1048, name: 'Search Engine' },
+            //   { value: 735, name: 'Direct' },
+            //   { value: 580, name: 'Email' },
+            //   { value: 484, name: 'Union Ads' },
+            //   { value: 300, name: 'Video Ads' }
+            // ]
           }
         ]
       }
@@ -732,6 +769,7 @@ export default {
           trigger: 'item'
         },
         legend: {
+          show: false,
           top: '5%',
           left: 'center'
         },
@@ -748,12 +786,13 @@ export default {
             },
             label: {
               show: false,
-              position: 'center'
+              position: 'center',
+              fontSize: 15
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: 40,
+                fontSize: 14,
                 fontWeight: 'bold'
               }
             },
@@ -773,18 +812,51 @@ export default {
       // 防止越界，重绘canvas
       window.onresize = Storage_NS.resize
       Storage_NS.setOption(option)// 设置option
+    },
+    // changeGid: function(g_id) {
+    //   this.gid = g_id
+    //   this.$refs.UserSelector.u_id = ''
+    //   this.$refs.UserSelector.g_id = this.gid
+    //   this.$refs.UserSelector.getUserList()
+    // },
+    // changeUid: function(u_id) {
+    //   this.uid = u_id
+    //   this.$refs.NsSelector.u_id = this.uid
+    //   this.$refs.NsSelector.getNsList()
+    //   this.getDeployList()
+    // },
+    // 饼图数据
+    getNsList: function(u_id) {
+      getNsList(u_id).then((res) => {
+        this.ns_length = res.length
+        // console.log(this.ns_length)
+        for (let i = 0; i < this.ns_length; i++) {
+          this.ns_list.push(res.ns_list[i])
+        }
+        for (let i = 0; i < this.ns_length; i++) {
+          this.cpu_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedCpuValue })
+        }
+        // console.log(JSON.parse(JSON.stringify(this.cpu_ns_list)))
+        for (let i = 0; i < this.ns_length; i++) {
+          this.gpu_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedCpuValue })
+        }
+        for (let i = 0; i < this.ns_length; i++) {
+          this.memory_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedCpuValue })
+        }
+        for (let i = 0; i < this.ns_length; i++) {
+          this.pvc_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedCpuValue })
+        }
+        for (let i = 0; i < this.ns_length; i++) {
+          this.storage_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedCpuValue })
+        }
+      })
+    },
+    // 仪表盘数据
+    getUserNsTotal: function(u_id) {
+      getUserNsTotal(u_id).then((res) => {
+
+      })
     }
   }
 }
 </script>
-
-<style>
-    /* .monitor {
-        width: 100%;
-        height: 900px;
-    }
-    .dashboard {
-        width: 100%;
-        height: 40%;
-    } */
-</style>

@@ -71,6 +71,18 @@ export const constantRoutes = [
       meta: { title: ' 首页', icon: 'el-icon-s-home' }
     }]
   },
+
+  {
+    path: '/monitor',
+    component: Layout,
+    children: [{
+      path: '/index',
+      name: 'Monitor',
+      component: () => import('@/views/monitor/index'),
+      meta: { title: '监控', icon: 'dashboard' }
+    }]
+  },
+
   { path: '/node',
     component: Layout,
     redirect: '/node',
