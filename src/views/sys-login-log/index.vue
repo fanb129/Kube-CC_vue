@@ -1,21 +1,23 @@
 
 <template>
   <div>
-    <el-table :data="sysloginlogList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-        <el-table-column
-          label="用户名"
-          align="center"
-          prop="username"
-          :show-overflow-tooltip="true"
-        />
+    
+    <el-table :data="tableData" style='width: 100%'>
+      <el-table-column 
+        type="selection" 
+        width="55" 
+        align="center" 
+      />
 
-        <el-table-column
-          label="类型"
-          align="center"
-          prop="msg"
-          :show-overflow-tooltip="true"
-        />
+      <el-table-column label='ID'  align="center" width='100' type="index">
+
+      </el-table-column>
+      
+      <el-table-column label='用户名'  align="center" width='150'>
+        <template slot-scope='scope'>
+          <span>{{ scope.row.username }}</span> 
+        </template>
+      </el-table-column>
 
         <el-table-column
           label="状态"
@@ -24,32 +26,12 @@
           :formatter="statusFormat"
           width="100"
         >
-
           <template slot-scope="scope">
             {{ statusFormat(scope.row) }}
           </template>
+          在线
         </el-table-column>
-
-        <el-table-column
-          label="ip地址"
-          align="center"
-          prop="ipaddr"
-        >
-          <template slot-scope="scope">
-            <el-popover trigger="hover" placement="top">
-              <p>IP: {{ scope.row.ipaddr }}</p>
-              <p>归属地: {{ scope.row.loginLocation }}</p>
-              <p>浏览器: {{ scope.row.browser }}</p>
-              <p>系统: {{ scope.row.os }}</p>
-              <p>固件: {{ scope.row.platform }}</p>
-              <div slot="reference" class="name-wrapper">
-                {{ scope.row.ipaddr }}
-              </div>
-            </el-popover>
-          </template>
-        </el-table-column>
-
-        <el-table-column
+ <el-table-column
           label="登录时间"
           align="center"
           prop="loginTime"
@@ -59,6 +41,25 @@
             <span>{{ parseTime(scope.row.loginTime) }}</span>
           </template>
         </el-table-column>
+        <el-table-column
+          label="ip地址"
+          align="center"
+          prop="ipaddr"
+          >
+          <template slot-scope="scope">
+            <el-popover trigger="hover" placement="top">
+              <p>IP: {{ scope.row.ipaddr }}</p>
+              <p>归属地: {{ scope.row.loginLocation }}</p>
+              <p>浏览器: {{ scope.row.browser }}</p>
+              <p>系统: {{ scope.row.os }}</p>
+              <div slot="reference" class="name-wrapper">
+                {{ scope.row.ipaddr }}
+              </div>
+            </el-popover>
+          </template>
+        </el-table-column>
+
+       
 
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="scope">
@@ -87,36 +88,51 @@
 <script>
 import { delSysLoginlog, getSysLoginlog, listSysLoginlog } from '@/api/sys-login-log'
 
+
 export default {
   name: 'SysLoginLogManage',
   components: {
   },
+  created() {
+    this.getList()
+    this.getDicts('sys_common_status').then(response => {
+      this.statusOptions = response.data
+    })
+  },
   data() {
     return {
-      // 遮罩层
       loading: true,
-      // 选中数组
       ids: [],
-      // 非单个禁用
       single: true,
-      // 非多个禁用
       multiple: true,
-      // 总条数
       total: 0,
-      // 弹出层标题
       title: '',
-      // 是否显示弹出层
       open: false,
       isEdit: false,
       fileOpen: false,
       fileIndex: undefined,
-      // 类型数据字典
       typeOptions: [],
-      sysloginlogList: [],
-      statusOptions: [],
-      // 关系表类型
 
-      // 查询参数
+      sysloginlogList: [
+        {
+          id: '',
+          username: '',
+          nickname: '',
+          
+        }
+      ],
+      tableData: [
+        // {
+        //   id: '',
+        //   username: '',
+        //   nickname: '',
+        //   role: '',
+        //   created_at: '',
+        //   updated_at: '',
+        //   avatar: ''
+        // }
+      ],
+      statusOptions: [],
       queryParams: {
         pageIndex: 1,
         pageSize: 10,
@@ -126,20 +142,15 @@ export default {
         loginLocation: undefined,
         createdAtOrder: 'desc'
       },
-      // 表单参数
       form: {
       },
-      // 表单校验
       rules: {
       }
     }
   },
-  created() {
-    this.getList()
-    this.getDicts('sys_common_status').then(response => {
-      this.statusOptions = response.data
-    })
-  },
+  
+  
+  
   methods: {
     /** 查询参数列表 */
     getList() {

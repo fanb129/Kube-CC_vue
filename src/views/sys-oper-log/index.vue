@@ -1,7 +1,7 @@
+
 <template>
-  <BasicLayout>
-    <template #wrapper>
-      <el-card class="box-card">
+  <div>
+  
         <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
           <el-form-item label="状态" prop="status">
             <el-select
@@ -19,6 +19,7 @@
               />
             </el-select>
           </el-form-item>
+          
           <el-form-item label="创建时间">
             <el-date-picker
               v-model="dateRange"
@@ -32,6 +33,7 @@
               value-format="yyyy-MM-dd HH:mm:ss"
             />
           </el-form-item>
+
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -60,7 +62,7 @@
           </el-col>
         </el-row>
 
-        <el-table v-loading="loading" :data="list" border @selection-change="handleSelectionChange">
+         <el-table  :data="list" border @selection-change="handleSelectionChange"> 
           <el-table-column type="selection" width="55" align="center" />
           <el-table-column label="编号" width="70" prop="id" />
           <el-table-column
@@ -90,6 +92,7 @@
               </el-popover>
             </template>
           </el-table-column>
+
           <el-table-column
             label="操作人员"
             prop="operName"
@@ -135,10 +138,10 @@
           :page.sync="queryParams.pageIndex"
           :limit.sync="queryParams.pageSize"
           @pagination="getList"
-        />
+        />  
 
-        <!-- 操作日志详细 -->
-        <el-dialog title="操作日志详细" :visible.sync="open" width="700px" :close-on-click-modal="false">
+      
+         <el-dialog title="操作日志详细" :visible.sync="open" width="700px" :close-on-click-modal="false">
           <el-form ref="form" :model="form" label-width="100px" size="mini">
             <el-row>
               <el-col :span="24">
@@ -179,10 +182,10 @@
           <div slot="footer" class="dialog-footer">
             <el-button @click="open = false">关 闭</el-button>
           </div>
-        </el-dialog>
-      </el-card>
-    </template>
-  </BasicLayout>
+        </el-dialog> -->
+
+    
+  </div>
 </template>
 
 <script>
@@ -231,7 +234,7 @@ export default {
     })
   },
   methods: {
-    /** 查询登录日志 */
+//     /** 查询登录日志 */
     getList() {
       this.loading = true
       listSysOperlog(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
@@ -241,32 +244,32 @@ export default {
       }
       )
     },
-    // 操作日志状态字典翻译
+//     // 操作日志状态字典翻译
     statusFormat(row, column) {
       return this.selectDictLabel(this.statusOptions, row.status)
     },
-    /** 搜索按钮操作 */
+//     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageIndex = 1
       this.getList()
     },
-    /** 重置按钮操作 */
+//     /** 重置按钮操作 */
     resetQuery() {
       this.dateRange = []
       this.resetForm('queryForm')
       this.handleQuery()
     },
-    // 多选框选中数据
+//     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
       this.multiple = !selection.length
     },
-    /** 详细按钮操作 */
+//     /** 详细按钮操作 */
     handleView(row) {
       this.open = true
       this.form = row
     },
-    /** 删除按钮操作 */
+//     /** 删除按钮操作 */
     handleDelete(row) {
       const operIds = (row.id && [row.id]) || this.ids
       this.$confirm('是否确认删除日志编号为"' + operIds + '"的数据项?', '警告', {
@@ -285,7 +288,7 @@ export default {
         }
       }).catch(function() {})
     },
-    /** 清空按钮操作 */
+//     /** 清空按钮操作 */
     handleClean() {
       this.$confirm('是否确认清空所有操作日志数据项?', '警告', {
         confirmButtonText: '确定',
@@ -303,32 +306,31 @@ export default {
         }
       }).catch(function() {})
     },
-    /** 导出按钮操作 */
-    handleExport() {
-      // const queryParams = this.queryParams
-      this.$confirm('是否确认导出所有操作日志数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['日志编号', '系统模块', '操作类型', '请求方式', '操作人员', '主机', '操作地点', '操作状态', '操作url', '操作日期']
-          const filterVal = ['ID', 'title', 'businessType', 'method', 'operName', 'operIp', 'operLocation', 'status', 'operUrl', 'operTime']
-          const list = this.list
-          const data = formatJson(filterVal, list)
-          excel.export_json_to_excel({
-            header: tHeader,
-            data,
-            filename: '操作日志',
-            autoWidth: true, // Optional
-            bookType: 'xlsx' // Optional
-          })
-          this.downloadLoading = false
-        })
-      })
-    }
+//     /** 导出按钮操作 */
+//     handleExport() {
+//       // const queryParams = this.queryParams
+//       this.$confirm('是否确认导出所有操作日志数据项?', '警告', {
+//         confirmButtonText: '确定',
+//         cancelButtonText: '取消',
+//         type: 'warning'
+//       }).then(() => {
+//         this.downloadLoading = true
+//         import('@/vendor/Export2Excel').then(excel => {
+//           const tHeader = ['日志编号', '系统模块', '操作类型', '请求方式', '操作人员', '主机', '操作地点', '操作状态', '操作url', '操作日期']
+//           const filterVal = ['ID', 'title', 'businessType', 'method', 'operName', 'operIp', 'operLocation', 'status', 'operUrl', 'operTime']
+//           const list = this.list
+//           const data = formatJson(filterVal, list)
+//           excel.export_json_to_excel({
+//             header: tHeader,
+//             data,
+//             filename: '操作日志',
+//             autoWidth: true, // Optional
+//             bookType: 'xlsx' // Optional
+//           })
+//           this.downloadLoading = false
+//         })
+//       })
+//     }
   }
 }
 </script>
-

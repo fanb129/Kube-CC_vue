@@ -31,34 +31,7 @@ import Layout from '@/layout'
  * all roles can be accessed
  */
 export const constantRoutes = [
-  {
-    path: '/log',
-    component: Layout,
-    redirect: '',
-    name: 'Log',  
-    meta: { title: 'Log', icon: 'tree' },
-    children: [
-      {
-        path: 'login-log',
-        name: 'Login-log',
-        component: () => import('@/views/sys-login-log/index'),
-        meta: { title: 'LoginLog', icon: '' }
-      },
-      {
-        path: 'oper-log',
-        name: 'Oper-log',
-        component: () => import('@/views/sys-login-log/index'),
-        meta: { title: 'OperationLog', icon: '' }
-      },
-      {
-        path: 'run-log',
-        name: 'Run-log',
-        component: () => import('@/views/user/index'),
-        meta: { title: 'RunningLog', icon: '' }
-      },
-     
-    ]
-  },
+  
   {
     path: '/podterminal',
     component: Layout,
@@ -312,6 +285,34 @@ export const constantRoutes = [
         path: 'https://github.com/fanb129/Kube-CC_vue',
         meta: { title: 'Kube-CC_vue', icon: 'link' }
       }
+    ]
+  },
+  {
+    path: '/log',
+    component: Layout,
+    redirect: '',
+    name: 'Log',  
+    meta: { title: 'Log', icon: 'table' },
+    children: [
+      {
+        path: 'login-log',
+        name: 'Login-log',
+        component: () => import('@/views/sys-login-log/index'),
+        meta: { title: 'Login Log', icon: 'table' }
+      },
+      {
+        path: 'oper-log',
+        name: 'Oper-log', 
+        component: () => import('@/views/sys-oper-log/index'),
+        meta: { title: 'Operation Log', icon: 'table' }
+      },
+      {
+        path: 'run-log',
+        name: 'Run-log',
+        component: () => import('@/views/sys-run-log/index'),
+        meta: { title: 'Running Log', icon: 'table' }
+      },
+     
     ]
   },
 

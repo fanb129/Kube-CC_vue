@@ -25,7 +25,7 @@
       <el-table-column label='用户名' width='150'>
         <template slot-scope='scope'>
           <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.username }}</span>
+          <span>{{ scope.row.username }}</span> 
         </template>
       </el-table-column>
 
