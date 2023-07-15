@@ -65,7 +65,7 @@
           <el-button :disabled="role <= 1 || role < scope.row['role'] || (role == scope.row['role'] && u_id != scope.row['id'])" size='mini' type="warning" @click='Resetpsd(scope.row)'>重置密码</el-button>
           <el-button :disabled="role <= 1 || role < scope.row['role'] || (role == scope.row['role'] && u_id != scope.row['id'])" size='mini' type="warning" @click='showDialog(scope.row["id"])'> 权限修改</el-button>
           <el-button :disabled="role <= 1 || role < scope.row['role'] || (role == scope.row['role'] && u_id != scope.row['id'])" size='mini' type="warning" @click='showDialogP(scope.row)'> 配额修改</el-button>
-          <el-button :disabled="role <= 1 || role < scope.row['role'] || (role == scope.row['role'] && u_id != scope.row['id'])" size='mini' type='danger' @click='handleDelete(scope.row)'>删除</el-button>
+          <el-button :disabled="role <= 1 || role < scope.row['role'] || (role == scope.row['role'] && u_id != scope.row['id']) || u_id == scope.row['id']" size='mini' type='danger' @click='handleDelete(scope.row)'>删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -106,6 +106,13 @@
         <el-form-item label='Gpu' :label-width='formLabelWidth'>
           <el-input v-model="inputgpu" placeholder="示例:5"></el-input>
         </el-form-item>
+        <el-form-item label="过期时间" :label-width='formLabelWidth'>
+          <el-date-picker
+            v-model="inputexptime"
+            type="datetime"
+            placeholder="选择日期时间">
+          </el-date-picker>
+      </el-form-item>
       </el-form>
       <div slot='footer' class='dialog-footer'>
         <el-button @click='statusDialogPVisible = false'>取 消</el-button>
@@ -154,6 +161,7 @@ export default {
       inputstorage: '',
       inputpvcstorage: '',
       inputgpu: '',
+      inputexptime:'',
       changepagebutton: false,
       rolelist: ['普通用户', '管理员', '超级管理员'],
       tagroup: [
@@ -176,7 +184,8 @@ export default {
           memory: '',
           storage: '',
           pvcstorage: '',
-          gpu: ''
+          gpu: '',
+          expired_time: ''
         }
       ],
       tagroupuser: [
@@ -259,11 +268,40 @@ export default {
       this.allocation[0].storage = ''
       this.allocation[0].pvcstorage = ''
       this.allocation[0].gpu = ''
+      this.allocation[0].exptime = ''
       this.inputcpu = row['cpu']
       this.inputmemory = row['memory']
       this.inputstorage = row['storage']
       this.inputpvcstorage = row['pvcstorage']
       this.inputgpu = row['gpu']
+
+      let t = new Date(row['expired_time'])
+      //console.log(typeof(t))
+ 
+      //年
+      var year = t.getFullYear();
+      //月
+      var month = t.getMonth() + 1;
+      //日
+      var strDate = t.getDate();
+      //时
+      var hour = t.getHours();
+      //分
+      var minute = t.getMinutes();
+      //秒
+      var second = t.getSeconds();
+      
+      month = month > 9 ? month : '0' + month
+      
+      strDate = strDate > 9 ? strDate : '0' + strDate
+      
+      hour = hour > 9 ? hour : '0' + hour
+      
+      minute = minute > 9 ? minute : '0' + minute
+      
+      second = second > 9 ? second : '0' + second
+      this.inputexptime = year + '-' + month + '-' + strDate + ' ' + hour + ':' + minute + ':' + second
+      console.log(this.inputexptime)
       this.statusDialogPVisible = true
       tu_id = row['id']
     },
@@ -273,6 +311,37 @@ export default {
       this.allocation[0].storage = this.inputstorage
       this.allocation[0].pvcstorage = this.inputpvcstorage
       this.allocation[0].gpu = this.inputgpu
+
+      let t = new Date(this.inputexptime)
+      //console.log(typeof(t))
+ 
+      //年
+      var year = t.getFullYear();
+      //月
+      var month = t.getMonth() + 1;
+      //日
+      var strDate = t.getDate();
+      //时
+      var hour = t.getHours();
+      //分
+      var minute = t.getMinutes();
+      //秒
+      var second = t.getSeconds();
+      
+      month = month > 9 ? month : '0' + month
+      
+      strDate = strDate > 9 ? strDate : '0' + strDate
+      
+      hour = hour > 9 ? hour : '0' + hour
+      
+      minute = minute > 9 ? minute : '0' + minute
+      
+      second = second > 9 ? second : '0' + second
+      this.inputexptime = year + '-' + month + '-' + strDate + ' ' + hour + ':' + minute + ':' + second
+      //console.log(this.inputexptime)
+
+      this.allocation[0].expired_time = this.inputexptime
+      console.log(this.allocation[0].expired_time)
       this.$confirm('确认更改此用户资源配额?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
