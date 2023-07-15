@@ -1,6 +1,11 @@
 <template>
   <div>
-    <el-tabs v-model="activeName" @tab-click="handleClick" style="margin-left: 1vh; margin-right: 1vh">
+    <el-tabs v-model="activeName" style="margin-left: 1vh; margin-right: 1vh" @tab-click="handleClick">
+      <el-tab-pane name="first" label="资源面板">
+        <div>
+          <node-column />
+        </div>
+      </el-tab-pane>
       <el-tab-pane name="second" label="控制面板">
         <div>
           <div style="margin-left: 10%; margin-top: 1%; flex: auto">
@@ -9,63 +14,22 @@
             </el-button>
           </div>
           <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
-            <!-- <el-table :data='tableData' style='width: 100%'> -->
-            <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
 
-            <el-table-column label="ID" width="100" type="index">
-              <!--        <template slot-scope="scope">-->
-              <!--          &lt;!&ndash; <i class='el-icon-time'></i> &ndash;&gt;-->
-              <!--          <span style="margin-left: 10px">{{ scope.$index + 1 }}</span>-->
-              <!--        </template>-->
-            </el-table-column>
-
-            <el-table-column label="主机名" width="120">
-              <template slot-scope="scope">
-                <!-- <i class='el-icon-time'></i> -->
-                <span>{{ scope.row.name }}</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="ip" width="150">
-              <template slot-scope="scope">
-                <!-- <i class='el-icon-time'></i> -->
-                <span>{{ scope.row.ip }}</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="Ready" width="120">
-              <template slot-scope="scope">
-                <!-- <i class='el-icon-time'></i> -->
-                <span>{{ scope.row.ready }}</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="创建时间" width="200">
-              <template slot-scope="scope">
-                <!-- <i class='el-icon-time'></i> -->
-                <span>{{ scope.row.created_at }}</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="CPU" width="100">
-              <template slot-scope="scope">
-                <!-- <i class='el-icon-time'></i> -->
-                <span>{{ scope.row.cpu }}</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="Memory" width="200">
-              <template slot-scope="scope">
-                <!-- <i class='el-icon-time'></i> -->
-                <span>{{ scope.row.memory }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column label="ID" width="60" type="index" />
+            <el-table-column label="主机名" width="100"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+            <el-table-column label="ip地址" width="130"><template slot-scope="scope"><span>{{ scope.row.ip }}</span></template></el-table-column>
+            <el-table-column label="就绪" width="100"><template slot-scope="scope"><span>{{ scope.row.ready }}</span></template></el-table-column>
+            <el-table-column label="创建时间" width="150"><template slot-scope="scope"><span>{{ scope.row.created_at }}</span></template></el-table-column>
+            <el-table-column label="CPU" width="80"><template slot-scope="scope"><span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span></template></el-table-column>
+            <el-table-column label="内存" width="100"><template slot-scope="scope"><span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span></template></el-table-column>
+            <el-table-column label="GPU" width="100"><template slot-scope="scope"><span>{{ scope.row.used_gpu }}/{{ scope.row.gpu }}</span></template></el-table-column>
+            <el-table-column label="临时存储" width="100"><template slot-scope="scope"><span>{{ scope.row.used_storage }}/{{ scope.row.storage }}</span></template></el-table-column>
+            <el-table-column label="持久存储" width="100"><template slot-scope="scope"><span>{{ scope.row.used_pvc }}/{{ scope.row.pvc }}</span></template></el-table-column>
 
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <!--          <el-button :disabled="role <= 1 || role < scope.row['role']" size='mini' @click='Resetpsd(scope.row)'>Terminal</el-button>-->
-                <el-button :disabled="role <= 2 " size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
-                <el-button :disabled="role <= 2 || scope.row.name === 'master'" size="mini" type="danger" @click="deleteNode(scope.row.name)">删除</el-button>
+                <el-button :disabled="role <= 2 " size="mini" type="success" style="margin-left: 10px" @click="pushTerminal(scope.row)"> 终端</el-button>
+                <el-button :disabled="role <= 2 || scope.row.name === 'master'" size="mini" type="danger" style="margin-top: 2px" @click="deleteNode(scope.row.name)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -85,6 +49,8 @@
 import { mapGetters } from 'vuex'
 import { deleteNode, getNodeList } from '@/api/node'
 import AddNode from '@/components/AddNode'
+// import nodeColumn from '@/components/Echarts/node';
+import nodeColumn from '@/components/Echarts/node_circle'
 
 export default {
   computed: {
@@ -112,7 +78,15 @@ export default {
           os_image: '',
           kubelet_version: '',
           cpu: '',
-          memory: ''
+          used_cpu: '',
+          memory: '',
+          used_memory: '',
+          storage: '',
+          used_storage: '',
+          pvc: '',
+          used_pvc: '',
+          gpu: '',
+          used_gpu: '',
         }
       ]
     }

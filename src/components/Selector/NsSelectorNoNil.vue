@@ -21,15 +21,12 @@
 </template>
 
 <script>
-import {getNsList} from "@/api/namespace";
+import { getNsList } from '@/api/namespace'
 
 export default {
   name: 'NsSelectorNoNil',
-  props: ['defaultUid','defaultNs'],
-  created() {
-    this.getNsList()
-  },
-  data(){
+  props: ['defaultUid', 'defaultNs'],
+  data() {
     return {
       u_id: this.defaultUid,
       ns: this.defaultNs,
@@ -39,15 +36,18 @@ export default {
       options: [{
         name: '',
         nickname: ''
-      }],
+      }]
     }
+  },
+  created() {
+    this.getNsList()
   },
   methods: {
     change() {
       this.$forceUpdate()
       this.$emit('nsList', this.ns)
     },
-    changeUserPageNum: function (val) {
+    changeUserPageNum: function(val) {
       this.userPage = val
     },
     getNsList: function() {
@@ -55,7 +55,7 @@ export default {
         this.userTotal = res.length
         this.options = res.ns_list
       })
-    },
+    }
   }
 }
 </script>

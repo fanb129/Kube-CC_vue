@@ -64,13 +64,13 @@
         <template slot-scope='scope'>
           <el-button :disabled="role <= 1 || role < scope.row['role'] || (role == scope.row['role'] && u_id != scope.row['id'])" size='mini' type="warning" @click='Resetpsd(scope.row)'>重置密码</el-button>
           <el-button :disabled="role <= 1 || role < scope.row['role'] || (role == scope.row['role'] && u_id != scope.row['id'])" size='mini' type="warning" @click='showDialog(scope.row["id"])'> 权限修改</el-button>
-          <el-button :disabled="role <= 1 || role < scope.row['role'] || (role == scope.row['role'] && u_id != scope.row['id'])" size='mini' type="warning" @click='showDialogP(scope.row["id"])'> 配额修改</el-button>
+          <el-button :disabled="role <= 1 || role < scope.row['role'] || (role == scope.row['role'] && u_id != scope.row['id'])" size='mini' type="warning" @click='showDialogP(scope.row)'> 配额修改</el-button>
           <el-button :disabled="role <= 1 || role < scope.row['role'] || (role == scope.row['role'] && u_id != scope.row['id'])" size='mini' type='danger' @click='handleDelete(scope.row)'>删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div style="position: absolute;bottom: 2%">
-      <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="1" :total="total" @current-change="changePageNum"></el-pagination>
+      <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="1" :total="total" @current-change="changePageNum" :disabled="changepagebutton"></el-pagination>
     </div>
       <!--  权限修改弹窗-->
     <el-dialog title='权限修改' :visible.sync='statusDialogVisible'>
@@ -137,6 +137,8 @@ export default {
       this.valueg=0
       this.getUserList()
     }
+    console.log(this.tagroup)
+    console.log(this.tableData)
   },
   data() {
     return {
@@ -152,7 +154,10 @@ export default {
       inputstorage: '',
       inputpvcstorage: '',
       inputgpu: '',
+      changepagebutton: false,
       rolelist: ['普通用户', '管理员', '超级管理员'],
+      tagroup: [
+      ],
       tableData: [
         // {
         //   id: '',
@@ -173,8 +178,6 @@ export default {
           pvcstorage: '',
           gpu: ''
         }
-      ],
-      tagroup: [
       ],
       tagroupuser: [
       ],
@@ -250,19 +253,19 @@ export default {
       this.statusDialogVisible = false
       location.reload()
     },
-    showDialogP(id){
+    showDialogP(row){
       this.allocation[0].cpu = ''
       this.allocation[0].memory = ''
       this.allocation[0].storage = ''
       this.allocation[0].pvcstorage = ''
       this.allocation[0].gpu = ''
-      this.inputcpu = ''
-      this.inputmemory = ''
-      this.inputstorage = ''
-      this.inputpvcstorage = ''
-      this.inputgpu = ''
+      this.inputcpu = row['cpu']
+      this.inputmemory = row['memory']
+      this.inputstorage = row['storage']
+      this.inputpvcstorage = row['pvcstorage']
+      this.inputgpu = row['gpu']
       this.statusDialogPVisible = true
-      tu_id = id
+      tu_id = row['id']
     },
     Allocation() {
       this.allocation[0].cpu = this.inputcpu
@@ -325,8 +328,10 @@ export default {
       })
     },
     changtuser(valueg) {
+      this.changepagebutton = true
       this.tableData=[]
       if (valueg == 0) {
+        this.changepagebutton = false
         this.getUserList()
       }
       // else if(valueg == 0){}
@@ -342,8 +347,9 @@ export default {
         this.page = res.page
         this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.tData = res.user_list
-        for (let i = 0; i < this.tData.length; i++) {
-          if (this.tData[i].role == 3) {
+        this.tableData = []
+        for(let i=0;i<this.tData.length;i++){
+          if(this.tData[i].role==3){
             this.tableData.push(this.tData[i])
           }
         }
@@ -364,7 +370,7 @@ export default {
     viewGroupByAd: function() {
       viewGroupByAd(this.u_id).then((res) => {
         //this.tagroup = res.group_list
-        this.tagroup=[]
+        //this.tagroup=[]
         // this.tt=[]
         // this.tt = res.group_list
         this.tagroup.push(res.group_list.map(function(item, index) {

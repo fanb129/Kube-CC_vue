@@ -38,8 +38,6 @@
 import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
 import UserSelectorNoNil from '@/components/Selector/UserSelectorNoNil'
 import { mapGetters } from 'vuex'
-import { createYaml } from '@/api/yaml'
-import { yaml2json } from '@/utils/yaml'
 
 export default {
   name: 'AddPod',
@@ -156,25 +154,25 @@ export default {
     resetFields() {
       this.$refs['dynamic-form'].resetFields()
     },
-    async validate() {
-      const valid = await this.$refs['dynamic-form'].validate()
-      if (this.form.metadata.namespace !== '' && valid) {
-        createYaml({ yaml: this.form, kind: 'pod', ns: this.ns }).then(res => {
-          if (res.code === 1) {
-            this.$message({
-              type: 'success',
-              message: res.msg
-            })
-            this.open = false
-            // 调用主页面的方法刷新主页面
-            // this.$parent.get()
-            this.$parent.getPodList()
-          }
-        })
-      } else {
-        this.$message.error('请完整填写表单')
-      }
-    },
+    // async validate() {
+    //   const valid = await this.$refs['dynamic-form'].validate()
+    //   if (this.form.metadata.namespace !== '' && valid) {
+    //     createYaml({ yaml: this.form, kind: 'pod', ns: this.ns }).then(res => {
+    //       if (res.code === 1) {
+    //         this.$message({
+    //           type: 'success',
+    //           message: res.msg
+    //         })
+    //         this.open = false
+    //         // 调用主页面的方法刷新主页面
+    //         // this.$parent.get()
+    //         this.$parent.getPodList()
+    //       }
+    //     })
+    //   } else {
+    //     this.$message.error('请完整填写表单')
+    //   }
+    // },
     changeUid: function(u_id) {
       this.uid = u_id
       this.$refs.NsSelector.u_id = this.uid
