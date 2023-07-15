@@ -4,35 +4,20 @@
       <el-form-item label="名称" prop="name">
         <el-input v-model="form.name" style="width: 400px" />
       </el-form-item>
-      <el-form-item label="用户" prop="u_id">
-        <el-input v-model="form.name" style="width: 400px" disabled @change="change" />
+      <el-form-item label='CPU' prop="cpu">
+        <el-input v-model="form.cpu" placeholder="示例:5"></el-input>
       </el-form-item>
-
-      <el-form-item label="过期时间" prop="expired_time">
-        <el-date-picker
-          v-model="form.expired_time"
-          type="datetime"
-          placeholder="选择日期时间"
-        />
+      <el-form-item label='内存' prop="memory">
+        <el-input v-model="form.memory" placeholder="示例:10Gi"></el-input>
       </el-form-item>
-      <el-form-item label="CPU" prop="cpu">
-        <el-input v-model="form.cpu" style="width: 400px" />
+      <el-form-item label='存储' prop="storage">
+        <el-input v-model="form.storage" placeholder="示例:20Gi"></el-input>
       </el-form-item>
-      <el-form-item label="memory" prop="memory">
-        <el-input v-model="form.memory" style="width: 400px" />
+      <el-form-item label='持久存储' prop="pvc_storage">
+        <el-input v-model="form.pvc_storage" placeholder="示例:20Gi"></el-input>
       </el-form-item>
-      <el-form-item label="storage" prop="storage">
-        <el-input v-model="form.storage" style="width: 400px" />
-      </el-form-item>
-      <el-form-item label="pvc" prop="pvc">
-        <el-input v-model="form.pvc" style="width: 400px" />
-      </el-form-item>
-      <el-form-item label="gpu" prop="gpu">
-        <el-input v-model="form.gpu" style="width: 400px" />
-      </el-form-item>
-
-      <el-form-item label="容器数量">
-        <el-input-number v-model="form.num" :min="1" @change="change" />
+      <el-form-item label='Gpu' prop="gpu">
+        <el-input v-model="form.gpu" placeholder="示例:5Gi"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -43,7 +28,6 @@
 </template>
 
 <script>
-import { getUserList } from '@/api/user'
 import { addNs } from '@/api/namespace'
 import { mapGetters } from 'vuex'
 
@@ -51,57 +35,38 @@ export default {
   name: 'AddNamespace',
   computed: {
     ...mapGetters([
-      'role'
-      // 'u_id'
+      'u_id'
     ])
   },
   data() {
     return {
       // 弹出层标题
-      title: 'Add Namespace',
+      title: '工作空间',
       // 是否显示弹出层
       open: false,
-      userPage: 1,
-      userTotal: 0,
-      options: [{
-        id: '',
-        username: '',
-        nickname: '',
-        role: ''
-      }],
       form: {
-        /*        name: '',
-        u_id: '',
-        cpu: '',
-        memory: '',*/
-
-        u_id: 1,
-        nickname: '',
-        expired_time: null,
+        u_id: this.u_id,
         name: '',
-        num: '',
         cpu: '',
         memory: '',
         storage: '',
-        pvc: '',
+        pvc_storage: '',
         gpu: ''
-
       },
       formRules: {
         name: [{ required: true, trigger: 'blur' }],
-        u_id: [{ required: true, trigger: 'blur' }],
-        status: [{ required: true, trigger: 'blur' }],
+        // u_id: [{ required: true, trigger: 'blur' }],
         cpu: [{ required: true, trigger: 'blur' }],
         memory: [{ required: true, trigger: 'blur' }],
         storage: [{ required: true, trigger: 'blur' }],
-        pvc: [{ required: true, trigger: 'blur' }],
+        pvc_storage: [{ required: true, trigger: 'blur' }],
         gpu: [{ required: true, trigger: 'blur' }]
       }
     }
   },
   methods: {
     created() {
-      this.form = { nickname: this.name }
+      this.form.u_id = this.u_id
     },
     init() {
       this.open = true
@@ -122,10 +87,11 @@ export default {
           addNs({
             name: this.form.name,
             u_id: parseInt(this.form.u_id),
-            expired_time: this.form.expired_time,
             cpu: this.form.cpu,
             memory: this.form.memory,
-            num: parseInt(this.form.num)
+            storage: this.form.storage,
+            pvc_storage: this.form.pvc_storage,
+            gpu: this.form.gpu
           }).then((res) => {
             if (res.code === 1) {
               this.$message({
@@ -147,22 +113,6 @@ export default {
         }
       })
     },
-    changeUserPageNum: function(val) {
-      this.userPage = val
-      this.getUserList()
-    },
-    getUserList: function() {
-      getUserList(this.userPage).then((res) => {
-        this.userPage = res.page
-        this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
-        this.options = res.user_list
-        this.options.push({ nickname: '', id: '0', username: 'Null', role: 0 })
-        // console.log(res)
-      })
-    },
-    change() {
-      this.$forceUpdate()
-    }
   }
 }
 </script>

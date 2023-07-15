@@ -132,7 +132,7 @@
 <script>
 
 import { mapGetters } from 'vuex'
-import { getSparkList, deleteSpark } from '@/api/spark'
+import { getSparkList, deleteSpark } from '@/api/app/spark'
 import AddSpark from '@/components/AddSpark'
 import UserSelector from '@/components/Selector/UserSelector'
 import UpdateSpark from '@/components/AddSpark/UpdateSpark'

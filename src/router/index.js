@@ -32,34 +32,6 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
-    path: '/log',
-    component: Layout,
-    redirect: '',
-    name: 'Log',
-    meta: { title: 'Log', icon: 'tree' },
-    children: [
-      {
-        path: 'login-log',
-        name: 'Login-log',
-        component: () => import('@/views/sys-login-log/index'),
-        meta: { title: 'LoginLog', icon: '' }
-      },
-      {
-        path: 'oper-log',
-        name: 'Oper-log',
-        component: () => import('@/views/sys-login-log/index'),
-        meta: { title: 'OperationLog', icon: '' }
-      },
-      {
-        path: 'run-log',
-        name: 'Run-log',
-        component: () => import('@/views/user/index'),
-        meta: { title: 'RunningLog', icon: '' }
-      }
-
-    ]
-  },
-  {
     path: '/podterminal',
     component: Layout,
     // hidden: true,
@@ -96,41 +68,41 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: ' Dashboard', icon: 'el-icon-s-home' }
+      meta: { title: ' 首页', icon: 'el-icon-s-home' }
     }]
   },
-  { path: '/主机',
+  { path: '/node',
     component: Layout,
-    redirect: '/主机',
+    redirect: '/node',
     children: [{
-      path: '主机',
-      name: '主机',
+      path: 'node',
+      name: 'Node',
       component: () => import('@/views/node/index'),
       meta: { title: ' 主机', icon: 'el-icon-s-platform' }
     }]
   },
-  { path: '/工作空间',
+  { path: '/namespace',
     component: Layout,
-    redirect: '/工作空间',
+    redirect: '/namespace',
     children: [{
-      path: '/工作空间',
-      name: '工作空间',
+      path: '/namespace',
+      name: 'Namespace',
       component: () => import('@/views/namespace/index'),
       meta: { title: ' 工作空间', icon: 'el-icon-s-help' }
     }]
   },
   {
-    path: '/应用',
+    path: '/app',
     component: Layout,
-    redirect: '/应用',
-    name: '应用',
+    redirect: '/app',
+    name: 'App',
     meta: { title: ' 应用', icon: 'el-icon-s-grid' },
     children: [
       {
-        path: '/内置模板',
+        path: '/template',
         component: () => import('@/layout/index2'),
-        redirect: '/内置模板',
-        name: '内置模板',
+        redirect: '/template',
+        name: 'Template',
         meta: { title: '内置模板', icon: 'el-icon-s-unfold' },
         children: [
           {
@@ -146,59 +118,40 @@ export const constantRoutes = [
             meta: { title: 'Hadoop', icon: 'el-icon-connection' }
           },
           {
-            path: '云主机',
-            name: '云主机',
+            path: 'linux',
+            name: 'Linux',
             component: () => import('@/views/linux/index'),
             meta: { title: '云主机', icon: 'el-icon-monitor' }
           }
         ]
       },
       {
-        path: '/自定义应用',
+        path: '/customize',
         component: () => import('@/layout/index2'),
-        redirect: '/自定义应用',
-        name: '自定义应用',
+        redirect: '/customize',
+        name: 'Customize',
         meta: { title: '自定义应用', icon: 'el-icon-s-unfold' },
         children: [
           {
-            path: '无状态应用',
-            name: '无状态应用',
+            path: 'deployment',
+            name: 'Deployment',
             component: () => import('@/views/deploy/index'),
             meta: { title: '无状态应用', icon: 'el-icon-data-line' }
           },
           {
-            path: '有状态应用',
-            name: '有状态应用',
+            path: 'statefulSet',
+            name: 'StatefulSet',
             component: () => import('@/views/statefulSet/index'),
             meta: { title: '有状态应用', icon: 'el-icon-data-analysis' }
           },
           {
-            path: '一次性任务',
-            name: '一次性任务',
+            path: 'job',
+            name: 'Job',
             component: () => import('@/views/job/index'),
             meta: { title: '一次性任务', icon: 'el-icon-data-board' }
           }
         ]
       }
-      /* children1: [
-      {
-        path: 'yaml',
-        name: 'Yaml',
-        component: () => import('@/views/yaml/index'),
-        meta: { title: 'Yaml', icon: 'el-icon-upload' }
-      },
-       {
-        path: 'service',
-        name: 'Service',
-        component: () => import('@/views/service/index'),
-        meta: { title: 'Service', icon: 'dashboard' }
-      },
-      {
-        path: 'pod',
-        name: 'Pod',
-        component: () => import('@/views/pod/index'),
-        meta: { title: 'Pod', icon: 'dashboard' }
-      }*/
     ]
   },
 
@@ -207,19 +160,46 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/users/user',
     name: 'Users',
-    meta: { title: 'Users', icon: 'tree' },
+    meta: { title: '用户管理', icon: 'tree' },
     children: [
       {
         path: 'group',
         name: 'Group',
         component: () => import('@/views/group/index'),
-        meta: { title: 'Group', icon: 'user' }
+        meta: { title: '分组', icon: 'user' }
       },
       {
         path: 'user',
         name: 'User',
         component: () => import('@/views/user/index'),
-        meta: { title: 'User', icon: 'user' }
+        meta: { title: '用户', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/log',
+    component: Layout,
+    redirect: '/log/login-log',
+    name: 'Log',
+    meta: { title: '日志管理', icon: 'tree' },
+    children: [
+      {
+        path: 'login-log',
+        name: 'Login-log',
+        component: () => import('@/views/sys-login-log/index'),
+        meta: { title: '登录日志', icon: '' }
+      },
+      {
+        path: 'oper-log',
+        name: 'Oper-log',
+        component: () => import('@/views/sys-login-log/index'),
+        meta: { title: '操作日志', icon: '' }
+      },
+      {
+        path: 'run-log',
+        name: 'Run-log',
+        component: () => import('@/views/user/index'),
+        meta: { title: '系统日志', icon: '' }
       }
     ]
   },
@@ -232,7 +212,7 @@ export const constantRoutes = [
       path: 'index',
       name: 'Terminal',
       component: () => import('@/components/Terminal/index'),
-      meta: { title: 'Terminal', icon: 'terminal_icon' }
+      meta: { title: '终端', icon: 'terminal_icon' }
     }]
   },
 
@@ -240,7 +220,7 @@ export const constantRoutes = [
     path: 'external-link',
     component: Layout,
     name: 'ExternalLink',
-    meta: { title: 'About', icon: 'link' },
+    meta: { title: '关于', icon: 'link' },
     children: [
       {
         path: 'https://github.com/fanb129/Kube-CC',

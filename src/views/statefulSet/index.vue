@@ -130,11 +130,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { deleteStatefulSet, getStatefulSetList } from '@/api/statefulSet'
+import { deleteStatefulSet, getStatefulSetList } from '@/api/app/statefulSet'
 import UserSelector from '@/components/Selector/UserSelector'
 import NsSelector from '@/components/Selector/NsSelector'
-import YamlApply from '@/components/YamlEditor/apply'
-import YamlCreate from '@/components/YamlEditor/create'
 import AddStatefulSet from '@/components/AddStatefulSet/index.vue'
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
 import addStatefulSet from '@/components/AddStatefulSet/index.vue'
@@ -248,20 +246,6 @@ export default {
         this.total = res.length
         this.tableData = res.statefulSet_list
         console.log(res)
-      })
-    },
-    yamlCreate: function() {
-      this.createDialog = true
-      this.$nextTick(() => {
-        this.$refs.YamlCreate.init()
-      })
-    },
-    editStatefulSet: function(row) {
-      this.yamlName = row['name']
-      this.yamlNs = row['namespace']
-      this.applyDialog = true
-      this.$nextTick(() => {
-        this.$refs.YamlApply.init()
       })
     },
     handleDelete: function(row) {

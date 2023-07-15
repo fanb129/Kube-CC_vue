@@ -3,7 +3,7 @@
     <div style="margin-left: 10%; margin-top: 1%; flex: auto">
       <GroupSelector ref="GroupSelector" :default-uid="adid" @nsList="changeGid" />
       <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-left: 100px" @nsList="changeUid" />
-      <el-button :disabled="role < 2" style="margin-left: 100px" type="primary" icon="el-icon-edit" @click="addNs">
+      <el-button style="margin-left: 100px" type="primary" icon="el-icon-edit" @click="addNs">
         新增工作空间
       </el-button>
     </div>
@@ -11,17 +11,17 @@
     <!--    基本信息    -->
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
       <el-table-column label="ID" width="50" type="index" />
-      <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
-      <el-table-column width="100" property="status" label="状态"><template slot-scope="scope"><span>{{ scope.row.status }}</span></template></el-table-column>
-      <el-table-column width="150" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.created_at }}</span></template></el-table-column>
+      <el-table-column width="120" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+      <el-table-column width="80" property="status" label="状态"><template slot-scope="scope"><span>{{ scope.row.status }}</span></template></el-table-column>
+      <el-table-column width="115" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.created_at }}</span></template></el-table-column>
       <!--    基本信息end-->
 
       <!--      规格    -->
-      <el-table-column width="120" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
-      <el-table-column width="120" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
-      <el-table-column width="120" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
-      <el-table-column width="120" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
-      <el-table-column width="120" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
+      <el-table-column label="CPU" width="80"><template slot-scope="scope"><span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span></template></el-table-column>
+      <el-table-column label="内存" width="100"><template slot-scope="scope"><span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span></template></el-table-column>
+      <el-table-column label="GPU" width="100"><template slot-scope="scope"><span>{{ scope.row.used_gpu }}/{{ scope.row.gpu }}</span></template></el-table-column>
+      <el-table-column label="临时存储" width="100"><template slot-scope="scope"><span>{{ scope.row.used_storage }}/{{ scope.row.storage }}</span></template></el-table-column>
+      <el-table-column label="持久存储" width="100"><template slot-scope="scope"><span>{{ scope.row.used_pvc }}/{{ scope.row.pvc }}</span></template></el-table-column>
       <!--      规格end    -->
 
       <!--      用户信息    -->
@@ -45,12 +45,6 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
-            :disabled="scope.row.name==='default'
-              || scope.row.name==='kube-node-lease'
-              || scope.row.name==='kube-public'
-              || scope.row.name==='kube-system'
-              || scope.row.name==='ingress-nginx'
-              || role < 2"
             size="mini"
             type="warning"
             style="margin-left: 10px"
@@ -58,11 +52,6 @@
           >编辑</el-button>
           <el-button
             :loading="loading"
-            :disabled="scope.row.name==='default'
-              || scope.row.name==='kube-node-lease'
-              || scope.row.name==='kube-public'
-              || scope.row.name==='kube-system'
-              || scope.row.name==='ingress-nginx'"
             size="mini"
             type="danger"
             style="margin-top: 2px"
@@ -133,15 +122,17 @@ export default {
           created_at: '',
           username: '',
           nickname: '',
-          u_id: 1,
-          /* expired_time: '',*/
-
+          u_id: '',
           cpu: '',
+          used_cpu: '',
           memory: '',
+          used_memory: '',
           storage: '',
+          used_storage: '',
           pvc: '',
-          gpu: ''
-
+          used_pvc: '',
+          gpu: '',
+          used_gpu: ''
         }
       ]
     }
@@ -153,15 +144,6 @@ export default {
       this.$refs.UserSelector.g_id = this.gid
       this.$refs.UserSelector.getUserList()
     },
-    handleCommand(command) {
-      if (command.command === 'deploy') {
-        this.push2deploy(command.row)
-      } else if (command.command === 'service') {
-        this.push2service(command.row)
-      } else if (command.command === 'pod') {
-        this.push2pod(command.row)
-      }
-    },
     beforeHandleCommand(item, row) {
       return {
         'command': item,
@@ -172,39 +154,12 @@ export default {
       this.uid = u_id
       this.getNsList()
     },
-    push2deploy: function(row) {
-      this.$router.push({
-        name: 'Deploy',
-        query: {
-          ns: row['name'],
-          u_id: row['u_id']
-        }
-      })
-    },
-    push2service: function(row) {
-      this.$router.push({
-        name: 'Service',
-        query: {
-          ns: row['name'],
-          u_id: row['u_id']
-        }
-      })
-    },
-    push2pod: function(row) {
-      this.$router.push({
-        name: 'Pod',
-        query: {
-          ns: row['name'],
-          u_id: row['u_id']
-        }
-      })
-    },
     changePageNum: function(val) {
       this.page = val
       // this.getUserList()
     },
     getNsList: function() {
-      getNsList(this.uid).then((res) => {
+      getNsList(this.gid, this.uid).then((res) => {
         this.total = res.length
         this.tableData = res.ns_list
         console.log(res)
@@ -220,12 +175,12 @@ export default {
       console.log(row['name'])
       this.updateDialog = true
       this.$nextTick(() => {
-        this.$refs.UpdateNamespace.init(row['name'], row['u_id'], row['expired_time'], row['cpu'], row['memory'])
+        this.$refs.UpdateNamespace.init(row['name'], row['cpu'], row['memory'], row['storage'], row['pvc'], row['gpu'])
       })
     },
     handleDelete: function(row) {
       /* 提示消息*/
-      this.$confirm('确认永久删除此namespace及其所含包含资源', '提示', {
+      this.$confirm('确认永久删除此工作空间及其所含包含资源', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

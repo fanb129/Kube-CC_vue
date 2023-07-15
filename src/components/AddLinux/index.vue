@@ -53,7 +53,7 @@
 
 <script>
 import { getUserList } from '@/api/user'
-import { addLinux } from '@/api/linux'
+import { addLinux } from '@/api/app/linux'
 
 export default {
   name: 'AddLinux',

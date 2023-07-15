@@ -49,7 +49,7 @@
 
 <script>
 import { getUserList } from '@/api/user'
-import { addSpark } from '@/api/spark'
+import { addSpark } from '@/api/app/spark'
 import { mapGetters } from 'vuex'
 
 export default {
