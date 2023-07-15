@@ -41,6 +41,9 @@ export default {
       'u_id'
     ])
   },
+  created() {
+    this.form.u_id = this.u_id
+  },
   data() {
     return {
       // 弹出层标题
@@ -68,9 +71,6 @@ export default {
     }
   },
   methods: {
-    created() {
-      this.form.u_id = this.u_id
-    },
     init() {
       this.open = true
       this.$nextTick(() => {
