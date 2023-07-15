@@ -102,13 +102,13 @@ export default {
     this.uid = ''
     this.gid = ''
     this.adid = this.u_id
-    //this.GroupSelector.change()
-    //this.changeGid(GroupSelector.g_id)
-    //this.uid = '1'
+    // this.GroupSelector.change()
+    // this.changeGid(GroupSelector.g_id)
+    // this.uid = '1'
     // this.$refs.UserSelector.g_id = ''
     // this.$refs.UserSelector.u_id = this.adid
     // this.$refs.UserSelector.getAllUser()
-    //this.getNsList()
+    // this.getNsList()
   },
   data() {
     return {
@@ -150,7 +150,7 @@ export default {
         this.push2deploy(command.row)
       } else if (command.command === 'service') {
         this.push2service(command.row)
-      } else if(command.command === 'pod'){
+      } else if (command.command === 'pod') {
         this.push2pod(command.row)
       }
     },
@@ -164,7 +164,7 @@ export default {
       this.uid = u_id
       this.getNsList()
     },
-    changeGid: function(g_id){
+    changeGid: function(g_id) {
       this.gid = g_id
       this.$refs.UserSelector.u_id = ''
       this.$refs.UserSelector.g_id = this.gid
@@ -257,8 +257,8 @@ export default {
     },
     getUserList: function() {
       getUserList(this.page).then((res) => {
-        //this.page = res.page
-        //this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
+        // this.page = res.page
+        // this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.tData = []
         this.tData = res.user_list
         for (let i = 0; i < this.tData.length; i++) {
