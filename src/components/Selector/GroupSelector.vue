@@ -1,12 +1,13 @@
 <template>
   <div style="display: inline">
     <span>所属组：</span>
-    <el-select v-model="g_id" filterable placeholder="请选择" :disabled="role < 2" @change="change">
+    <el-select v-model="g_id" filterable placeholder="请选择" :disabled="role < 2" >
       <el-option
         v-for="item,index in options"
         :key="index"
         :label="item.label"
         :value="item.value"
+        @click.native="change(item.value)"
       />
       <!-- <el-pagination background layout="prev, pager, next" :current-page="userPage" :page-size="1" :total="userTotal"
                        @current-change="changeUserPageNum"></el-pagination> -->
@@ -31,6 +32,9 @@ export default {
   },
   created() {
     this.viewGroupByAd()
+    // this.u_id = this.defaultUid
+    // this.g_id = ''
+    //this.change()
   },
   data() {
     return {

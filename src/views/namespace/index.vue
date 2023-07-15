@@ -99,10 +99,12 @@ export default {
     ])
   },
   created() {
-    this.uid = this.u_id
+    this.uid = ''
+    this.gid = ''
     this.adid = this.u_id
-    this.gid = '3'
-    this.uid = '1'
+    //this.GroupSelector.change()
+    //this.changeGid(GroupSelector.g_id)
+    //this.uid = '1'
     // this.$refs.UserSelector.g_id = ''
     // this.$refs.UserSelector.u_id = this.adid
     // this.$refs.UserSelector.getAllUser()

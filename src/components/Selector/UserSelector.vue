@@ -1,13 +1,14 @@
 <template>
   <div style="display: inline">
     <span>所属用户：</span>
-    <el-select v-model="u_id" filterable placeholder="请选择" :disabled="role < 2" @change="change">
+    <el-select v-model="u_id" filterable placeholder="请选择" :disabled="role < 2" >
       <el-option
         v-for="item,index in options"
         :key="index"
         :label="item.nickname"
         :value="item.id"
         :disabled="role < item.role"
+        @click.native="change(item.id)"
       />
       <!-- <el-pagination
         background
@@ -36,6 +37,9 @@ export default {
   },
   created() {
     // this.getUserList(this.g_id)
+    // this.u_id = this.defaultUid
+    // this.g_id = this.defaultGid
+    //this.change()
   },
   data() {
     return {
@@ -45,8 +49,8 @@ export default {
       userTotal: 0,
       options: [{
         id: '',
-        nickname: '',
-        role: '',
+        nickname: '该组所有用户',
+        role: '3',
         gid: ''
       }]
     }
