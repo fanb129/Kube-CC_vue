@@ -2,11 +2,11 @@
   <div>
     <div style="margin-left: 10%; margin-top: 1%">
       <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 50px" @nsList="changeGid" />
-      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
+      <UserSelector ref="UserSelector" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
       <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
 
-      <el-button trigger="click" style="margin-left: 100px" type="primary" @command="handleCommand" @click="addDeploy">
-        新增有状态应用
+      <el-button split-button trigger="click" style="margin-left: 100px" type="primary" @command="handleCommand" @click="addStatefulSet">
+        新增无状态应用
       </el-button>
 
     </div>
@@ -60,10 +60,7 @@
       </el-table-column>
 
       <!--       4状态   -->
-      <el-table-column label="状态" width="120">不能为空
-        Port
-        22
-
+      <el-table-column label="状态" width="120">
         <template slot-scope="scope">
           <el-popover
             placement="right"
@@ -83,7 +80,6 @@
       <el-table-column label="Pod表单" type="expand" width="150">
         <template slot-scope="scope">
           <el-table :data="scope.row.pod_list">
-            <el-table-column label="序号" width="100" type="index" />
             <el-table-column label="名称" width="200"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
             <el-table-column label="阶段" width="200"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
             <el-table-column label="主机Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
@@ -134,19 +130,20 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { deleteDeploy, getDeployList } from '@/api/app/deploy'
-import GroupSelector from '@/components/Selector/GroupSelector.vue'
+import { deleteStatefulSet, getStatefulSetList } from '@/api/app/statefulSet'
 import UserSelector from '@/components/Selector/UserSelector'
 import NsSelector from '@/components/Selector/NsSelector'
-import AddDeploy from '@/components/AddDeploy'
-import addDeploy from '@/components/AddDeploy/index.vue'
+import AddStatefulSet from '@/components/AddStatefulSet/index.vue'
+import GroupSelector from '@/components/Selector/GroupSelector.vue'
+import addStatefulSet from '@/components/AddStatefulSet/index.vue'
 
 export default {
-  name: 'Deploy',
-  components: { NsSelector, UserSelector, GroupSelector, YamlApply, YamlCreate, AddDeploy },
+  name: 'StatefulSet',
+  // eslint-disable-next-line vue/no-unused-components
+  components: { NsSelector, UserSelector, GroupSelector, YamlApply, YamlCreate, AddStatefulSet },
   computed: {
-    addDeploy() {
-      return addDeploy
+    addStatefulSet() {
+      return addStatefulSet
     },
     ...mapGetters([
       'role',
@@ -156,46 +153,35 @@ export default {
   created() {
     this.uid = this.$route.query.u_id || this.u_id
     this.adid = this.u_id
-    this.getDeployList()
+    this.getStatefulSetList()
   },
   data() {
     return {
-      kind: 'Deploy',
-      uid: '',
-      gid: '',
-      adid: '',
-      ns: this.$route.query.ns,
+      kind: 'StatefulSet',
       yamlName: '',
       yamlNs: '',
+      adid: '',
       timer: null,
       loading: false,
       applyDialog: false,
       createDialog: false,
       addDialog: false,
+      ns: this.$route.query.ns,
+      uid: '',
       page: 1,
       // total: 0,
       pagesize: 10,
       tableData: [
         {
-          /* 1规格*/
+
+          /* 1基本信息*/
           name: 'test1',
           namespace: '',
-          created_at: '2023-07-06 13:37:29',
-          cpu: '1',
-          memory: '2',
-          storage: '3',
-          pvc: '4',
-          gpu: '5',
-          pvc_path: [
-            '/data'
-          ],
-
-          /* 2基本信息*/
           replicas: 0,
           image: '',
+          created_at: '2023-07-06 13:37:29',
           volume: 'pvc-a4a5fe70-7c94-44c4-aa7d-85673837322f',
-
-          /* 3端口*/
+          /* 2端口*/
           ports: [
             {
               name: 'portA',
@@ -206,6 +192,16 @@ export default {
             }
           ],
 
+          /* 3规格*/
+          cpu: '1',
+          memory: '2',
+          storage: '3',
+          pvc: '4',
+          gpu: '5',
+          pvc_path: [
+            '/data'
+          ],
+
           /* 4状态*/
           updated_replicas: 0,
           ready_replicas: 1,
@@ -214,10 +210,10 @@ export default {
           /* 5pod*/
           pod_list: [
             {
-              name: 'pod1',
-              phase: 'active',
-              host_ip: '13.123.12.123',
-              pod_ip: '159.159.51.126'
+              name: '',
+              phase: '',
+              host_ip: '',
+              pod_ip: ''
             }
           ]
 
@@ -226,13 +222,6 @@ export default {
     }
   },
   methods: {
-    /* handleCommand(command) {
-      if (command === 'a') {
-        this.addDeploy()
-      } else {
-        this.yamlCreate()
-      }
-    },*/
     changeGid: function(g_id) {
       this.gid = g_id
       this.$refs.UserSelector.u_id = ''
@@ -243,48 +232,40 @@ export default {
       this.uid = u_id
       this.$refs.NsSelector.u_id = this.uid
       this.$refs.NsSelector.getNsList()
-      this.getDeployList()
+      this.getStatefulSetList()
     },
     changeNs: function(ns) {
       this.ns = ns
-      this.getDeployList()
+      this.getStatefulSetList()
     },
     changePageNum: function(val) {
       this.page = val
     },
-    getDeployList: function() {
-      getDeployList(this.uid, this.ns).then((res) => {
+    getStatefulSetList: function() {
+      getStatefulSetList(this.uid, this.ns).then((res) => {
         this.total = res.length
-        this.tableData = res.deploy_list
+        this.tableData = res.statefulSet_list
         console.log(res)
       })
     },
-    /* addDeploy: function() {
-      this.addDialog = true
-      this.$nextTick(() => {
-        this.$refs.AddDeploy.init()
-      })
-    },*/
     handleDelete: function(row) {
       /* 提示消息*/
-      this.$confirm('确认永久删除此deploy及其所含pod', '提示', {
+      this.$confirm('确认永久删除此statefulSet及其所含pod', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteDeploy(row['namespace'], row['name']).then((res) => {
+        deleteStatefulSet(row['namespace'], row['name']).then((res) => {
           if (res.code === 1) {
             this.$message({
               type: 'success',
               message: res.msg
             })
-            // location.reload()
             this.loading = true
             clearTimeout(this.timer)
             this.timer = setTimeout(() => {
               this.loading = false
-              this.getDeployList()
-              // location.reload()
+              this.getStatefulSetList()
             }, 1000)
           } else {
             this.$message({
@@ -301,17 +282,6 @@ export default {
       })
     },
     pushTerminal: function(row) {
-      console.log(row['namespace'])
-      console.log(row['name'])
-      console.log(row['container_statuses'][0].name)
-      this.$router.push({
-        name: 'PodTerminal',
-        query: {
-          r: 'pod/ssh?podNs=' + row['namespace'] + '&podName=' + row['name'] + '&containerName=' + row['container_statuses'][0].name
-        }
-      })
-    }
-    /*    pushTerminal: function(row) {
       this.$router.push({
         name: 'Terminal',
         query: {
@@ -328,7 +298,7 @@ export default {
           // port: '22'
         }
       })
-    }*/
+    }
   }
 }
 </script>

@@ -15,7 +15,9 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+// 引入Echarts图表
 import * as echarts from 'echarts'
+// 将echart添加到vue的原型上，这样就可以全局使用。全局引用将Echarts所有图表打包，体积稍大。
 Vue.prototype.$echarts = echarts
 
 /**

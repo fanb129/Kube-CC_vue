@@ -1,24 +1,9 @@
 <template>
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="60%">
-    <!--    <el-form ref="service" :model="service" label-width="100px">-->
-    <!--      <span>Metadata</span>-->
-    <!--      <el-form-item label="Name">-->
-    <!--        <el-input v-model="service.metadata.name"></el-input>-->
-    <!--      </el-form-item>-->
-    <!--      <el-form-item label="Namespace">-->
     <div>
       <UserSelectorNoNil ref="UserSelector" :default-uid="uid" @nsList="changeUid" />
       <NsSelectorNoNil ref="NsSelector" v-model="form.metadata.namespace" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
     </div>
-    <!--      </el-form-item>-->
-    <!--      <el-form-item label="Labels">-->
-    <!--        <el-input v-model="service.metadata.labels"></el-input>-->
-    <!--      </el-form-item>-->
-    <!--    </el-form>-->
-    <!--    <div>-->
-    <!--      <el-button type="primary" @click="createYaml">Create</el-button>-->
-    <!--      <el-button @click="cancel">Cancel</el-button>-->
-    <!--    </div>-->
 
     <dynamic-form
       ref="dynamic-form"
@@ -40,7 +25,7 @@ import UserSelectorNoNil from '@/components/Selector/UserSelectorNoNil'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'AddDeploy',
+  name: 'AddStatefulSet',
   components: { UserSelectorNoNil, NsSelectorNoNil },
   computed: {
     ...mapGetters([
@@ -147,11 +132,11 @@ export default {
       uid: '',
       ns: '',
       // 弹出层标题
-      title: 'Add Deploy Form',
+      title: 'Add StatefulSet Form',
       // 是否显示弹出层
       open: false,
       form: {
-        kind: 'deploy',
+        kind: 'statefulSet',
         metadata: {
           name: '',
           namespace: '',
@@ -222,15 +207,11 @@ export default {
     init() {
       this.uid = this.u_id
       this.open = true
-      // this.$nextTick(() => {
-      //   this.open = true
-      // })
     },
     // 取消按钮
     cancel() {
       this.resetFields()
       this.open = false
-      // this.reset()
     }
   }
 }
