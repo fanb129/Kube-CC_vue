@@ -20,17 +20,17 @@
           </router-link>
           <router-link to="/">
             <el-dropdown-item>
-              <el-icon class="el-icon-user"></el-icon>  {{ name }}
+              <el-icon class="el-icon-user" />  {{ name }}
             </el-dropdown-item>
           </router-link>
-<!--          <a target="_blank" href="https://github.com/fanb129/k8s_deploy_gin">-->
-<!--            <el-dropdown-item>k8s_deploy_gin</el-dropdown-item>-->
-<!--          </a>-->
-<!--          <a target="_blank" href="https://github.com/fanb129/k8s_deploy_vue">-->
-<!--            <el-dropdown-item>k8s_deploy_vue</el-dropdown-item>-->
-<!--          </a>-->
+          <!--          <a target="_blank" href="https://github.com/fanb129/k8s_deploy_gin">-->
+          <!--            <el-dropdown-item>k8s_deploy_gin</el-dropdown-item>-->
+          <!--          </a>-->
+          <!--          <a target="_blank" href="https://github.com/fanb129/k8s_deploy_vue">-->
+          <!--            <el-dropdown-item>k8s_deploy_vue</el-dropdown-item>-->
+          <!--          </a>-->
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;"><el-icon class="el-icon-close"></el-icon>Log Out</span>
+            <span style="display:block;"><el-icon class="el-icon-close" />Log Out</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -50,7 +50,7 @@ export default {
   },
   data() {
     return {
-      rolelist: ['普通用户', '管理员', '超级管理员'],
+      rolelist: ['普通用户', '管理员', '超级管理员']
     }
   },
   computed: {

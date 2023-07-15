@@ -1,12 +1,12 @@
-import {getGroupInfo} from '@/api/group'
-import {getToken, setToken, removeToken} from '@/utils/auth'
-import {resetRouter} from '@/router'
+import { getGroupInfo } from '@/api/group'
+import { getToken, setToken, removeToken } from '@/utils/auth'
+import { resetRouter } from '@/router'
 
 const getGroupDefaultState = () => {
   return {
     name: '',
     ad_id: 0,
-    description: '',
+    description: ''
   }
 }
 
@@ -29,14 +29,14 @@ const mutations = {
 
 const actions = {
   // get group info
-  getGroupInfo({commit, state}) {
+  getGroupInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getGroupInfo().then(response => {
         if (!response) {
           return reject('Verification failed, please Login again.')
         }
 
-        const {name, adid, description} = response.group_info
+        const { name, adid, description } = response.group_info
         commit('SET_NAME', name)
         commit('SET_ADID', adid)
         commit('SET_DESCRIPTION', description)
@@ -45,7 +45,7 @@ const actions = {
         reject(error)
       })
     })
-  },
+  }
 
 }
 

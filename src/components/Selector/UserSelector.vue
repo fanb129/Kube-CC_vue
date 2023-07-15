@@ -7,10 +7,16 @@
         :key="index"
         :label="item.nickname"
         :value="item.id"
-        :disabled="role < item.role">
-      </el-option>
-      <!-- <el-pagination background layout="prev, pager, next" :current-page="userPage" :page-size="1" :total="userTotal"
-                     @current-change="changeUserPageNum"></el-pagination> -->
+        :disabled="role < item.role"
+      />
+      <!-- <el-pagination
+        background
+        layout="prev, pager, next"
+        :current-page="userPage"
+        :page-size="1"
+        :total="userTotal"
+        @current-change="changeUserPageNum"
+      /> -->
     </el-select>
   </div>
 </template>
@@ -21,17 +27,17 @@ import {mapGetters} from "vuex";
 
 export default {
   name: 'UserSelector',
-  props: ['defaultGid','defaultUid'],
+  props: ['defaultGid', 'defaultUid'],
   computed: {
     ...mapGetters([
-      'role',
+      'role'
       // 'u_id'
     ])
   },
   created() {
-    //this.getUserList(this.g_id)
+    // this.getUserList(this.g_id)
   },
-  data(){
+  data() {
     return {
       u_id: this.defaultUid,
       g_id: this.defaultGid,
@@ -48,9 +54,9 @@ export default {
   methods: {
     change() {
       this.$forceUpdate()
-      this.$emit('nsList',this.u_id)
+      this.$emit('nsList', this.u_id)
     },
-    changeUserPageNum: function (val) {
+    changeUserPageNum: function(val) {
       this.userPage = val
       this.getUserList()
     },
@@ -58,29 +64,16 @@ export default {
       getAllUser().then((res) => {
         this.options = res.all_user_list
         this.options.push({id:'',nickname:'该组所有用户', role: 3})
-        for(let i=0;i<this.options.length;i++){
-          if(this.options[i].id!=''&&this.options[i].gid != this.g_id){
-            this.options.splice(i,1)
-            i = i-1
+        //this.options.push({id:'999999',nickname:'请选择', role: 1})
+        if(this.g_id == ''){
+        } else {
+          for(let i=0;i<this.options.length;i++){
+            if(this.options[i].id!=''&&this.options[i].gid != this.g_id){
+              this.options.splice(i,1)
+              i = i-1
+            }
           }
         }
-      })
-    },
-    getUserList: function () {
-      getUserList(this.userPage).then((res) => {
-        this.userPage = res.page
-        this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
-        this.options = res.user_list
-        // Terminal.log(res)
-        this.options.push({id:'',nickname:'All User',role: 3})
-        console.log(this.options)
-        for(let i=0;i<this.options.length;i++){
-          if(this.options[i].gid != this.g_id){
-            this.options.splice(i,1)
-            i=i-1
-          }
-        }
-        //console.log(this.options)
       })
     },
   }

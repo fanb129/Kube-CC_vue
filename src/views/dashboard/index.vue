@@ -87,14 +87,13 @@
 import { mapGetters } from 'vuex'
 import EditPwd from '@/components/EditPwd'
 import { updateUser, getUserList } from '@/api/user'
-import { getNodeList } from "@/api/node";
-import { getNsList } from "@/api/namespace";
-import { getDeployList } from "@/api/deploy";
-import { getServiceList } from "@/api/service";
-import { getPodList } from "@/api/pod";
-import { getSparkList } from "@/api/spark";
-import { getHadoopList } from "@/api/hadoop";
-import { getLinuxList } from "@/api/linux";
+import { getNodeList } from '@/api/node'
+import { getNsList } from '@/api/namespace'
+import { getDeployList } from '@/api/app/deploy'
+import { getPodList } from '@/api/pod'
+import { getSparkList } from '@/api/app/spark'
+import { getHadoopList } from '@/api/app/hadoop'
+import { getLinuxList } from '@/api/app/linux'
 import { Message } from 'element-ui'
 
 export default {
@@ -152,9 +151,6 @@ export default {
     getDeployList(this.u_id, '').then(res => {
       this.dashboardData[3].value = res.length
     })
-    getServiceList(this.u_id, '').then(res => {
-      this.dashboardData[4].value = res.length
-    })
     getPodList(this.u_id, '').then(res => {
       this.dashboardData[5].value = res.length
     })
@@ -173,33 +169,33 @@ export default {
   },
   methods: {
     push2(index) {
-      switch (index){
+      switch (index) {
         case 0:
-          this.$router.push({ name: 'User' });
-          break;
+          this.$router.push({ name: 'User' })
+          break
         case 1:
-          this.$router.push({ name: 'Node' });
+          this.$router.push({ name: '主机' })
           break
         case 2:
-          this.$router.push({ name: 'Namespace' });
+          this.$router.push({ name: '工作空间' })
           break
         case 3:
-          this.$router.push({ name: 'Deploy' });
+          this.$router.push({ name: '无状态应用' })
           break
         case 4:
-          this.$router.push({ name: 'Service' });
+          this.$router.push({ name: 'Dashboard' })
           break
         case 5:
-          this.$router.push({ name: 'Pod' });
+          this.$router.push({ name: 'Dashboard' })
           break
         case 6:
-          this.$router.push({ name: 'Spark' });
+          this.$router.push({ name: 'Spark' })
           break
         case 7:
-          this.$router.push({ name: 'Hadoop' });
+          this.$router.push({ name: 'Hadoop' })
           break
         case 8:
-          this.$router.push({ name: 'Linux' });
+          this.$router.push({ name: '云主机' })
           break
       }
     },
@@ -233,6 +229,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 200px;
+  margin: 0;
+}
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
 .dashboard {
   &-container {
     margin: 30px;
