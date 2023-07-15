@@ -66,7 +66,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getNsList, getUserNsTotal } from '@/api/namespace'
+import { getNsList, totalNs } from '@/api/namespace'
 // import UserSelector from '@/components/Selector/UserSelector'
 // import GroupSelector from '@/components/Selector/GroupSelector.vue'
 
@@ -78,6 +78,11 @@ export default {
       uid: '',
       ns_length: '',
       ns_list: [],
+      cpu_ratio: '',
+      gpu_ratio: '',
+      memory_ratio: '',
+      pvc_ratio: '',
+      storage_ratio: '',
       cpu_ns_list: [],
       gpu_ns_list: [],
       memory_ns_list: [],
@@ -118,7 +123,7 @@ export default {
     init() {
       setTimeout(_ => {
         this.cur_res.forEach(_ => {
-          this.getUserNsTotal(this.uid)
+          this.totalNs(this.uid)
           this.draw_cpu()
           this.draw_gpu()
           this.draw_memory()
@@ -205,7 +210,7 @@ export default {
             {
               data: [
                 {
-                  value: +(Math.random() * 100).toFixed(2)
+                  value: +(Math.random()*5 + this.cpu_ratio).toFixed(2) // 在实际数据附近波动显示
                 }
               ]
             }
@@ -836,25 +841,29 @@ export default {
         for (let i = 0; i < this.ns_length; i++) {
           this.cpu_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedCpuValue })
         }
-        // console.log(JSON.parse(JSON.stringify(this.cpu_ns_list)))
+        console.log(JSON.parse(JSON.stringify(this.cpu_ns_list)))
         for (let i = 0; i < this.ns_length; i++) {
-          this.gpu_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedCpuValue })
+          this.gpu_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedGPUValue })
         }
         for (let i = 0; i < this.ns_length; i++) {
-          this.memory_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedCpuValue })
+          this.memory_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedMemeoryValue })
         }
         for (let i = 0; i < this.ns_length; i++) {
-          this.pvc_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedCpuValue })
+          this.pvc_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedPvcValue })
         }
         for (let i = 0; i < this.ns_length; i++) {
-          this.storage_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedCpuValue })
+          this.storage_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedStorageValue })
         }
       })
     },
     // 仪表盘数据
-    getUserNsTotal: function(u_id) {
-      getUserNsTotal(u_id).then((res) => {
-
+    totalNs: function(u_id) {
+      totalNs(u_id).then((res) => {
+        this.cpu_ratio = res.UserTotalNs.CpuRatio
+        this.gpu_ratio = res.UserTotalNs.GpuRatio
+        this.memory_ratio = res.UserTotalNs.MemoryRatio
+        this.pvc_ratio = res.UserTotalNs.PvcRatio
+        this.storage = rse.UserTotalNs.StorageRatio
       })
     }
   }
