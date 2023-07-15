@@ -35,7 +35,7 @@ export const constantRoutes = [
     path: '/log',
     component: Layout,
     redirect: '',
-    name: 'Log',  
+    name: 'Log',
     meta: { title: 'Log', icon: 'tree' },
     children: [
       {
@@ -55,8 +55,8 @@ export const constantRoutes = [
         name: 'Run-log',
         component: () => import('@/views/user/index'),
         meta: { title: 'RunningLog', icon: '' }
-      },
-     
+      }
+
     ]
   },
   {
