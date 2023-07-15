@@ -9,14 +9,14 @@
         :value="item.id"
         :disabled="role < item.role">
       </el-option>
-      <el-pagination background layout="prev, pager, next" :current-page="userPage" :page-size="1" :total="userTotal"
-                     @current-change="changeUserPageNum"></el-pagination>
+      <!-- <el-pagination background layout="prev, pager, next" :current-page="userPage" :page-size="1" :total="userTotal"
+                     @current-change="changeUserPageNum"></el-pagination> -->
     </el-select>
   </div>
 </template>
 
 <script>
-import {getUserList} from "@/api/user";
+import {getUserList, getAllUser} from "@/api/user";
 import {mapGetters} from "vuex";
 
 export default {
@@ -53,6 +53,18 @@ export default {
     changeUserPageNum: function (val) {
       this.userPage = val
       this.getUserList()
+    },
+    getAllUser: function() {
+      getAllUser().then((res) => {
+        this.options = res.all_user_list
+        this.options.push({id:'',nickname:'该组所有用户', role: 3})
+        for(let i=0;i<this.options.length;i++){
+          if(this.options[i].id!=''&&this.options[i].gid != this.g_id){
+            this.options.splice(i,1)
+            i = i-1
+          }
+        }
+      })
     },
     getUserList: function () {
       getUserList(this.userPage).then((res) => {

@@ -199,14 +199,19 @@ export default {
       }
     },
     changeUid: function(u_id){
-      this.uid = u_id
-      this.getNsList()
+      if(u_id != ''){
+        this.uid = u_id
+        this.getNsList()
+      }else if(u_id == ''){
+        
+      }
+      
     },
     changeGid: function(g_id){
       this.gid = g_id
       this.$refs.UserSelector.u_id = ''
       this.$refs.UserSelector.g_id = this.gid
-      this.$refs.UserSelector.getUserList()
+      this.$refs.UserSelector.getAllUser()
     },
     push2deploy: function (row){
       this.$router.push({

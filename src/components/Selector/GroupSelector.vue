@@ -81,7 +81,7 @@
           if(this.role == 3){
             this.options.push({
             "value" : 0,
-            "label" : '所有用户'
+            "label" : '其他所有用户'
           })
           }
       })
