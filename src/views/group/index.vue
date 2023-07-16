@@ -210,7 +210,7 @@
 
 <script>
 
-import { editUser, getUserList, resetPass } from '@/api/user'
+import { editUser, getUserList, resetPass, getAllUser } from '@/api/user'
 import { deleteGroup, addUser, removeUser, getGroupList, viewGroupUser, creatGroup, updateGroup } from '@/api/group'
 import { mapGetters } from 'vuex'
 var tg_id
@@ -300,11 +300,11 @@ export default {
       this.alladmin = []
       this.adminuser = []
       if(role == 3){
-        getUserList(this.page).then((res) => {
+        getAllUser().then((res) => {
         if (res.code == 1) {
           // this.alluser = []
           // this.alladmin = []
-          this.alluser = res.user_list
+          this.alluser = res.all_user_list
           for (let i=0;i<this.alluser.length;i++) {
             if (this.alluser[i].role >= 2){
               this.alladmin.push(this.alluser[i])
@@ -475,11 +475,11 @@ export default {
       this.oduser = []
       this.adduser = []
       tg_id = row.groupid
-      getUserList(this.page).then((res) => {
+      getAllUser().then((res) => {
         if (res.code == 1) {
           // this.alluser = []
           // this.oduser = []
-          this.alluser = res.user_list
+          this.alluser = res.all_user_list
           for (let i=0;i<this.alluser.length;i++) {
             if (this.alluser[i].role == 1 && this.alluser[i].gid == 0){
               this.oduser.push(this.alluser[i])
@@ -645,6 +645,7 @@ export default {
       getGroupList(this.page).then((res) => {
         this.page = res.page
         this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
+        this.tableData = []
         this.tableData = res.group_list
         // console.log(this.total)
       })
