@@ -1,8 +1,6 @@
 <template>
   <div class="monitor">
     <div class="selector">
-      <!-- <GroupSelector ref="GroupSelector" :default-uid="adid" @nsList="changeGid" />
-      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" @nsList="changeUid" /> -->
       <p>这是超管按钮的地方</p>
     </div>
     <div class="dashboard">
@@ -66,9 +64,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getNsList, totalNs } from '@/api/namespace'
-// import UserSelector from '@/components/Selector/UserSelector'
-// import GroupSelector from '@/components/Selector/GroupSelector.vue'
+import { allkindNs, totalNs } from '@/api/namespace'
 
 export default {
   // components: { UserSelector, GroupSelector },
@@ -83,11 +79,66 @@ export default {
       memory_ratio: '',
       pvc_ratio: '',
       storage_ratio: '',
-      cpu_ns_list: [],
-      gpu_ns_list: [],
-      memory_ns_list: [],
-      pvc_ns_list: [],
-      storage_ns_list: [],
+      cpu_ns_list: [
+        {
+          name: '',
+          value: ''
+        }
+      ],
+      gpu_ns_list: [
+        {
+          name: '',
+          value: ''
+        }
+      ],
+      memory_ns_list: [
+        {
+          name: '',
+          value: ''
+        }
+      ],
+      pvc_ns_list: [
+        {
+          name: '',
+          value: ''
+        }
+      ],
+      storage_ns_list: [
+        {
+          name: '',
+          value: ''
+        }
+      ],
+      cpu_ns_ratio: [
+        {
+          cpu: '',
+          used_cpu: ''
+        }
+      ],
+      gpu_ns_ratio: [
+        {
+          gpu: '',
+          used_gpu: ''
+        }
+      ],
+      memory_ns_ratio: [
+        {
+          memory: '',
+          used_memory: ''
+        }
+      ],
+      pvc_ns_ratio: [
+        {
+          pvc: '',
+          used_pvc: ''
+        }
+      ],
+      storage_ns_ratio: [
+        {
+          storage: '',
+          used_storage: ''
+        }
+      ],
       cur_res: [
         {
           cpu: 'CPU',
@@ -123,24 +174,74 @@ export default {
     init() {
       setTimeout(_ => {
         this.cur_res.forEach(_ => {
+          // 获取仪表盘数据及加载图表
           this.totalNs(this.uid)
-          this.draw_cpu()
-          this.draw_gpu()
-          this.draw_memory()
-          this.draw_pvc()
-          this.draw_storage()
         })
         this.cur_res_ns.forEach(_ => {
-          this.getNsList(this.uid)
-          this.draw_cpu_ns()
-          this.draw_gpu_ns()
-          this.draw_memory_ns()
-          this.draw_pvc_ns()
-          this.draw_storage_ns()
+          // 获取饼图数据及加载图表
+          this.allkindNs(this.uid)
         })
       }, 500)
     },
+    // 饼图数据
+    allkindNs: function(u_id) {
+      allkindNs(u_id).then((res) => {
+        this.ns_length = res.length
+        // console.log(this.ns_length)
+        for (let i = 0; i < this.ns_length; i++) {
+          this.ns_list.push(res.ns_list[i])
+        }
+        for (let i = 0; i < this.ns_length; i++) {
+          this.cpu_ns_list.push({ name: this.ns_list[i].name, value: this.ns_list[i].used_cpu_value })
+          this.cpu_ns_ratio.push({ cpu: this.ns_list[i].cpu, used_cpu: this.ns_list[i].used_cpu })
+        }
+        // console.log('test3')
+        // console.log(JSON.parse(JSON.stringify(this.cpu_ns_list)))
+        // console.log(JSON.parse(JSON.stringify(this.cpu_ns_ratio)))
+        for (let i = 0; i < this.ns_length; i++) {
+          this.gpu_ns_list.push({ name: this.ns_list[i].name, value: this.ns_list[i].used_gpu_value })
+          this.gpu_ns_ratio.push({ gpu: this.ns_list[i].gpu, used_gpu: this.ns_list[i].used_gpu })
+        }
+        for (let i = 0; i < this.ns_length; i++) {
+          this.memory_ns_list.push({ name: this.ns_list[i].name, value: this.ns_list[i].used_memory_value })
+          this.memory_ns_ratio.push({ memory: this.ns_list[i].memory, used_memory: this.ns_list[i].used_memory })
+        }
+        for (let i = 0; i < this.ns_length; i++) {
+          this.pvc_ns_list.push({ name: this.ns_list[i].name, value: this.ns_list[i].used_pvc_value })
+          this.pvc_ns_ratio.push({ pvc: this.ns_list[i].pvc, used_pvc: this.ns_list[i].used_pvc })
+        }
+        for (let i = 0; i < this.ns_length; i++) {
+          this.storage_ns_list.push({ name: this.ns_list[i].name, value: this.ns_list[i].used_storage_value })
+          this.storage_ns_ratio.push({ storage: this.ns_list[i].storage, used_storage: this.ns_list[i].used_storage })
+        }
+        // 加载Echarts图表
+        this.draw_cpu_ns()
+        this.draw_gpu_ns()
+        this.draw_memory_ns()
+        this.draw_pvc_ns()
+        this.draw_storage_ns()
+      })
+    },
+    // 仪表盘数据
+    totalNs: function(u_id) {
+      totalNs(u_id).then((res) => {
+        this.cpu_ratio = res.cpu_ratio
+        // console.log(this.cpu_ratio)
+        this.gpu_ratio = res.gpu_ratio
+        this.memory_ratio = res.memory_ratio
+        this.pvc_ratio = res.pvc_ratio
+        this.storage_ratio = res.storage_ratio
+        // 加载Echarts图表
+        this.draw_cpu()
+        this.draw_gpu()
+        this.draw_memory()
+        this.draw_pvc()
+        this.draw_storage()
+      })
+    },
+    // Echarts图表初始化
     draw_cpu() {
+      var _this = this
       // 初始化Echarts实例
       const CPU = this.$echarts.init(document.getElementById('CPU'))
       // 绘制图表
@@ -198,19 +299,20 @@ export default {
             },
             data: [
               {
-                value: 70
+                value: _this.cpu_ratio
               }
             ]
           }
         ]
       }
-      setInterval(function() {
+      setInterval(() => {
+        // console.log("test")
         CPU.setOption({
           series: [
             {
               data: [
                 {
-                  value: +(Math.random()*5 + this.cpu_ratio).toFixed(2) // 在实际数据附近波动显示
+                  value: ((Math.random() * 2 + _this.cpu_ratio)).toFixed(2) // 在实际数据附近波动显示
                 }
               ]
             }
@@ -222,6 +324,7 @@ export default {
       CPU.setOption(option)// 设置option
     },
     draw_gpu() {
+      var _this = this
       // 初始化Echarts实例
       const GPU = this.$echarts.init(document.getElementById('GPU'))
       // 绘制图表
@@ -279,8 +382,7 @@ export default {
             },
             data: [
               {
-                value: 70,
-                name: GPU
+                value: _this.gpu_ratio
               }
             ]
           }
@@ -292,7 +394,7 @@ export default {
             {
               data: [
                 {
-                  value: +(Math.random() * 100).toFixed(2)
+                  value: ((Math.random() * 2 + _this.gpu_ratio)).toFixed(2)
                 }
               ]
             }
@@ -304,6 +406,7 @@ export default {
       GPU.setOption(option)// 设置option
     },
     draw_memory() {
+      var _this = this
       // 初始化Echarts实例
       const Memory = this.$echarts.init(document.getElementById('Memory'))
       // 绘制图表
@@ -361,8 +464,7 @@ export default {
             },
             data: [
               {
-                value: 70,
-                name: Memory
+                value: _this.memory_ratio
               }
             ]
           }
@@ -374,7 +476,7 @@ export default {
             {
               data: [
                 {
-                  value: +(Math.random() * 100).toFixed(2)
+                  value: ((Math.random() * 2 + _this.memory_ratio)).toFixed(2)
                 }
               ]
             }
@@ -386,6 +488,7 @@ export default {
       Memory.setOption(option)// 设置option
     },
     draw_pvc() {
+      var _this = this
       // 初始化Echarts实例
       const Pvc = this.$echarts.init(document.getElementById('Pvc'))
       // 绘制图表
@@ -443,8 +546,7 @@ export default {
             },
             data: [
               {
-                value: 70,
-                name: Pvc
+                value: _this.pvc_ratio
               }
             ]
           }
@@ -456,7 +558,7 @@ export default {
             {
               data: [
                 {
-                  value: +(Math.random() * 100).toFixed(2)
+                  value: ((Math.random() * 2 + _this.pvc_ratio)).toFixed(2)
                 }
               ]
             }
@@ -468,6 +570,7 @@ export default {
       Pvc.setOption(option)// 设置option
     },
     draw_storage() {
+      var _this = this
       // 初始化Echarts实例
       const Storage = this.$echarts.init(document.getElementById('Storage'))
       // 绘制图表
@@ -525,8 +628,7 @@ export default {
             },
             data: [
               {
-                value: 70,
-                name: Storage
+                value: _this.storage_ratio
               }
             ]
           }
@@ -538,7 +640,7 @@ export default {
             {
               data: [
                 {
-                  value: +(Math.random() * 100).toFixed(2)
+                  value: ((Math.random() * 2 + _this.storage_ratio)).toFixed(2)
                 }
               ]
             }
@@ -550,12 +652,26 @@ export default {
       Storage.setOption(option)// 设置option
     },
     draw_cpu_ns() {
+      var _this = this
       // 初始化Echarts实例
       const CPU_NS = this.$echarts.init(document.getElementById('CPU_NS'))
       // 绘制图表
       var option = {
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
+          triggerOn: 'mousemove|click',
+          confine: true,
+          textStyle: {
+            align: 'left'
+          },
+          // formatter: '工作空间: {b} <br/> 已用/配额: ' + _this.cpu_ns_ratio.cpu + '/' + _this.cpu_ns_ratio.used_cpu
+          // formatter: function(_this, cpu_ns_ratio) {
+          //   return '工作空间: {b} <br/> 已用/配额: ' + cpu_ns_ratio.cpu + '/' + cpu_ns_ratio.used_cpu
+          // }
+          formatter: function(data) {
+            console.log(data)
+            return '工作空间：' + data.name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
+          }
         },
         legend: { // 图例
           show: false,
@@ -588,28 +704,45 @@ export default {
             labelLine: { // 引导线
               show: false
             },
-            data: this.cpu_ns_list
-            // data: [
-            //   { value: 1048, name: 'Search Engine' },
-            //   { value: 735, name: 'Direct' },
-            //   { value: 580, name: 'Email' },
-            //   { value: 484, name: 'Union Ads' },
-            //   { value: 300, name: 'Video Ads' }
-            // ]
+            data: _this.cpu_ns_list
           }
         ]
       }
+
+      /*
+       * 获取属于当前用户全部类型的工作空间，每次页面刷新即可重新获取。不需要动态获取*/
+      // setInterval(() => {
+      //   // console.log("test")
+      //   CPU_NS.setOption({
+      //     series: [
+      //       {
+      //         data: _this.cpu_ns_list
+      //       }
+      //     ]
+      //   })
+      // }, 2000)
+
       // 防止越界，重绘canvas
       window.onresize = CPU_NS.resize
       CPU_NS.setOption(option)// 设置option
     },
     draw_gpu_ns() {
+      var _this = this
       // 初始化Echarts实例
       const GPU_NS = this.$echarts.init(document.getElementById('GPU_NS'))
       // 绘制图表
       var option = {
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
+          triggerOn: 'mousemove|click',
+          confine: true,
+          textStyle: {
+            align: 'left'
+          },
+          formatter: function(data) {
+            console.log(data)
+            return '工作空间：' + data.name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
+          }
         },
         legend: {
           show: false,
@@ -642,28 +775,43 @@ export default {
             labelLine: {
               show: false
             },
-            data: this.gpu_ns_list
-            // data: [
-            //   { value: 1048, name: 'Search Engine' },
-            //   { value: 735, name: 'Direct' },
-            //   { value: 580, name: 'Email' },
-            //   { value: 484, name: 'Union Ads' },
-            //   { value: 300, name: 'Video Ads' }
-            // ]
+            data: _this.gpu_ns_list
           }
         ]
       }
+
+      // setInterval(() => {
+      //   // console.log("test")
+      //   CPU_NS.setOption({
+      //     series: [
+      //       {
+      //         data: _this.gpu_ns_list
+      //       }
+      //     ]
+      //   })
+      // }, 2000)
+
       // 防止越界，重绘canvas
       window.onresize = GPU_NS.resize
       GPU_NS.setOption(option)// 设置option
     },
     draw_memory_ns() {
+      var _this = this
       // 初始化Echarts实例
       const Memory_NS = this.$echarts.init(document.getElementById('Memory_NS'))
       // 绘制图表
       var option = {
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
+          triggerOn: 'mousemove|click',
+          confine: true,
+          textStyle: {
+            align: 'left'
+          },
+          formatter: function(data) {
+            console.log(data)
+            return '工作空间：' + data.name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
+          }
         },
         legend: {
           show: false,
@@ -696,28 +844,43 @@ export default {
             labelLine: {
               show: false
             },
-            data: this.memory_ns_list
-            // data: [
-            //   { value: 1048, name: 'Search Engine' },
-            //   { value: 735, name: 'Direct' },
-            //   { value: 580, name: 'Email' },
-            //   { value: 484, name: 'Union Ads' },
-            //   { value: 300, name: 'Video Ads' }
-            // ]
+            data: _this.memory_ns_list
           }
         ]
       }
+
+      // setInterval(() => {
+      //   // console.log("test")
+      //   CPU_NS.setOption({
+      //     series: [
+      //       {
+      //         data: _this.memory_ns_list
+      //       }
+      //     ]
+      //   })
+      // }, 2000)
+
       // 防止越界，重绘canvas
       window.onresize = Memory_NS.resize
       Memory_NS.setOption(option)// 设置option
     },
     draw_pvc_ns() {
+      var _this = this
       // 初始化Echarts实例
       const Pvc_NS = this.$echarts.init(document.getElementById('Pvc_NS'))
       // 绘制图表
       var option = {
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
+          triggerOn: 'mousemove|click',
+          confine: true,
+          textStyle: {
+            align: 'left'
+          },
+          formatter: function(data) {
+            console.log(data)
+            return '工作空间：' + data.name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
+          }
         },
         legend: {
           show: false,
@@ -750,28 +913,43 @@ export default {
             labelLine: {
               show: false
             },
-            data: this.pvc_ns_list
-            // data: [
-            //   { value: 1048, name: 'Search Engine' },
-            //   { value: 735, name: 'Direct' },
-            //   { value: 580, name: 'Email' },
-            //   { value: 484, name: 'Union Ads' },
-            //   { value: 300, name: 'Video Ads' }
-            // ]
+            data: _this.pvc_ns_list
           }
         ]
       }
+
+      // setInterval(() => {
+      //   // console.log("test")
+      //   CPU_NS.setOption({
+      //     series: [
+      //       {
+      //         data: _this.pvc_ns_list
+      //       }
+      //     ]
+      //   })
+      // }, 2000)
+
       // 防止越界，重绘canvas
       window.onresize = Pvc_NS.resize
       Pvc_NS.setOption(option)// 设置option
     },
     draw_storage_ns() {
+      var _this = this
       // 初始化Echarts实例
       const Storage_NS = this.$echarts.init(document.getElementById('Storage_NS'))
       // 绘制图表
       var option = {
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
+          triggerOn: 'mousemove|click',
+          confine: true,
+          textStyle: {
+            align: 'left'
+          },
+          formatter: function(data) {
+            console.log(data)
+            return '工作空间：' + data.name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
+          }
         },
         legend: {
           show: false,
@@ -804,67 +982,25 @@ export default {
             labelLine: {
               show: false
             },
-            data: [
-              { value: 1048, name: 'Search Engine' },
-              { value: 735, name: 'Direct' },
-              { value: 580, name: 'Email' },
-              { value: 484, name: 'Union Ads' },
-              { value: 300, name: 'Video Ads' }
-            ]
+            data: _this.storage_ns_list
           }
         ]
       }
+
+      // setInterval(() => {
+      //   // console.log("test")
+      //   CPU_NS.setOption({
+      //     series: [
+      //       {
+      //         data: _this.storage_ns_list
+      //       }
+      //     ]
+      //   })
+      // }, 600000)
+
       // 防止越界，重绘canvas
       window.onresize = Storage_NS.resize
       Storage_NS.setOption(option)// 设置option
-    },
-    // changeGid: function(g_id) {
-    //   this.gid = g_id
-    //   this.$refs.UserSelector.u_id = ''
-    //   this.$refs.UserSelector.g_id = this.gid
-    //   this.$refs.UserSelector.getUserList()
-    // },
-    // changeUid: function(u_id) {
-    //   this.uid = u_id
-    //   this.$refs.NsSelector.u_id = this.uid
-    //   this.$refs.NsSelector.getNsList()
-    //   this.getDeployList()
-    // },
-    // 饼图数据
-    getNsList: function(u_id) {
-      getNsList(u_id).then((res) => {
-        this.ns_length = res.length
-        // console.log(this.ns_length)
-        for (let i = 0; i < this.ns_length; i++) {
-          this.ns_list.push(res.ns_list[i])
-        }
-        for (let i = 0; i < this.ns_length; i++) {
-          this.cpu_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedCpuValue })
-        }
-        console.log(JSON.parse(JSON.stringify(this.cpu_ns_list)))
-        for (let i = 0; i < this.ns_length; i++) {
-          this.gpu_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedGPUValue })
-        }
-        for (let i = 0; i < this.ns_length; i++) {
-          this.memory_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedMemeoryValue })
-        }
-        for (let i = 0; i < this.ns_length; i++) {
-          this.pvc_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedPvcValue })
-        }
-        for (let i = 0; i < this.ns_length; i++) {
-          this.storage_ns_list.push({ name: this.ns_list[i].Name, value: this.ns_list[i].Resources.UsedStorageValue })
-        }
-      })
-    },
-    // 仪表盘数据
-    totalNs: function(u_id) {
-      totalNs(u_id).then((res) => {
-        this.cpu_ratio = res.UserTotalNs.CpuRatio
-        this.gpu_ratio = res.UserTotalNs.GpuRatio
-        this.memory_ratio = res.UserTotalNs.MemoryRatio
-        this.pvc_ratio = res.UserTotalNs.PvcRatio
-        this.storage = rse.UserTotalNs.StorageRatio
-      })
     }
   }
 }
