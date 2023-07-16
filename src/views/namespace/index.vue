@@ -99,7 +99,7 @@ export default {
     ])
   },
   created() {
-    this.uid = ''
+    this.uid = this.u_id
     this.gid = ''
     this.adid = this.u_id
     //this.GroupSelector.change()
@@ -108,7 +108,7 @@ export default {
     // this.$refs.UserSelector.g_id = ''
     // this.$refs.UserSelector.u_id = this.adid
     // this.$refs.UserSelector.getAllUser()
-    //this.getNsList()
+    this.getNsList()
   },
   data() {
     return {
@@ -145,28 +145,13 @@ export default {
     }
   },
   methods: {
-    handleCommand(command) {
-      if (command.command === 'deploy') {
-        this.push2deploy(command.row)
-      } else if (command.command === 'service') {
-        this.push2service(command.row)
-      } else if(command.command === 'pod'){
-        this.push2pod(command.row)
-      }
-    },
-    beforeHandleCommand(item, row) {
-      return {
-        'command': item,
-        'row': row
-      }
-    },
     changeUid: function(u_id) {
       this.uid = u_id
       this.getNsList()
     },
     changeGid: function(g_id){
       this.gid = g_id
-      this.$refs.UserSelector.u_id = ''
+      this.$refs.UserSelector.uid = ''
       this.$refs.UserSelector.g_id = this.gid
       this.$refs.UserSelector.getAllUser()
     },

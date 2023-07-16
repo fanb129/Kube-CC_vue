@@ -21,4 +21,14 @@ export function deletePod(ns, name) {
     }
   })
 }
+export function podLog(ns, name) {
+  return request({
+    url: '/pod/log',
+    method: 'get',
+    params: {
+      'ns': ns,
+      'name': name
+    }
+  })
+}
 

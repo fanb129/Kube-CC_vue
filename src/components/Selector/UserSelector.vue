@@ -1,7 +1,7 @@
 <template>
   <div style="display: inline">
     <span>所属用户：</span>
-    <el-select v-model="u_id" filterable placeholder="请选择" :disabled="role < 2" >
+    <el-select v-model="uid" filterable placeholder="请选择" :disabled="role < 2" >
       <el-option
         v-for="item,index in options"
         :key="index"
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import {getUserList, getAllUser} from "@/api/user";
+import {getAllUser} from "@/api/user";
 import {mapGetters} from "vuex";
 
 export default {
@@ -31,48 +31,39 @@ export default {
   props: ['defaultGid', 'defaultUid'],
   computed: {
     ...mapGetters([
-      'role'
-      // 'u_id'
+      'role',
+      'u_id',
+      'name',
     ])
   },
   created() {
-    // this.getUserList(this.g_id)
-    // this.u_id = this.defaultUid
-    // this.g_id = this.defaultGid
-    //this.change()
+    this.options.push({id:this.u_id, nickname: this.name, role: this.role})
   },
   data() {
     return {
-      u_id: this.defaultUid,
+      uid: this.defaultUid,
       g_id: this.defaultGid,
       userPage: 1,
       userTotal: 0,
-      options: [{
-        id: '',
-        nickname: '该组所有用户',
-        role: '3',
-        gid: ''
-      }]
+      options: []
     }
   },
   methods: {
     change() {
       this.$forceUpdate()
-      this.$emit('nsList', this.u_id)
-    },
-    changeUserPageNum: function(val) {
-      this.userPage = val
-      this.getUserList()
+      this.$emit('nsList', this.uid)
     },
     getAllUser: function() {
       getAllUser().then((res) => {
         this.options = res.all_user_list
-        this.options.push({id:'',nickname:'该组所有用户', role: 3})
+        if(this.g_id == ''){
+          this.options.push({id:'',nickname:'所有用户', role: 3})
+        }
         //this.options.push({id:'999999',nickname:'请选择', role: 1})
         if(this.g_id == ''){
         } else {
           for(let i=0;i<this.options.length;i++){
-            if(this.options[i].id!=''&&this.options[i].gid != this.g_id){
+            if(this.options[i].id!=''&&this.options[i].gid != this.g_id&&this.options[i].id != this.u_id){
               this.options.splice(i,1)
               i = i-1
             }
