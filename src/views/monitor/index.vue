@@ -669,8 +669,9 @@ export default {
           //   return '工作空间: {b} <br/> 已用/配额: ' + cpu_ns_ratio.cpu + '/' + cpu_ns_ratio.used_cpu
           // }
           formatter: function(data) {
-            console.log(data)
-            return '工作空间：' + data.name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
+            // console.log(data)
+            var Name = data.name.split('-')[0]
+            return '工作空间：' + Name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
           }
         },
         legend: { // 图例
@@ -740,8 +741,8 @@ export default {
             align: 'left'
           },
           formatter: function(data) {
-            console.log(data)
-            return '工作空间：' + data.name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
+            var Name = data.name.split('-')[0]
+            return '工作空间：' + Name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
           }
         },
         legend: {
@@ -809,8 +810,8 @@ export default {
             align: 'left'
           },
           formatter: function(data) {
-            console.log(data)
-            return '工作空间：' + data.name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
+            var Name = data.name.split('-')[0]
+            return '工作空间：' + Name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
           }
         },
         legend: {
@@ -878,8 +879,8 @@ export default {
             align: 'left'
           },
           formatter: function(data) {
-            console.log(data)
-            return '工作空间：' + data.name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
+            var Name = data.name.split('-')[0]
+            return '工作空间：' + Name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
           }
         },
         legend: {
@@ -947,8 +948,8 @@ export default {
             align: 'left'
           },
           formatter: function(data) {
-            console.log(data)
-            return '工作空间：' + data.name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
+            var Name = data.name.split('-')[0]
+            return '工作空间：' + Name + '<br/>' + '已经使用：' + data.value + '</br>' + '占已使用的：' + data.percent.toFixed(1) + '%'
           }
         },
         legend: {
