@@ -2,16 +2,15 @@ import request from '@/utils/request'
 
 export function getImageList(page) {
   return request({
-    url: '/docker/index/' + page,
+    url: '/docker/' + page,
     method: 'get'
   })
 }
 
-export function RemoveImageById(data) {
+export function RemoveImageById(image_id) {
   return request({
-    url: '/docker/remove',
-    method: 'get',
-    data
+    url: '/docker/remove/' + image_id,
+    method: 'get'
   })
 }
 

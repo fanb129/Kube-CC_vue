@@ -2,40 +2,20 @@
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="600px">
     <el-form ref="form" :model="form" :rules="formRules" label-width="160px">
       <el-form-item label="Image ID" prop="ImageId">
-        <el-input v-model="form.ImageId" />
+        <el-input v-model="form.parent" />
       </el-form-item>
       <el-form-item label="repository username">
-        <el-input v-model="form.repository_username" />
+        <el-input v-model="form.username" />
       </el-form-item>
       <el-form-item label="repository passwd" prop="repository_passwd">
-        <el-input v-model="form.repository_passwd" />
+        <el-input v-model="form.passwd" />
       </el-form-item>
-      <el-form-item label="用户">
-        <el-select v-model="form.u_id" filterable multiple placeholder="请选择分配用户" @change="change">
-          <el-option
-            v-for="item in options"
-            :key="item.id"
-            :label="item.username + '\t' + item.nickname"
-            :value="item.id"
-            :disabled="role < item.role"
-          />
-          <el-pagination
-            background
-            layout="prev, pager, next"
-            :current-page="userPage"
-            :page-size="1"
-            :total="userTotal"
-            @current-change="changeUserPageNum"
-          />
-        </el-select>
-      </el-form-item>
-
       <el-form-item label="Image Tag" prop="ImageTag">
-        <el-input v-model="form.Image_tag" />
+        <el-input v-model="form.tag" />
       </el-form-item>
       <el-form-item label="Kind">
 
-        <el-select v-model="form.Kind" filterable multiple placeholder="请选择镜像权限">
+        <el-select v-model="form.kind" placeholder="请选择镜像权限">
           <el-option label="公有" value="1" />
           <el-option label="私有" value="2" />
         </el-select>
@@ -50,7 +30,6 @@
 </template>
 
 <script>
-import { getUserList } from '@/api/user'
 import { createImageById } from '@/api/docker'
 import { mapGetters } from 'vuex'
 
@@ -77,29 +56,31 @@ export default {
       }],
       // 添加表单
       form: {
-        ImageId: '',
-        repository_username: '',
-        repository_passwd: '',
-        u_id: [],
-        Image_tag: '',
-        Kind: ''
+        parent: '',
+        username: '',
+        passwd: '',
+        uid: [],
+        tag: '',
+        kind: ''
       },
       formRules: {
-        u_id: [{ required: true, trigger: 'blur' }],
-        ImageId: [{ required: true, trigger: 'blur' }],
-        repository_username: [{ required: true, trigger: 'blur' }],
-        repository_passwd: [{ required: true, trigger: 'blur' }],
-        Image_tag: [{ required: true, trigger: 'blur' }],
-        Kind: [{ required: true, trigger: 'blur' }],
+        uid: [{ required: true, trigger: 'blur' }],
+        parent: [{ required: true, trigger: 'blur' }],
+        username: [{ required: true, trigger: 'blur' }],
+        passwd: [{ required: true, trigger: 'blur' }],
+        tag: [{ required: true, trigger: 'blur' }],
+        kind: [{ required: true, trigger: 'blur' }]
       }
     }
   },
   methods: {
     init() {
       this.open = true
+      this.form.uid = this.u_id
       this.$nextTick(() => {
         this.getUserList()
         this.open = true
+        this.form.uid = this.u_id
       })
     },
     // 取消按钮
@@ -113,12 +94,12 @@ export default {
         if (valid) {
           createImageById({
             // TODO 添加其他与镜像相关的操作
-            u_id: this.form.u_id,
-            Repository_Username: this.form.repository_username,
-            Repository_Passwd: this.form.repository_passwd,
-            ImageId: this.form.ImageId,
-            Image_tag: this.form.Image_tag,
-            Kind: parseInt(this.form.Kind)
+            parent: this.form.parent,
+            username: this.form.username,
+            passwd: this.form.passwd,
+            tag: this.form.tag,
+            uid: this.form.uid,
+            kind: parseInt(this.form.kind)
           }).then((res) => {
             if (res.code === 1) {
               this.$message({
@@ -138,19 +119,6 @@ export default {
         } else {
           return false
         }
-      })
-    },
-    changeUserPageNum: function(val) {
-      this.userPage = val
-      this.getUserList()
-    },
-    getUserList: function() {
-      getUserList(this.userPage).then((res) => {
-        this.userPage = res.page
-        this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
-        this.options = res.user_list
-        this.options.push({ nickname: '', id: '0', username: 'Null', role: '0' })
-        // console.log(res)
       })
     },
     change() {
