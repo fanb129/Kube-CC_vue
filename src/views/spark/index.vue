@@ -137,11 +137,10 @@ import AddSpark from '@/components/AddSpark'
 import UserSelector from '@/components/Selector/UserSelector'
 import UpdateSpark from '@/components/AddSpark/UpdateSpark'
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
-import NsSelector from '@/components/Selector/NsSelector.vue'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { NsSelector, AddSpark, UserSelector, GroupSelector, UpdateSpark },
+  components: { AddSpark, UserSelector, GroupSelector, UpdateSpark },
   computed: {
     ...mapGetters([
       'role',
@@ -229,16 +228,12 @@ export default {
   methods: {
     changeGid: function(g_id) {
       this.gid = g_id
-      this.$refs.UserSelector.u_id = ''
+      this.$refs.UserSelector.uid = ''
       this.$refs.UserSelector.g_id = this.gid
       this.$refs.UserSelector.getUserList()
     },
     changeUid: function(u_id) {
       this.uid = u_id
-      this.getSparkList()
-    },
-    changeNs: function(ns) {
-      this.ns = ns
       this.getSparkList()
     },
     handleClose(done) {

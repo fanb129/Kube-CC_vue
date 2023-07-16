@@ -248,9 +248,9 @@ export default {
     },
     changeGid: function(g_id) {
       this.gid = g_id
-      this.$refs.UserSelector.u_id = ''
+      this.$refs.UserSelector.uid = ''
       this.$refs.UserSelector.g_id = this.gid
-      this.$refs.UserSelector.getUserList()
+      this.$refs.UserSelector.getAllUser()
     },
     changeImages: function(image_id) {
       this.image_id = image_id

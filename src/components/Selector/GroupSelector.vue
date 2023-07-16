@@ -22,7 +22,7 @@ import { viewGroupByAd } from '@/api/group'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'UserSelector',
+  name: 'GroupSelector',
   props: ['defaultUid'],
   computed: {
     ...mapGetters([

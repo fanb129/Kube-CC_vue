@@ -122,8 +122,6 @@
         @current-change="changePageNum"
       />
     </div>
-    <YamlApply ref="YamlApply" :visible.sync="applyDialog" :kind="kind" :name="yamlName" :ns="yamlNs" />
-    <YamlCreate ref="YamlCreate" :visible.sync="createDialog" :kind="kind" />
     <AddDeploy ref="AddDeploy" :visible.sync="addDialog" />
   </div>
 </template>
@@ -132,7 +130,7 @@
 import { mapGetters } from 'vuex'
 import { deleteStatefulSet, getStatefulSetList } from '@/api/app/statefulSet'
 import UserSelector from '@/components/Selector/UserSelector'
-import NsSelector from '@/components/Selector/NsSelector'
+import NsSelector from '@/components/Selector/NsSelectorNoNil'
 import AddStatefulSet from '@/components/AddStatefulSet/index.vue'
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
 import addStatefulSet from '@/components/AddStatefulSet/index.vue'
@@ -140,7 +138,7 @@ import addStatefulSet from '@/components/AddStatefulSet/index.vue'
 export default {
   name: 'StatefulSet',
   // eslint-disable-next-line vue/no-unused-components
-  components: { NsSelector, UserSelector, GroupSelector, YamlApply, YamlCreate, AddStatefulSet },
+  components: { NsSelector, UserSelector, GroupSelector,AddStatefulSet },
   computed: {
     addStatefulSet() {
       return addStatefulSet
@@ -224,7 +222,7 @@ export default {
   methods: {
     changeGid: function(g_id) {
       this.gid = g_id
-      this.$refs.UserSelector.u_id = ''
+      this.$refs.UserSelector.uid = ''
       this.$refs.UserSelector.g_id = this.gid
       this.$refs.UserSelector.getUserList()
     },

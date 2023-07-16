@@ -3,10 +3,10 @@
     <div style="margin-left: 10%; margin-top: 1%">
       <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 50px" @nsList="changeGid" />
       <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
-      <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
+      <NsSelectorNoNil ref="NsSelectorNoNil" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
 
-      <el-button trigger="click" style="margin-left: 100px" type="primary" @command="handleCommand" @click="addDeploy">
-        新增有状态应用
+      <el-button style="margin-left: 100px" type="primary" @click="addDeploy">
+        新增无状态应用
       </el-button>
 
     </div>
@@ -14,7 +14,7 @@
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
       <el-table-column label="编号" width="80"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.$index + 1 }}</span></template></el-table-column>
       <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.name }}</span></template></el-table-column>
-      <el-table-column width="120" property="namespace" label="命名空间"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.namespace }}</span></template></el-table-column>
+<!--      <el-table-column width="120" property="namespace" label="命名空间"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.namespace }}</span></template></el-table-column>-->
       <el-table-column width="200" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span style="margin-left: 1%">{{ scope.row.created_at }}</span></template></el-table-column>
       <el-table-column width="80" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
       <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
@@ -90,7 +90,8 @@
             <el-table-column label="节点Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button :disabled="role <= 2 " size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
+                <el-button size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
+                <el-button size="mini" type="success" @click="podLog(scope.row)"> 日志</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -126,66 +127,62 @@
         @current-change="changePageNum"
       />
     </div>
-    <YamlApply ref="YamlApply" :visible.sync="applyDialog" :kind="kind" :name="yamlName" :ns="yamlNs" />
-    <YamlCreate ref="YamlCreate" :visible.sync="createDialog" :kind="kind" />
     <AddDeploy ref="AddDeploy" :visible.sync="addDialog" />
+    <UpdateDeploy ref="UpdateDeploy" :visible.sync="updateDialog" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { deleteDeploy, getDeployList } from '@/api/app/deploy'
+import {podLog} from "@/api/pod";
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
 import UserSelector from '@/components/Selector/UserSelector'
-import NsSelector from '@/components/Selector/NsSelector'
-import AddDeploy from '@/components/AddDeploy'
-import addDeploy from '@/components/AddDeploy/index.vue'
+import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
+import AddDeploy from '@/components/AddDeploy/index'
+import UpdateDeploy from '@/components/AddDeploy/UpdateDeploy'
 
 export default {
   name: 'Deploy',
-  components: { NsSelector, UserSelector, GroupSelector, YamlApply, YamlCreate, AddDeploy },
+  components: {UpdateDeploy, NsSelectorNoNil, UserSelector, GroupSelector, AddDeploy },
   computed: {
-    addDeploy() {
-      return addDeploy
-    },
     ...mapGetters([
       'role',
       'u_id'
     ])
   },
   created() {
-    this.uid = this.$route.query.u_id || this.u_id
+    this.uid = this.u_id
     this.adid = this.u_id
-    this.getDeployList()
+    // this.getDeployList()
   },
   data() {
     return {
-      kind: 'Deploy',
+      myuid: this.u_id,
       uid: '',
       gid: '',
       adid: '',
-      ns: this.$route.query.ns,
-      yamlName: '',
-      yamlNs: '',
+      ns: '',
       timer: null,
       loading: false,
       applyDialog: false,
       createDialog: false,
       addDialog: false,
+      updateDialog: false,
       page: 1,
       // total: 0,
       pagesize: 10,
       tableData: [
         {
           /* 1规格*/
-          name: 'test1',
+          name: '',
           namespace: '',
-          created_at: '2023-07-06 13:37:29',
-          cpu: '1',
-          memory: '2',
-          storage: '3',
-          pvc: '4',
-          gpu: '5',
+          created_at: '',
+          cpu: '',
+          memory: '',
+          storage: '',
+          pvc: '',
+          gpu: '',
           pvc_path: [
             '/data'
           ],
@@ -193,12 +190,12 @@ export default {
           /* 2基本信息*/
           replicas: 0,
           image: '',
-          volume: 'pvc-a4a5fe70-7c94-44c4-aa7d-85673837322f',
+          volume: '',
 
           /* 3端口*/
           ports: [
             {
-              name: 'portA',
+              name: '',
               protocol: '',
               port: '',
               targetPort: '',
@@ -214,10 +211,12 @@ export default {
           /* 5pod*/
           pod_list: [
             {
-              name: 'pod1',
-              phase: 'active',
-              host_ip: '13.123.12.123',
-              pod_ip: '159.159.51.126'
+              name: '',
+              namespace: '',
+              phase: '',
+              host_ip: '',
+              pod_ip: '',
+              container:''
             }
           ]
 
@@ -226,45 +225,49 @@ export default {
     }
   },
   methods: {
-    /* handleCommand(command) {
-      if (command === 'a') {
-        this.addDeploy()
-      } else {
-        this.yamlCreate()
-      }
-    },*/
     changeGid: function(g_id) {
       this.gid = g_id
-      this.$refs.UserSelector.u_id = ''
+      this.$refs.UserSelector.uid = ''
       this.$refs.UserSelector.g_id = this.gid
-      this.$refs.UserSelector.getUserList()
+      this.$refs.UserSelector.getAllUser()
     },
     changeUid: function(u_id) {
       this.uid = u_id
-      this.$refs.NsSelector.u_id = this.uid
-      this.$refs.NsSelector.getNsList()
-      this.getDeployList()
+      this.$refs.NsSelectorNoNil.u_id = this.uid
+      this.$refs.NsSelectorNoNil.getNsList()
+      // this.getDeployList()
     },
     changeNs: function(ns) {
-      this.ns = ns
-      this.getDeployList()
+      if(ns !== '') {
+        this.ns = ns
+        this.getDeployList()
+      }
     },
     changePageNum: function(val) {
       this.page = val
     },
     getDeployList: function() {
-      getDeployList(this.uid, this.ns).then((res) => {
+      getDeployList(this.ns).then((res) => {
         this.total = res.length
         this.tableData = res.deploy_list
         console.log(res)
       })
     },
-    /* addDeploy: function() {
+    addDeploy: function() {
       this.addDialog = true
       this.$nextTick(() => {
-        this.$refs.AddDeploy.init()
+        this.myuid = this.u_id
+        this.addDialog = true
+        this.$refs.AddDeploy.init(this.myuid)
       })
-    },*/
+    },
+    editDeploy: function(row) {
+      this.updateDialog = true
+      this.$nextTick(() => {
+        this.$refs.UpdateDeploy.init(row['namespace'], row['name'])
+        this.updateDialog = true
+      })
+    },
     handleDelete: function(row) {
       /* 提示消息*/
       this.$confirm('确认永久删除此deploy及其所含pod', '提示', {
@@ -303,12 +306,17 @@ export default {
     pushTerminal: function(row) {
       console.log(row['namespace'])
       console.log(row['name'])
-      console.log(row['container_statuses'][0].name)
+      console.log(row['container'])
       this.$router.push({
         name: 'PodTerminal',
         query: {
-          r: 'pod/ssh?podNs=' + row['namespace'] + '&podName=' + row['name'] + '&containerName=' + row['container_statuses'][0].name
+          r: 'pod/ssh?podNs=' + row['namespace'] + '&podName=' + row['name'] + '&containerName=' + row['container']
         }
+      })
+    },
+    podLog: function(row) {
+      podLog(row['namespace'], row['name']).then((res) => {
+        console.log(res.log)
       })
     }
     /*    pushTerminal: function(row) {
