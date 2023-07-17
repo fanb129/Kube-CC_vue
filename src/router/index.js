@@ -155,19 +155,19 @@ export const constantRoutes = [
         meta: { title: '自定义应用', icon: 'el-icon-s-unfold' },
         children: [
           {
-            path: 'deployment',
+            path: '/deployment',
             name: 'Deployment',
             component: () => import('@/views/deploy/index'),
             meta: { title: '无状态应用', icon: 'el-icon-data-line' }
           },
           {
-            path: 'statefulSet',
+            path: '/statefulSet',
             name: 'StatefulSet',
             component: () => import('@/views/statefulSet/index'),
             meta: { title: '有状态应用', icon: 'el-icon-data-analysis' }
           },
           {
-            path: 'job',
+            path: '/job',
             name: 'Job',
             component: () => import('@/views/job/index'),
             meta: { title: '一次性任务', icon: 'el-icon-data-board' }

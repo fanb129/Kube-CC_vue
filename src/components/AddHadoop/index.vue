@@ -130,7 +130,7 @@ export default {
                 message: res.msg
               })
               this.open = false
-              // 调用主页面的getNsList方法刷新主页面
+              // 调用主页面的getHadoopList方法刷新主页面
               this.$parent.getHadoopList()
             } else {
               this.$message({
