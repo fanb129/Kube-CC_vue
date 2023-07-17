@@ -34,10 +34,20 @@ export function updateNs(data) {
   })
 }
 
-// 用于键监控
+// 用于监控
 export function totalNs(u_id) {
   return request({
     url: '/ns/total',
+    method: 'get',
+    params: {
+      'u_id': u_id
+    }
+  })
+}
+
+export function allkindNs(u_id) {
+  return request({
+    url: '/ns/allkind',
     method: 'get',
     params: {
       'u_id': u_id

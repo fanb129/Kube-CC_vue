@@ -69,7 +69,7 @@
 import { mapGetters } from 'vuex'
 import { getJobList } from '@/api/app/job'
 import UserSelector from '@/components/Selector/UserSelector'
-import NsSelector from '@/components/Selector/NsSelector'
+import NsSelector from '@/components/Selector/NsSelectorNoNil'
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
 import row from 'element-ui/packages/row'
 
@@ -155,7 +155,7 @@ export default {
   methods: {
     changeGid: function(g_id) {
       this.gid = g_id
-      this.$refs.UserSelector.u_id = ''
+      this.$refs.UserSelector.uid = ''
       this.$refs.UserSelector.g_id = this.gid
       this.$refs.UserSelector.getUserList()
     },

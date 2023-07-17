@@ -74,7 +74,7 @@ export default {
     init() {
       this.open = true
       this.$nextTick(() => {
-        this.getUserList()
+        // this.getUserList()
         this.open = true
       })
     },

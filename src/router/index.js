@@ -103,6 +103,16 @@ export const constantRoutes = [
       meta: { title: ' 工作空间', icon: 'el-icon-s-help' }
     }]
   },
+  { path: '/docker',
+    component: Layout,
+    redirect: '/docker',
+    children: [{
+      path: '/docker',
+      name: 'Docker',
+      component: () => import('@/views/docker/index'),
+      meta: { title: ' 镜像管理', icon: 'el-icon-s-help' }
+    }]
+  },
   {
     path: '/app',
     component: Layout,
