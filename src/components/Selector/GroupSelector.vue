@@ -1,12 +1,13 @@
 <template>
   <div style="display: inline">
     <span>所属组：</span>
-    <el-select v-model="g_id" filterable placeholder="请选择" :disabled="role < 2" @change="change">
+    <el-select v-model="g_id" filterable placeholder="请选择" :disabled="role < 2" >
       <el-option
         v-for="item,index in options"
         :key="index"
         :label="item.label"
         :value="item.value"
+        @click.native="change(item.value)"
       />
       <!-- <el-pagination background layout="prev, pager, next" :current-page="userPage" :page-size="1" :total="userTotal"
                        @current-change="changeUserPageNum"></el-pagination> -->
@@ -21,7 +22,7 @@ import { viewGroupByAd } from '@/api/group'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'UserSelector',
+  name: 'GroupSelector',
   props: ['defaultUid'],
   computed: {
     ...mapGetters([
@@ -31,6 +32,9 @@ export default {
   },
   created() {
     this.viewGroupByAd()
+    // this.u_id = this.defaultUid
+    // this.g_id = ''
+    //this.change()
   },
   data() {
     return {
@@ -63,27 +67,28 @@ export default {
     //   },
     viewGroupByAd: function() {
       viewGroupByAd(this.u_id).then((res) => {
-        // this.tagroup = res.group_list
-        this.options = []
-        // this.tt=[]
-        // this.tt = res.group_list
-        this.options.push(res.group_list.map(function(item, index) {
-          var tmp = {
-            'value': item.groupid,
-            'label': item.name
-          }
-          return tmp
-        }))
-        this.options = this.options[0]
-        // this.tagroup.push({
-        //   "value" : 0,
-        //   "label" : '请选择'
-        // })
-        if (this.role == 3) {
-          this.options.push({
-            'value': 0,
-            'label': '所有用户'
+        //this.tagroup = res.group_list
+        this.options=[]
+        //this.tt=[]
+        //this.tt = res.group_list
+        this.options.push(res.group_list.map(function(item,index){
+            var tmp = {
+              "value" : item.groupid,
+              "label" : item.name,
+            }
+            return tmp
+          }))
+          this.options = this.options[0]
+          // this.tagroup.push({
+          //   "value" : 0,
+          //   "label" : '请选择'
+          // })
+          if(this.role == 3){
+            this.options.push({
+            "value" : '',
+            "label" : '所有用户'
           })
+          //this.options.push({id:'999999',nickname:'请选择', role: 1})
         }
       })
     }

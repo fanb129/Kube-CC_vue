@@ -100,7 +100,14 @@ export default {
   },
   created() {
     this.uid = this.u_id
+    this.gid = ''
     this.adid = this.u_id
+    //this.GroupSelector.change()
+    //this.changeGid(GroupSelector.g_id)
+    //this.uid = '1'
+    // this.$refs.UserSelector.g_id = ''
+    // this.$refs.UserSelector.u_id = this.adid
+    // this.$refs.UserSelector.getAllUser()
     this.getNsList()
   },
   data() {
@@ -138,21 +145,15 @@ export default {
     }
   },
   methods: {
-    changeGid: function(g_id) {
-      this.gid = g_id
-      this.$refs.UserSelector.u_id = ''
-      this.$refs.UserSelector.g_id = this.gid
-      this.$refs.UserSelector.getUserList()
-    },
-    beforeHandleCommand(item, row) {
-      return {
-        'command': item,
-        'row': row
-      }
-    },
     changeUid: function(u_id) {
       this.uid = u_id
       this.getNsList()
+    },
+    changeGid: function(g_id){
+      this.gid = g_id
+      this.$refs.UserSelector.uid = ''
+      this.$refs.UserSelector.g_id = this.gid
+      this.$refs.UserSelector.getAllUser()
     },
     changePageNum: function(val) {
       this.page = val
@@ -233,7 +234,7 @@ export default {
         // })
         if (this.role === 3) {
           this.tagroup.push({
-            'value': 0,
+            'value': '',
             'label': '所有用户'
           })
         }
@@ -241,8 +242,9 @@ export default {
     },
     getUserList: function() {
       getUserList(this.page).then((res) => {
-        // this.page = res.page
-        // this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
+        //this.page = res.page
+        //this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
+        this.tData = []
         this.tData = res.user_list
         for (let i = 0; i < this.tData.length; i++) {
           if (this.tData[i].role === 3) {

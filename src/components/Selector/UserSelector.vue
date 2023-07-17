@@ -1,82 +1,76 @@
 <template>
   <div style="display: inline">
     <span>所属用户：</span>
-    <el-select v-model="u_id" filterable placeholder="请选择" :disabled="role < 2" @change="change">
+    <el-select v-model="uid" filterable placeholder="请选择" :disabled="role < 2" >
       <el-option
         v-for="item,index in options"
         :key="index"
         :label="item.nickname"
         :value="item.id"
         :disabled="role < item.role"
+        @click.native="change(item.id)"
       />
-      <el-pagination
+      <!-- <el-pagination
         background
         layout="prev, pager, next"
         :current-page="userPage"
         :page-size="1"
         :total="userTotal"
         @current-change="changeUserPageNum"
-      />
+      /> -->
     </el-select>
   </div>
 </template>
 
 <script>
-import { getUserList } from '@/api/user'
-import { mapGetters } from 'vuex'
+import {getAllUser} from "@/api/user";
+import {mapGetters} from "vuex";
 
 export default {
   name: 'UserSelector',
   props: ['defaultGid', 'defaultUid'],
   computed: {
     ...mapGetters([
-      'role'
-      // 'u_id'
+      'role',
+      'u_id',
+      'name',
     ])
   },
   created() {
-    // this.getUserList(this.g_id)
+    this.options.push({id:this.u_id, nickname: this.name, role: this.role})
   },
   data() {
     return {
-      u_id: this.defaultUid,
+      uid: this.defaultUid,
       g_id: this.defaultGid,
       userPage: 1,
       userTotal: 0,
-      options: [{
-        id: '',
-        nickname: '',
-        role: '',
-        gid: ''
-      }]
+      options: []
     }
   },
   methods: {
     change() {
       this.$forceUpdate()
-      this.$emit('nsList', this.u_id)
+      this.$emit('nsList', this.uid)
     },
-    changeUserPageNum: function(val) {
-      this.userPage = val
-      this.getUserList()
-    },
-    getUserList: function() {
-      getUserList(this.userPage).then((res) => {
-        this.userPage = res.page
-        this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
-        this.options = res.user_list
-        // Terminal.log(res)
-        this.options.push({ id: '', nickname: 'All User', role: 3 })
-        console.log(this.options)
-        for (let i = 0; i < this.options.length; i++) {
-          if (this.options[i].gid !== this.g_id) {
-            this.options.splice(i, 1)
-            i = i - 1
+    getAllUser: function() {
+      getAllUser().then((res) => {
+        this.options = res.all_user_list
+        if(this.g_id == ''){
+          this.options.push({id:'',nickname:'所有用户', role: 3})
+        }
+        //this.options.push({id:'999999',nickname:'请选择', role: 1})
+        if(this.g_id == ''){
+        } else {
+          for(let i=0;i<this.options.length;i++){
+            if(this.options[i].id!=''&&this.options[i].gid != this.g_id&&this.options[i].id != this.u_id){
+              this.options.splice(i,1)
+              i = i-1
+            }
           }
         }
-        // console.log(this.options)
       })
-    }
+    },
   }
 }
 </script>

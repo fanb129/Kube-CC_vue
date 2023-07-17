@@ -5,9 +5,9 @@
     <!--      <el-form-item label="Name">-->
     <!--        <el-input v-model="service.metadata.name"></el-input>-->
     <!--      </el-form-item>-->
-<!--    &lt;!&ndash;      <el-form-item label="Namespace">&ndash;&gt;-->
+    <!--    &lt;!&ndash;      <el-form-item label="Namespace">&ndash;&gt;-->
     <div>
-<!--      <UserSelectorNoNil ref="UserSelector" :default-uid="uid" @nsList="changeUid" />-->
+      <!--      <UserSelectorNoNil ref="UserSelector" :default-uid="uid" @nsList="changeUid" />-->
       <NsSelectorNoNil ref="NsSelector" v-model="form.namespace" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
     </div>
     <!--      </el-form-item>-->
@@ -38,10 +38,9 @@
 import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
 // import UserSelectorNoNil from '@/components/Selector/UserSelectorNoNil'
 import { mapGetters } from 'vuex'
-import {addDeploy} from "@/api/app/deploy";
-
+import {addJob} from "@/api/app/job";
 export default {
-  name: 'AddDeploy',
+  name: 'AddJob',
   components: { NsSelectorNoNil },
   computed: {
     ...mapGetters([
@@ -53,43 +52,26 @@ export default {
     return {
       descriptors: {
         name: { type: 'string', required: true },
-        replicas: { type: 'integer', required: true, min: 1 },
+        completions: { type: 'integer', required: true, min: 1 },
+        parallelism: { type: 'integer', required: true, min: 1 },
         image: { type: 'string', required: true },
         command: { type: 'array', defaultField: { type: 'string'}},
-        args: { type: 'array', defaultField: { type: 'string'}},
-        ports: { type: 'array', defaultField: { type: 'integer'}},
-        env: {
-          type: 'object',
-          defaultField: { type: 'string', required: true }
-        },
-        cpu: { type: 'string', required: true },
-        memory: { type: 'string', required: true },
-        storage: { type: 'string', required: true },
-        pvc_storage: { type: 'string'},
-        storage_class_name: { type: 'string'},
-        gpu: { type: 'string' }
+        args: { type: 'array', defaultField: { type: 'string'}}
       },
       ns: '',
       uid: '',
       // 弹出层标题
-      title: '无状态应用',
+      title: '一次性任务',
       // 是否显示弹出层
       open: false,
       form: {
         name: '',
         namespace: '',
-        replicas: 0,
+        completions: 0,
+        parallelism: 0,
         image: '',
         command:[],
         args: [],
-        ports: [],
-        env: {},
-        cpu: '',
-        memory: '',
-        storage: '',
-        pvc_storage: '',
-        storage_class_name: '',
-        gpu: '',
       }
     }
   },
@@ -100,7 +82,7 @@ export default {
     async validate() {
       const valid = await this.$refs['dynamic-form'].validate()
       if (this.form.namespace !== '' && valid) {
-        addDeploy(this.form).then(res => {
+        addJob(this.form).then(res => {
           if (res.code === 1) {
             this.$message({
               type: 'success',

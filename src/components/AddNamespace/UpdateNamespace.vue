@@ -2,7 +2,7 @@
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="600px">
     <el-form ref="form" :model="form" :rules="formRules" label-width="80px">
       <el-form-item label="名称" prop="name">
-        <el-input v-model="form.name" style="width: 400px" />
+        <el-input :disabled="true" v-model="form.name" style="width: 400px" />
       </el-form-item>
       <el-form-item label='CPU' prop="cpu">
         <el-input v-model="form.cpu" placeholder="示例:5"></el-input>
