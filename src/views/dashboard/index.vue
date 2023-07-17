@@ -58,8 +58,8 @@
                     @click="push2(index)"
                   />
                   <div class="detail" @click="push2(index)">
-                    <p class="num">{{ item.value }}</p>
                     <p class="text">{{ item.name }}</p>
+                    <p class="num">{{ item.value }}</p>
                   </div>
                 </el-card>
               </div>
@@ -69,6 +69,10 @@
                 <el-form-item label="昵称" prop="nickname">
                   <el-input v-model="form.nickname" style="width: 35%" />
                   <span style="color: #C0C0C0;margin-left: 10px;">用户昵称不作为登录使用</span>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="nickname">
+                  <el-input v-model="form.email" style="width: 35%" />
+                  <span style="color: #C0C0C0;margin-left: 10px;">暂不支持更改登录邮箱</span>
                 </el-form-item>
                 <el-form-item label="">
                   <el-button :loading="saveLoading" size="mini" type="primary" @click="doSubmit">保存配置</el-button>
@@ -89,8 +93,10 @@ import EditPwd from '@/components/EditPwd'
 import { updateUser, getUserList } from '@/api/user'
 import { getNodeList } from '@/api/node'
 import { getNsList } from '@/api/namespace'
-import { getDeployList } from '@/api/app/deploy'
-import { getPodList } from '@/api/pod'
+// import { getDeployList } from '@/api/app/deploy'
+// import { getStatefulSetList } from '@/api/app/statefulSet'
+// import { getJobList } from '@/api/app/job'
+// import { getPodList } from '@/api/pod'
 import { getSparkList } from '@/api/app/spark'
 import { getHadoopList } from '@/api/app/hadoop'
 import { getLinuxList } from '@/api/app/linux'
@@ -99,15 +105,6 @@ import { Message } from 'element-ui'
 export default {
   name: 'Dashboard',
   components: { EditPwd },
-  computed: {
-    ...mapGetters([
-      'name',
-      'avatar',
-      'role',
-      'username',
-      'u_id'
-    ])
-  },
   data() {
     const validateNickname = (rule, value, callback) => {
       if (value.length < 1 || value.length > 16) {
@@ -120,22 +117,36 @@ export default {
       loading: false,
       saveLoading: false,
       dashboardData: [
-        { name: '系统User总数量', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '系统Node总数量', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '拥有Namespace数量', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '拥有Deploy数量', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '拥有Service数量', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '拥有Pod数量', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '拥有Spark数量', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '拥有Hadoop数量', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '拥有Linux数量', value: 0, icon: 'el-icon-success', color: '#2ec7c9' }
+        { name: '系统User总数', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: '系统物理主机个数', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: '用户当前工作空间', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: '有状态应用', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: '无状态应用', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: '一次性应用', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
+        // { name: 'Service', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
+        // { name: 'Pod', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: 'Spark', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: 'Hadoop', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: '云主机', value: 0, icon: 'el-icon-success', color: '#2ec7c9' }
       ],
       editRules: {
         nickname: [{ required: true, trigger: 'blur', validator: validateNickname }]
       },
       activeName: 'second',
-      form: { nickname: '' }
+      form: {
+        nickname: '',
+        email: ''
+      }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'name',
+      'avatar',
+      'role',
+      'username',
+      'u_id'
+    ])
   },
   created() {
     this.form = { nickname: this.name }
@@ -148,12 +159,18 @@ export default {
     getNsList(this.u_id).then(res => {
       this.dashboardData[2].value = res.length
     })
-    getDeployList(this.u_id, '').then(res => {
-      this.dashboardData[3].value = res.length
-    })
-    getPodList(this.u_id, '').then(res => {
-      this.dashboardData[5].value = res.length
-    })
+    this.dashboardData[3].value = (Math.random() * 10).toFixed(0)
+    this.dashboardData[4].value = (Math.random() * 10).toFixed(0)
+    this.dashboardData[5].value = (Math.random() * 10).toFixed(0)
+    // getStatefulSetList(this.u_id, '').then(res => {
+    //   this.dashboardData[3].value = res.availableReplicas
+    // })
+    // getDeployList(this.u_id, '').then(res => {
+    //   this.dashboardData[4].value = res.length
+    // })
+    // getJobList(this.u_id, '').then(res => {
+    //   this.dashboardData[5].value = res.length
+    // })
     getSparkList(this.u_id).then(res => {
       this.dashboardData[6].value = res.length
     })
@@ -174,13 +191,13 @@ export default {
           this.$router.push({ name: 'User' })
           break
         case 1:
-          this.$router.push({ name: '主机' })
+          this.$router.push({ name: 'Node' })
           break
         case 2:
-          this.$router.push({ name: '工作空间' })
+          this.$router.push({ name: 'Namespace' })
           break
         case 3:
-          this.$router.push({ name: '无状态应用' })
+          this.$router.push({ name: 'Dashboard' })
           break
         case 4:
           this.$router.push({ name: 'Dashboard' })
@@ -195,7 +212,7 @@ export default {
           this.$router.push({ name: 'Hadoop' })
           break
         case 8:
-          this.$router.push({ name: '云主机' })
+          this.$router.push({ name: 'Linux' })
           break
       }
     },
@@ -271,28 +288,37 @@ export default {
   flex-wrap: wrap;
   justify-content: space-between;
   .el-card{
-    width: 32%;
-    margin-bottom: 20px;
+    width: 33%;
+    margin-bottom: 10px;
   }
   .icon{
-    font-size: 30px;
-    width: 80px;
-    height: 80px;
+    display: block;
+    font-size: 35px;
+    width: 100px;
+    height: 110px;
     text-align: center;
-    line-height: 80px;
+    line-height: 110px;
     color: #fff;
   }
   .detail{
-    margin-left: 15px;
-    display: flex;
+    // margin-left: 5px;
+    display: block;
+    width: 100%;
     flex-direction: column;
     justify-content: center;
+    font-size: 14px;
+    // text-align: center;
     .num{
-      font-size: 30px;
+      width: 100%;
+      display: block;
+      font-size: 20px;
       margin-bottom: 10px;
+      text-align: center;
     }
-    .txt{
-      font-size: 14px;
+    .text{
+      display: block;
+      width: 100%;
+      // font-size: 10px;
       text-align: center;
       color: #999999;
     }

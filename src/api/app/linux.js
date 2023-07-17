@@ -11,7 +11,7 @@ export function getLinuxList(ns, os) {
   })
 }
 
-export function deleteLinux(ns,name) {
+export function deleteLinux(ns, name) {
   return request({
     url: '/app/linux/delete/',
     method: 'get',

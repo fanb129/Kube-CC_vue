@@ -37,7 +37,7 @@ export function checkcp(data) {
 
 export function emailcaptcha(email) {
   return request({
-    url: '/emailcaptcha/'+email,
+    url: '/emailcaptcha/' + email,
     method: 'get'
   })
 }
@@ -79,7 +79,7 @@ export function deleteUser(id) {
   })
 }
 
-export function editUser(id,data) {
+export function editUser(id, data) {
   return request({
     url: '/user/edit/' + id,
     method: 'post',
@@ -87,7 +87,7 @@ export function editUser(id,data) {
   })
 }
 
-export function allocationUser(id,data) {
+export function allocationUser(id, data) {
   return request({
     url: '/user/allocation/' + id,
     method: 'post',
@@ -95,7 +95,7 @@ export function allocationUser(id,data) {
   })
 }
 
-export function updateUser(id,data) {
+export function updateUser(id, data) {
   return request({
     url: '/user/update/' + id,
     method: 'post',
