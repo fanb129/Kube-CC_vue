@@ -2,48 +2,31 @@
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="600px">
     <el-form ref="form" :model="form" :rules="formRules" label-width="100px ">
       <el-form-item label="HdfsMaster">
-        <el-input-number v-model="form.hdfs_master_replicas" :min="1" :max="3" @change="change" />
+        <el-input-number v-model="form.hdfs_master_replicas" :min="1" :max="3" style="width: 240px" placeholder="范围：1-3之间" @change="change" />
       </el-form-item>
       <el-form-item label="Datanode">
-        <el-input-number v-model="form.datanode_replicas" :min="2" :max="10" @change="change" />
+        <el-input-number v-model="form.datanode_replicas" :min="2" :max="10" style="width: 240px" placeholder="范围：2-10之间" @change="change" />
       </el-form-item>
       <el-form-item label="YarnMaster">
-        <el-input-number v-model="form.yarn_master_replicas" :min="1" :max="3" @change="change" />
+        <el-input-number v-model="form.yarn_master_replicas" :min="1" :max="3" style="width: 240px" placeholder="范围：1-3之间" @change="change" />
       </el-form-item>
       <el-form-item label="YarnNode">
-        <el-input-number v-model="form.yarn_node_replicas" :min="2" :max="10" @change="change" />
+        <el-input-number v-model="form.yarn_node_replicas" :min="2" :max="10" style="width: 240px" placeholder="范围：2-10之间" @change="change" />
       </el-form-item>
-      <el-form-item v-if="role >= 2" label="用户">
-        <el-select v-model="form.u_id" filterable placeholder="请选择分配用户" @change="change">
-          <el-option
-            v-for="item in options"
-            :key="item.id"
-            :label="item.username + '\t' + item.nickname"
-            :value="item.id"
-            :disabled="role < item.role"
-          />
-          <el-pagination
-            background
-            layout="prev, pager, next"
-            :current-page="userPage"
-            :page-size="1"
-            :total="userTotal"
-            @current-change="changeUserPageNum"
-          />
-        </el-select>
+      <el-form-item label="CPU" prop="cpu" style="width: 400px">
+        <el-input v-model="form.cpu" placeholder="示例:5" />
       </el-form-item>
-      <el-form-item label="过期时间" prop="expired_time">
-        <el-date-picker
-          v-model="form.expired_time"
-          type="datetime"
-          placeholder="选择日期时间"
-        />
+      <el-form-item label="memory" prop="memory" style="width: 400px">
+        <el-input v-model="form.memory" placeholder="示例:10Gi" />
       </el-form-item>
-      <el-form-item label="CPU" prop="cpu">
-        <el-input v-model="form.cpu" />
+      <el-form-item label="storage" prop="memory" style="width: 400px">
+        <el-input v-model="form.storage" placeholder="示例:10Gi" />
       </el-form-item>
-      <el-form-item label="memory" prop="memory">
-        <el-input v-model="form.memory" />
+      <el-form-item label="pvc" prop="memory" style="width: 400px">
+        <el-input v-model="form.pvc" placeholder="示例:10Gi" />
+      </el-form-item>
+      <el-form-item label="gpu" prop="memory" style="width: 400px">
+        <el-input v-model="form.gpu" placeholder="示例:5Gi" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">更新</el-button>
@@ -73,12 +56,12 @@ export default {
       open: false,
       userPage: 1,
       userTotal: 0,
-      options: [{
+      /* options: [{
         id: '',
         username: '',
         nickname: '',
         role: ''
-      }],
+      }],*/
       form: {
         name: '',
         cpu: '',
@@ -129,14 +112,15 @@ export default {
           updateHadoop(
             {
               name: this.form.name,
-              u_id: parseInt(this.form.u_id),
               hdfs_master_replicas: parseInt(this.form.hdfs_master_replicas),
               datanode_replicas: parseInt(this.form.datanode_replicas),
               yarn_master_replicas: parseInt(this.form.yarn_master_replicas),
               yarn_node_replicas: parseInt(this.form.yarn_node_replicas),
-              expired_time: this.form.expired_time,
               cpu: this.form.cpu,
-              memory: this.form.memory
+              memory: this.form.memory,
+              storage: this.form.storage,
+              pvc_storage: this.form.pvc_storage,
+              gpu: this.form.gpu
             }).then((res) => {
             if (res.code === 1) {
               this.$message({
@@ -154,19 +138,6 @@ export default {
             }
           })
         }
-      })
-    },
-    changeUserPageNum: function(val) {
-      this.userPage = val
-      this.getUserList()
-    },
-    getUserList: function() {
-      getUserList(this.userPage).then((res) => {
-        this.userPage = res.page
-        this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
-        this.options = res.user_list
-        this.options.push({ nickname: '', id: '0', username: 'Null', role: 0 })
-        // console.log(res)
       })
     },
     change() {

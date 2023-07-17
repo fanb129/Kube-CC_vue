@@ -15,10 +15,11 @@
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
 import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
 // import UserSelectorNoNil from '@/components/Selector/UserSelectorNoNil'
 import { mapGetters } from 'vuex'
-import { infoDeploy, updateDeploy } from "@/api/app/deploy";
+import { infoDeploy, updateDeploy } from '@/api/app/deploy'
 
 export default {
   name: 'UpdateDeploy',
@@ -35,9 +36,9 @@ export default {
         namespace: { type: 'string', disabled: true },
         replicas: { type: 'integer', required: true, min: 1 },
         image: { type: 'string', required: true },
-        command: { type: 'array', defaultField: { type: 'string'}},
-        args: { type: 'array', defaultField: { type: 'string'}},
-        ports: { type: 'array', defaultField: { type: 'integer'}},
+        command: { type: 'array', defaultField: { type: 'string' }},
+        args: { type: 'array', defaultField: { type: 'string' }},
+        ports: { type: 'array', defaultField: { type: 'integer' }},
         env: {
           type: 'object',
           defaultField: { type: 'string', required: true }
@@ -45,8 +46,8 @@ export default {
         cpu: { type: 'string', required: true },
         memory: { type: 'string', required: true },
         storage: { type: 'string', required: true },
-        pvc_storage: { type: 'string'},
-        storage_class_name: { type: 'string'},
+        pvc_storage: { type: 'string' },
+        storage_class_name: { type: 'string' },
         gpu: { type: 'string' }
       },
       ns: '',
@@ -60,7 +61,7 @@ export default {
         namespace: '',
         replicas: 0,
         image: '',
-        command:[],
+        command: [],
         args: [],
         ports: [],
         env: {},
@@ -69,7 +70,7 @@ export default {
         storage: '',
         pvc_storage: '',
         storage_class_name: '',
-        gpu: '',
+        gpu: ''
       }
     }
   },
@@ -99,12 +100,12 @@ export default {
     init(ns, name) {
       this.open = true
       this.$nextTick(() => {
-        this.info(ns,name)
+        this.info(ns, name)
         this.open = true
       })
     },
-    info(ns,name){
-      infoDeploy(ns,name).then(res => {
+    info(ns, name) {
+      infoDeploy(ns, name).then(res => {
         this.form = res.Form
       })
     },
