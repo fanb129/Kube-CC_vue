@@ -3,7 +3,6 @@
     <div style="margin-left: 10%; margin-top: 1%">
       <GroupSelector ref="GroupSelector" :default-uid="adid" @nsList="changeGid" />
       <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" @nsList="changeUid" />
-      <ImageSelector ref="ImageSelector" :default-uid="uid" :default-image="tableDataImage.image_id" @ImageList="changeImages" />
     </div>
 
     <div style="margin-left: 66%; margin-top: 1%">
@@ -129,7 +128,7 @@ import ImageSelector from '@/components/Selector/ImageSelector.vue'
 
 export default {
   name: 'Image',
-  components: { ImageSelector, GroupSelector, PullPublic, PullPrivate, CreateImage, UpdateImage, UserSelector },
+  components: { GroupSelector, PullPublic, PullPrivate, CreateImage, UpdateImage, UserSelector },
   computed: {
     ...mapGetters([
       'role',
@@ -245,6 +244,7 @@ export default {
     changeUid: function(u_id) {
       this.uid = u_id
       this.getImageList()
+      this.$forceUpdate()
     },
     changeGid: function(g_id) {
       this.gid = g_id
@@ -252,16 +252,12 @@ export default {
       this.$refs.UserSelector.g_id = this.gid
       this.$refs.UserSelector.getAllUser()
     },
-    changeImages: function(image_id) {
-      this.image_id = image_id
-      this.getImageList()
-    },
     changePageNum: function(val) {
       this.page = val
       this.getImageList()
     },
     getImageList: function() {
-      getImageList(this.page).then((res) => {
+      getImageList(this.uid,this.page).then((res) => {
         this.page = res.page
         this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
         this.tableDataImage = res.image_list_all

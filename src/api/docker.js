@@ -1,9 +1,12 @@
 import request from '@/utils/request'
 
-export function getImageList(page) {
+export function getImageList(u_id, page) {
   return request({
     url: '/docker/' + page,
-    method: 'get'
+    method: 'get',
+    params: {
+      'u_id': u_id
+    }
   })
 }
 
