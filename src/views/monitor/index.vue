@@ -1,7 +1,7 @@
 <template>
   <div class="monitor">
     <div class="selector">
-      <p>这是超管按钮的地方</p>
+      <p>当前用户的资源使用监控</p>
     </div>
     <div class="dashboard">
       <el-table :data="cur_res" stripe style="width: 100%">

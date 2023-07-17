@@ -54,14 +54,6 @@ import nodeColumn from '@/components/Echarts/node_circle'
 
 export default {
   components: { AddNode, nodeColumn },
-  computed: {
-    ...mapGetters([
-      'role'
-    ])
-  },
-  created() {
-    this.getNodeList()
-  },
   data() {
     return {
       activeName: 'first',
@@ -87,10 +79,18 @@ export default {
           pvc: '',
           used_pvc: '',
           gpu: '',
-          used_gpu: '',
+          used_gpu: ''
         }
       ]
     }
+  },
+  computed: {
+    ...mapGetters([
+      'role'
+    ])
+  },
+  created() {
+    this.getNodeList()
   },
   methods: {
     handleClick(tab, event) {
