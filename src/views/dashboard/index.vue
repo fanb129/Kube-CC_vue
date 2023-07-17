@@ -151,15 +151,6 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapGetters([
-      'name',
-      'avatar',
-      'role',
-      'username',
-      'u_id'
-    ])
-  },
   created() {
     this.form = { nickname: this.name }
     getUserList(1).then(res => {

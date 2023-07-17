@@ -14,7 +14,7 @@
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
       <el-table-column label="编号" width="80"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.$index + 1 }}</span></template></el-table-column>
       <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.name }}</span></template></el-table-column>
-<!--      <el-table-column width="120" property="namespace" label="命名空间"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.namespace }}</span></template></el-table-column>-->
+      <!--      <el-table-column width="120" property="namespace" label="命名空间"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.namespace }}</span></template></el-table-column>-->
       <el-table-column width="200" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span style="margin-left: 1%">{{ scope.row.created_at }}</span></template></el-table-column>
       <el-table-column width="80" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
       <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
@@ -135,7 +135,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { deleteDeploy, getDeployList } from '@/api/app/deploy'
-import {podLog} from "@/api/pod";
+import { podLog } from '@/api/pod'
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
 import UserSelector from '@/components/Selector/UserSelector'
 import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
@@ -144,7 +144,7 @@ import UpdateDeploy from '@/components/AddDeploy/UpdateDeploy'
 
 export default {
   name: 'Deploy',
-  components: {UpdateDeploy, NsSelectorNoNil, UserSelector, GroupSelector, AddDeploy },
+  components: { UpdateDeploy, NsSelectorNoNil, UserSelector, GroupSelector, AddDeploy },
   computed: {
     ...mapGetters([
       'role',
@@ -175,14 +175,14 @@ export default {
       tableData: [
         {
           /* 1规格*/
-          name: '',
-          namespace: '',
-          created_at: '',
-          cpu: '',
-          memory: '',
-          storage: '',
-          pvc: '',
-          gpu: '',
+          name: 'default_dd-dfba-41bd-9674-a318ab2c1b732',
+          namespace: '11451-3de6b1d0-dfba-41bd-9674-e318a1c1b732',
+          created_at: '2023.7.15 16:17:08',
+          cpu: '2',
+          memory: '1Gi',
+          storage: '1Gi',
+          pvc: '1Gi',
+          gpu: '0',
           pvc_path: [
             '/data'
           ],
@@ -190,7 +190,7 @@ export default {
           /* 2基本信息*/
           replicas: 0,
           image: '',
-          volume: '',
+          volume: 'e190868d63f8',
 
           /* 3端口*/
           ports: [
@@ -216,10 +216,88 @@ export default {
               phase: '',
               host_ip: '',
               pod_ip: '',
-              container:''
+              container: ''
             }
           ]
 
+        },
+        {
+          /* 1规格*/
+          name: 'test1-8a12-r4f6-4566-r5fdf223a6jy11',
+          namespace: '11451-3de6b1d0-dfba-41bd-9674-e318a1c1b732',
+          created_at: '2023.7.15 16:47:51',
+          cpu: '2',
+          memory: '2Gi',
+          storage: '2Gi',
+          pvc: '2Gi',
+          gpu: '0',
+          pvc_path: [
+            '/data'
+          ],
+          /* 2基本信息*/
+          replicas: 0,
+          image: '',
+          volume: 'w8d63f8e902086',
+          /* 3端口*/
+          ports: [],
+          /* 4状态*/
+          updated_replicas: 0,
+          ready_replicas: 1,
+          available_replicas: 1,
+          /* 5pod*/
+          pod_list: []
+        },
+        {
+          /* 1规格*/
+          name: 'test2-4q6w-d88w-ad13-ad4w68a51h568f',
+          namespace: '11451-3de6b1d0-dfba-41bd-9674-e318a1c1b732',
+          created_at: '2023.7.16 14:58:11',
+          cpu: '2',
+          memory: '2Gi',
+          storage: '2Gi',
+          pvc: '2Gi',
+          gpu: '0',
+          pvc_path: [
+            '/data'
+          ],
+          /* 2基本信息*/
+          replicas: 0,
+          image: '',
+          volume: 'w8d63f8e902086',
+          /* 3端口*/
+          ports: [],
+          /* 4状态*/
+          updated_replicas: 0,
+          ready_replicas: 1,
+          available_replicas: 1,
+          /* 5pod*/
+          pod_list: []
+        },
+        {
+          /* 1规格*/
+          name: 'test3-daw5-t8a6-9s5u-hk1ak8a6a96a7',
+          namespace: '11451-3de6b1d0-dfba-41bd-9674-e318a1c1b732',
+          created_at: '2023.7.16 15:44:15',
+          cpu: '2',
+          memory: '2Gi',
+          storage: '2Gi',
+          pvc: '2Gi',
+          gpu: '0',
+          pvc_path: [
+            '/data'
+          ],
+          /* 2基本信息*/
+          replicas: 0,
+          image: '',
+          volume: 'w8d63f8e902086',
+          /* 3端口*/
+          ports: [],
+          /* 4状态*/
+          updated_replicas: 0,
+          ready_replicas: 1,
+          available_replicas: 1,
+          /* 5pod*/
+          pod_list: []
         }
       ]
     }
@@ -238,7 +316,7 @@ export default {
       // this.getDeployList()
     },
     changeNs: function(ns) {
-      if(ns !== '') {
+      if (ns !== '') {
         this.ns = ns
         this.getDeployList()
       }
