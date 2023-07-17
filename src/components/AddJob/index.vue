@@ -1,8 +1,24 @@
 <template>
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="60%">
+    <!--    <el-form ref="service" :model="service" label-width="100px">-->
+    <!--      <span>Metadata</span>-->
+    <!--      <el-form-item label="Name">-->
+    <!--        <el-input v-model="service.metadata.name"></el-input>-->
+    <!--      </el-form-item>-->
+    <!--    &lt;!&ndash;      <el-form-item label="Namespace">&ndash;&gt;-->
     <div>
+      <!--      <UserSelectorNoNil ref="UserSelector" :default-uid="uid" @nsList="changeUid" />-->
       <NsSelectorNoNil ref="NsSelector" v-model="form.namespace" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
     </div>
+    <!--      </el-form-item>-->
+    <!--      <el-form-item label="Labels">-->
+    <!--        <el-input v-model="service.metadata.labels"></el-input>-->
+    <!--      </el-form-item>-->
+    <!--    </el-form>-->
+    <!--    <div>-->
+    <!--      <el-button type="primary" @click="createYaml">Create</el-button>-->
+    <!--      <el-button @click="cancel">Cancel</el-button>-->
+    <!--    </div>-->
 
     <dynamic-form
       ref="dynamic-form"
@@ -20,11 +36,11 @@
 
 <script>
 import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
-import { addStatefulSet } from '@/api/app/statefulSet'
+// import UserSelectorNoNil from '@/components/Selector/UserSelectorNoNil'
 import { mapGetters } from 'vuex'
-
+import {addJob} from "@/api/app/job";
 export default {
-  name: 'AddStatefulSet',
+  name: 'AddJob',
   components: { NsSelectorNoNil },
   computed: {
     ...mapGetters([
@@ -36,41 +52,26 @@ export default {
     return {
       descriptors: {
         name: { type: 'string', required: true },
-        replicas: { type: 'integer', required: true, min: 1 },
+        completions: { type: 'integer', required: true, min: 1 },
+        parallelism: { type: 'integer', required: true, min: 1 },
         image: { type: 'string', required: true },
-        command: { type: 'array', defaultField: { type: 'string' }},
-        args: { type: 'array', defaultField: { type: 'string' }},
-        ports: { type: 'array', defaultField: { type: 'integer' }},
-        env: {
-          type: 'object',
-          defaultField: { type: 'string', required: true }
-        },
-        cpu: { type: 'string', required: true },
-        memory: { type: 'string', required: true },
-        storage: { type: 'string', required: true },
-        pvc_storage: { type: 'string' },
-        storage_class_name: { type: 'string' },
-        gpu: { type: 'string' }
+        command: { type: 'array', defaultField: { type: 'string'}},
+        args: { type: 'array', defaultField: { type: 'string'}}
       },
       ns: '',
       uid: '',
-      title: '有状态应用',
+      // 弹出层标题
+      title: '一次性任务',
+      // 是否显示弹出层
       open: false,
       form: {
         name: '',
         namespace: '',
-        replicas: 0,
+        completions: 0,
+        parallelism: 0,
         image: '',
-        command: [],
+        command:[],
         args: [],
-        ports: [],
-        env: {},
-        cpu: '',
-        memory: '',
-        storage: '',
-        pvc_storage: '',
-        storage_class_name: '',
-        gpu: ''
       }
     }
   },
@@ -80,15 +81,17 @@ export default {
     },
     async validate() {
       const valid = await this.$refs['dynamic-form'].validate()
-      if (this.form.metadata.namespace !== '' && valid) {
-        addStatefulSet(this.form).then(res => {
+      if (this.form.namespace !== '' && valid) {
+        addJob(this.form).then(res => {
           if (res.code === 1) {
             this.$message({
               type: 'success',
               message: res.msg
             })
             this.open = false
-            this.$parent.getStatefulSetList()
+            // 调用主页面的方法刷新主页面
+            // this.$parent.get()
+            this.$parent.getDeployList()
           }
         })
       } else {
@@ -111,6 +114,7 @@ export default {
     cancel() {
       this.resetFields()
       this.open = false
+      // this.reset()
     }
   }
 }

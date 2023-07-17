@@ -89,6 +89,14 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapGetters([
+      'role'
+    ])
+  },
+  created() {
+    this.getNodeList()
+  },
   methods: {
     handleClick(tab, event) {
       if (tab.name === 'second') {

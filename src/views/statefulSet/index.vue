@@ -5,7 +5,7 @@
       <UserSelector ref="UserSelector" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
       <NsSelector ref="NsSelector" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
 
-      <el-button split-button trigger="click" style="margin-left: 100px" type="primary" @command="handleCommand" @click="addStatefulSet">
+      <el-button split-button trigger="click" style="margin-left: 100px" type="primary" @click="addStatefulSet">
         新增无状态应用
       </el-button>
 
@@ -14,7 +14,7 @@
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
       <el-table-column label="编号" width="80"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.$index + 1 }}</span></template></el-table-column>
       <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.name }}</span></template></el-table-column>
-      <el-table-column width="120" property="namespace" label="命名空间"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.namespace }}</span></template></el-table-column>
+<!--      <el-table-column width="120" property="namespace" label="命名空间"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.namespace }}</span></template></el-table-column>-->
       <el-table-column width="200" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span style="margin-left: 1%">{{ scope.row.created_at }}</span></template></el-table-column>
       <el-table-column width="80" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
       <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
@@ -60,7 +60,10 @@
       </el-table-column>
 
       <!--       4状态   -->
-      <el-table-column label="状态" width="120">
+      <el-table-column label="状态" width="120">不能为空
+        Port
+        22
+
         <template slot-scope="scope">
           <el-popover
             placement="right"
@@ -80,13 +83,15 @@
       <el-table-column label="Pod表单" type="expand" width="150">
         <template slot-scope="scope">
           <el-table :data="scope.row.pod_list">
+            <el-table-column label="序号" width="100" type="index" />
             <el-table-column label="名称" width="200"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
             <el-table-column label="阶段" width="200"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
             <el-table-column label="主机Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
             <el-table-column label="节点Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button :disabled="role <= 2 " size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
+                <el-button size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
+                <el-button size="mini" type="success" @click="podLog(scope.row)"> 日志</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -99,7 +104,7 @@
             size="mini"
             type="warning"
             style="margin-left: 10px"
-            @click="editDeploy(scope.row)"
+            @click="editStatefulSet(scope.row)"
           >编辑</el-button>
           <el-button
             :loading="loading"
@@ -122,7 +127,8 @@
         @current-change="changePageNum"
       />
     </div>
-    <AddDeploy ref="AddDeploy" :visible.sync="addDialog" />
+    <AddStatefulSet ref="AddStatefulSet" :visible.sync="addDialog" />
+    <UpdateStatefulSet ref="UpdateStatefulSet" :visible.sync="updateDialog" />
   </div>
 </template>
 
@@ -134,70 +140,70 @@ import NsSelector from '@/components/Selector/NsSelectorNoNil'
 import AddStatefulSet from '@/components/AddStatefulSet/index.vue'
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
 import addStatefulSet from '@/components/AddStatefulSet/index.vue'
+import { podLog } from '@/api/pod'
+import UpdateDeploy from '@/components/AddDeploy/UpdateDeploy.vue'
+import UpdateStatefulSet from '@/components/AddStatefulSet/UpdateStatefulSet.vue'
 
 export default {
   name: 'StatefulSet',
-  // eslint-disable-next-line vue/no-unused-components
-  components: { NsSelector, UserSelector, GroupSelector,AddStatefulSet },
+  components: { UpdateStatefulSet, UpdateDeploy, NsSelector, UserSelector, GroupSelector, AddStatefulSet },
   computed: {
-    addStatefulSet() {
-      return addStatefulSet
-    },
     ...mapGetters([
       'role',
       'u_id'
     ])
   },
   created() {
-    this.uid = this.$route.query.u_id || this.u_id
+    this.uid = this.u_id
     this.adid = this.u_id
-    this.getStatefulSetList()
+    // this.getStatefulSetList()
   },
   data() {
     return {
       kind: 'StatefulSet',
-      yamlName: '',
-      yamlNs: '',
       adid: '',
       timer: null,
       loading: false,
       applyDialog: false,
       createDialog: false,
       addDialog: false,
-      ns: this.$route.query.ns,
+      updateDialog: false,
+      ns: '',
       uid: '',
+      gid: '',
+      myuid: this.u_id,
       page: 1,
       // total: 0,
       pagesize: 10,
       tableData: [
         {
-
-          /* 1基本信息*/
-          name: 'test1',
+          /* 1规格*/
+          name: '',
           namespace: '',
+          created_at: '',
+          cpu: '',
+          memory: '',
+          storage: '',
+          pvc: '',
+          gpu: '',
+          pvc_path: [
+            '/data'
+          ],
+
+          /* 2基本信息*/
           replicas: 0,
           image: '',
-          created_at: '2023-07-06 13:37:29',
-          volume: 'pvc-a4a5fe70-7c94-44c4-aa7d-85673837322f',
-          /* 2端口*/
+          volume: '',
+
+          /* 3端口*/
           ports: [
             {
-              name: 'portA',
+              name: '',
               protocol: '',
               port: '',
               targetPort: '',
               nodePort: ''
             }
-          ],
-
-          /* 3规格*/
-          cpu: '1',
-          memory: '2',
-          storage: '3',
-          pvc: '4',
-          gpu: '5',
-          pvc_path: [
-            '/data'
           ],
 
           /* 4状态*/
@@ -209,9 +215,11 @@ export default {
           pod_list: [
             {
               name: '',
+              namespace: '',
               phase: '',
               host_ip: '',
-              pod_ip: ''
+              pod_ip: '',
+              container: ''
             }
           ]
 
@@ -224,17 +232,19 @@ export default {
       this.gid = g_id
       this.$refs.UserSelector.uid = ''
       this.$refs.UserSelector.g_id = this.gid
-      this.$refs.UserSelector.getUserList()
+      this.$refs.UserSelector.getAllUser()
     },
     changeUid: function(u_id) {
       this.uid = u_id
       this.$refs.NsSelector.u_id = this.uid
       this.$refs.NsSelector.getNsList()
-      this.getStatefulSetList()
+      // this.getStatefulSetList()
     },
     changeNs: function(ns) {
-      this.ns = ns
-      this.getStatefulSetList()
+      if (ns !== '') {
+        this.ns = ns
+        this.getStatefulSetList()
+      }
     },
     changePageNum: function(val) {
       this.page = val
@@ -244,6 +254,21 @@ export default {
         this.total = res.length
         this.tableData = res.statefulSet_list
         console.log(res)
+      })
+    },
+    addStatefulSet: function() {
+      this.addDialog = true
+      this.$nextTick(() => {
+        this.myuid = this.u_id
+        this.addDialog = true
+        this.$refs.AddStatefulSet.init(this.myuid)
+      })
+    },
+    editStatefulSet: function(row) {
+      this.updateDialog = true
+      this.$nextTick(() => {
+        this.$refs.UpdateStatefulSet.init(row['namespace'], row['name'])
+        this.updateDialog = true
       })
     },
     handleDelete: function(row) {
@@ -280,6 +305,22 @@ export default {
       })
     },
     pushTerminal: function(row) {
+      console.log(row['namespace'])
+      console.log(row['name'])
+      console.log(row['container'])
+      this.$router.push({
+        name: 'PodTerminal',
+        query: {
+          r: 'pod/ssh?podNs=' + row['namespace'] + '&podName=' + row['name'] + '&containerName=' + row['container']
+        }
+      })
+    },
+    podLog: function(row) {
+      podLog(row['namespace'], row['name']).then((res) => {
+        console.log(res.log)
+      })
+    }
+    /*     pushTerminal: function(row) {
       this.$router.push({
         name: 'Terminal',
         query: {
@@ -296,7 +337,7 @@ export default {
           // port: '22'
         }
       })
-    }
+    } */
   }
 }
 </script>
