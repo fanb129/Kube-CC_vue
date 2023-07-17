@@ -7,36 +7,42 @@
       <el-form-item label="Worker">
         <el-input-number v-model="form.worker_replicas" :min="2" :max="10" @change="change" />
       </el-form-item>
-      <el-form-item label="用户">
-        <el-select v-model="form.u_id" filterable multiple placeholder="请选择分配用户" @change="change">
-          <el-option
-            v-for="item in options"
-            :key="item.id"
-            :label="item.username + '\t' + item.nickname"
-            :value="item.id"
-            :disabled="role < item.role"
-          />
-          <el-pagination
-            background
-            layout="prev, pager, next"
-            :current-page="userPage"
-            :page-size="1"
-            :total="userTotal"
-            @current-change="changeUserPageNum"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="过期时间" prop="expired_time">
-        <el-date-picker
-          v-model="form.expired_time"
-          type="datetime"
-          placeholder="选择日期时间"
-        />
-      </el-form-item>
+<!--      <el-form-item label="用户">-->
+<!--        <el-select v-model="form.u_id" filterable multiple placeholder="请选择分配用户" @change="change">-->
+<!--          <el-option-->
+<!--            v-for="item in options"-->
+<!--            :key="item.id"-->
+<!--            :label="item.username + '\t' + item.nickname"-->
+<!--            :value="item.id"-->
+<!--            :disabled="role < item.role"-->
+<!--          />-->
+<!--          <el-pagination-->
+<!--            background-->
+<!--            layout="prev, pager, next"-->
+<!--            :current-page="userPage"-->
+<!--            :page-size="1"-->
+<!--            :total="userTotal"-->
+<!--            @current-change="changeUserPageNum"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="过期时间" prop="expired_time">-->
+<!--        <el-date-picker-->
+<!--          v-model="form.expired_time"-->
+<!--          type="datetime"-->
+<!--          placeholder="选择日期时间"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="CPU" prop="cpu">
         <el-input v-model="form.cpu" />
       </el-form-item>
-      <el-form-item label="memory" prop="memory">
+      <el-form-item label="内存" prop="memory">
+        <el-input v-model="form.memory" />
+      </el-form-item>
+      <el-form-item label="存储" prop="memory">
+        <el-input v-model="form.memory" />
+      </el-form-item>
+      <el-form-item label="持久存储" prop="memory">
         <el-input v-model="form.memory" />
       </el-form-item>
       <el-form-item>
