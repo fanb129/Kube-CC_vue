@@ -39,8 +39,12 @@ export default {
   name: 'AddSpark',
   computed: {
     ...mapGetters([
-      'role'
+      'role',
+      'u_id'
     ])
+  },
+  created() {
+    this.form.u_id = this.u_id
   },
   data() {
     return {
@@ -57,7 +61,7 @@ export default {
         nickname: ''
       }],*/
       form: {
-        u_id: this.u_id,
+        u_id: '',
         name: '',
         cpu: '',
         memory: '',
@@ -78,29 +82,12 @@ export default {
     }
   },
   methods: {
-    init(name, uid, master, worker, cpu, memory, storage, pvc, gpu) {
-      this.form.uid = uid
-      this.form.name = name
-      this.form.master_replicas = master
-      this.form.worker_replicas = worker
-      this.form.cpu = cpu
-      this.form.memory = memory
-      this.form.storage = storage
-      this.form.pvc = pvc
+    init() {
       this.open = true
       this.$nextTick(() => {
-        this.form.uid = uid
-        this.form.name = name
-        this.form.master_replicas = master
-        this.form.worker_replicas = worker
-        this.form.cpu = cpu
-        this.form.memory = memory
-        this.form.storage = storage
-        this.form.pvc = pvc
         this.open = true
       })
     },
-
     info(name) {
       infoSpark(name).then(res => {
         this.form = res.Form
@@ -115,7 +102,16 @@ export default {
       console.log('submit!')
       this.$refs.form.validate(valid => {
         if (valid) {
-          addSpark(this.form).then((res) => {
+          addSpark({
+            u_id: this.form.u_id+'',
+            name: this.form.name,
+            cpu: this.form.cpu,
+            memory: this.form.memory,
+            storage: this.form.storage,
+            pvc: this.form.pvc,
+            master_replicas: parseInt(this.form.master_replicas),
+            worker_replicas: parseInt(this.form.worker_replicas),
+          }).then((res) => {
             if (res.code === 1) {
               this.$message({
                 type: 'success',
@@ -136,19 +132,6 @@ export default {
         }
       })
     },
-    /*    changeUserPageNum: function(val) {
-      this.userPage = val
-      this.getUserList()
-    },
-    getUserList: function() {
-      getUserList(this.userPage).then((res) => {
-        this.userPage = res.page
-        this.userTotal = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
-        this.options = res.user_list
-        this.options.push({ nickname: '', id: '0', username: 'Null', role: 0 })
-        // console.log(res)
-      })
-    },*/
     change() {
       this.$forceUpdate()
     }

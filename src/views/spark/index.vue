@@ -17,7 +17,7 @@
       <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span></template></el-table-column>
       <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.used_storage }}/{{ scope.row.storage }}</span></template></el-table-column>
       <el-table-column width="80" property="pvc" label="持久存储"><template slot-scope="scope"><span>{{ scope.row.used_pvc }}/{{ scope.row.pvc }}</span></template></el-table-column>
-      <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.used_gpu }}/{{ scope.row.gpu }}</span></template></el-table-column>
+<!--      <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.used_gpu }}/{{ scope.row.gpu }}</span></template></el-table-column>-->
 
       <!--      用户信息    -->
       <el-table-column label="用户信息" width="150">
@@ -222,6 +222,8 @@ export default {
               pod_list: [
                 {
                   name: 'hadoop-datanode-c944ddfb7-sxxcm',
+                  namespace: '',
+                  container: '',
                   phase: 'Running',
                   host_ip: '192.168.139.143',
                   pod_ip: '100.125.152.30'
@@ -239,7 +241,7 @@ export default {
       this.gid = g_id
       this.$refs.UserSelector.uid = ''
       this.$refs.UserSelector.g_id = this.gid
-      this.$refs.UserSelector.getUserList()
+      this.$refs.UserSelector.getAllUser()
     },
     changeUid: function(u_id) {
       this.uid = u_id
@@ -251,37 +253,6 @@ export default {
           done()
         })
         .catch(_ => {})
-    },
-    handleCommand(command) {
-      if (command.command === 'deploy') {
-        this.push2deploy(command.row)
-      } else if (command.command === 'service') {
-        this.push2service(command.row)
-      }
-    },
-    beforeHandleCommand(item, row) {
-      return {
-        'command': item,
-        'row': row
-      }
-    },
-    push2deploy: function(row) {
-      this.$router.push({
-        name: 'Deploy',
-        query: {
-          ns: row['name'],
-          u_id: row['u_id']
-        }
-      })
-    },
-    push2service: function(row) {
-      this.$router.push({
-        name: 'Service',
-        query: {
-          ns: row['name'],
-          u_id: row['u_id']
-        }
-      })
     },
     changePageNum: function(val) {
       this.page = val
@@ -316,11 +287,11 @@ export default {
     pushTerminal: function(row) {
       console.log(row['namespace'])
       console.log(row['name'])
-      console.log(row['container_statuses'][0].name)
+      console.log(row['container'])
       this.$router.push({
         name: 'PodTerminal',
         query: {
-          r: 'pod/ssh?podNs=' + row['namespace'] + '&podName=' + row['name'] + '&containerName=' + row['container_statuses'][0].name
+          r: 'pod/ssh?podNs=' + row['namespace'] + '&podName=' + row['name'] + '&containerName=' + row['container']
         }
       })
     },
