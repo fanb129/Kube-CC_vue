@@ -7,6 +7,13 @@ export function login(data) {
     data
   })
 }
+export function forgetpassword(data) {
+  return request({
+    url: '/forgetpassword',
+    method: 'post',
+    data
+  })
+}
 export function checkPass(data) {
   return request({
     url: '/checkPass',

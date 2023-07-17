@@ -41,8 +41,13 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width: 30%" @click.native.prevent="handleLogin">登录</el-button>
-      <el-button type="primary" style="width: 30%; float: right" @click="register">注册</el-button>
+      <div>
+        <el-button type="text" @click="forgetpassword" style="float:right">忘记密码</el-button>
+      </div>
+
+        <el-button :loading="loading" type="primary" style="width: 30%" @click.native.prevent="handleLogin">登录</el-button>
+        <el-button type="primary" style="width: 30%; float: right" @click="register">注册</el-button>
+      
     </el-form>
   </div>
 </template>
@@ -124,6 +129,9 @@ export default {
     },
     register() {
       this.$router.push({ path: '/register' })
+    },
+    forgetpassword() {
+      this.$router.push({ path: '/forgetpassword' })
     }
   }
 }
