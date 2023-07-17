@@ -21,6 +21,7 @@
             </div>
             <ul class="user-info">
               <li><div style="height: 100%"><svg-icon icon-class="login" /> 登录账号<div class="user-right">{{ username }}</div></div></li>
+              <li> <div class="el-icon-message" /> 邮箱 <div class="user-right">{{ email }}</div></li>
               <li><svg-icon icon-class="user1" /> 用户昵称 <div class="user-right">{{ name }}</div></li>
               <li><svg-icon icon-class="dept" /> 权限 <div class="user-right">
                 <el-tag v-if="role === 1" size="mini">普通用户</el-tag>
@@ -105,7 +106,8 @@ export default {
       'avatar',
       'role',
       'username',
-      'u_id'
+      'u_id',
+      'email'
     ])
   },
   data() {

@@ -1,9 +1,5 @@
 <template>
   <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" append-to-body width="60%">
-    <div>
-      <NsSelectorNoNil ref="NsSelector" v-model="form.namespace" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
-    </div>
-
     <dynamic-form
       ref="dynamic-form"
       v-model="form"
@@ -19,13 +15,12 @@
 </template>
 
 <script>
-import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
-import { addStatefulSet } from '@/api/app/statefulSet'
+
 import { mapGetters } from 'vuex'
+import { infoStatefulSet, updateStatefulSet } from '@/api/app/statefulSet'
 
 export default {
-  name: 'AddStatefulSet',
-  components: { NsSelectorNoNil },
+  name: 'UpdateStatefulSet',
   computed: {
     ...mapGetters([
       'role',
@@ -35,7 +30,8 @@ export default {
   data: function() {
     return {
       descriptors: {
-        name: { type: 'string', required: true },
+        name: { type: 'string', disabled: true },
+        namespace: { type: 'string', disabled: true },
         replicas: { type: 'integer', required: true, min: 1 },
         image: { type: 'string', required: true },
         command: { type: 'array', defaultField: { type: 'string' }},
@@ -53,8 +49,10 @@ export default {
         gpu: { type: 'string' }
       },
       ns: '',
-      uid: '',
-      title: '有状态应用',
+      name: '',
+      // 弹出层标题
+      title: '无状态应用',
+      // 是否显示弹出层
       open: false,
       form: {
         name: '',
@@ -80,14 +78,16 @@ export default {
     },
     async validate() {
       const valid = await this.$refs['dynamic-form'].validate()
-      if (this.form.metadata.namespace !== '' && valid) {
-        addStatefulSet(this.form).then(res => {
+      if (this.form.namespace !== '' && valid) {
+        updateStatefulSet(this.form).then(res => {
           if (res.code === 1) {
             this.$message({
               type: 'success',
               message: res.msg
             })
             this.open = false
+            // 调用主页面的方法刷新主页面
+            // this.$parent.get()
             this.$parent.getStatefulSetList()
           }
         })
@@ -95,22 +95,23 @@ export default {
         this.$message.error('请完整填写表单')
       }
     },
-    changeNs: function(ns) {
-      this.ns = ns
-      this.form.namespace = ns
-    },
-    init() {
+    init(ns, name) {
       this.open = true
       this.$nextTick(() => {
-        this.$refs.NsSelector.u_id = this.u_id
-        this.$refs.NsSelector.getNsList()
+        this.info(ns, name)
         this.open = true
+      })
+    },
+    info(ns, name) {
+      infoStatefulSet(ns, name).then(res => {
+        this.form = res.Form
       })
     },
     // 取消按钮
     cancel() {
       this.resetFields()
       this.open = false
+      // this.reset()
     }
   }
 }
