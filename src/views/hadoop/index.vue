@@ -175,24 +175,23 @@ export default {
       tableData: [
         {
 
-          name: '',
-          status: '',
+          name: 'RecordReader-RecordReader-MapperTask',
+          status: 'Active',
           /* created_at: '2023',*/
-          username: '',
-          nickname: '',
+          username: 'zhangsan',
+          nickname: '张三',
           u_id: '',
           ns: this.$route.query.ns,
-
-          cpu: '',
-          used_cpu: '',
-          memory: '',
-          used_memory: '',
-          storage: '',
-          used_storage: '',
-          pvc: '',
-          used_pvc: '',
-          gpu: '',
-          used_gpu: '',
+          cpu: '2',
+          used_cpu: '0',
+          memory: '2Gi',
+          used_memory: '0',
+          storage: '10Gi',
+          used_storage: '0',
+          pvc: '5Gi',
+          used_pvc: '0',
+          gpu: '0',
+          used_gpu: '0',
 
           deploy_list: [
             {
@@ -203,16 +202,16 @@ export default {
               /* 配置*/
               image: '',
               ports: null,
-              cpu: '',
-              used_cpu: '',
-              memory: '',
-              used_memory: '',
-              storage: '',
-              used_storage: '',
-              pvc: '',
-              used_pvc: '',
-              gpu: '',
-              used_gpu: '',
+              cpu: '2',
+              used_cpu: '0',
+              memory: '2Gi',
+              used_memory: '0',
+              storage: '10Gi',
+              used_storage: '0',
+              pvc: '5Gi',
+              used_pvc: '0',
+              gpu: '0',
+              used_gpu: '0',
               pvc_path: [],
               volume: '',
               /* 状态*/
@@ -232,6 +231,50 @@ export default {
             }
           ],
           ingress_list: []
+        },
+        {
+          name: ' ecl-jee-kepler-JobTracker',
+          status: 'Active',
+          created_at: '2020-07-12 15:09:28',
+          username: 'zhangsan',
+          nickname: '张三',
+          u_id: '',
+          /* expired_time: null,*/
+
+          cpu: '2',
+          used_cpu: '0',
+          memory: '2Gi',
+          used_memory: '0',
+          storage: '2Gi',
+          used_storage: '0',
+          pvc: '2Gi',
+          used_pvc: '0',
+          gpu: '0',
+          used_gpu: '0',
+
+          deploy_list: []
+        },
+        {
+          name: ' ecl-jee-kepler-fs-TaskTracke',
+          status: 'Active',
+          created_at: '2020-07-15 14:32:57',
+          username: 'zhangsan',
+          nickname: '张三',
+          u_id: '',
+          /* expired_time: null,*/
+
+          cpu: '2',
+          used_cpu: '0',
+          memory: '2Gi',
+          used_memory: '0',
+          storage: '2Gi',
+          used_storage: '0',
+          pvc: '2Gi',
+          used_pvc: '0',
+          gpu: '0',
+          used_gpu: '0',
+
+          deploy_list: []
         }
       ]
     }

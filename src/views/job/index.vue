@@ -137,7 +137,25 @@ export default {
               pod_ip: '100.97.125.61'
             }
           ]
-
+        },
+        {
+          name: 'jobtest2',
+          namespace: 'default',
+          succeeded: 3,
+          completions: 4,
+          duration: '10s',
+          image: 'busybox:1.30',
+          created_at: '2023-07-16 09:09:56',
+          PodList: [
+            {
+              name: 'jobtest2-335vn',
+              namespace: '',
+              phase: 'Succeeded',
+              restarts: 0,
+              host_ip: '192.168.139.182',
+              pod_ip: '100.97.26.61'
+            }
+          ]
         }
       ]
     }
