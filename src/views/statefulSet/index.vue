@@ -16,11 +16,11 @@
       <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.name }}</span></template></el-table-column>
       <el-table-column width="120" property="namespace" label="命名空间"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.namespace }}</span></template></el-table-column>
       <el-table-column width="200" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span style="margin-left: 1%">{{ scope.row.created_at }}</span></template></el-table-column>
-      <el-table-column width="80" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
-      <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
-      <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
-      <el-table-column width="80" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
-      <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
+      <el-table-column width="80" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span></template></el-table-column>
+      <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span></template></el-table-column>
+      <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.used_storage }}/{{ scope.row.storage }}</span></template></el-table-column>
+      <el-table-column width="80" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.used_pvc }}/{{ scope.row.pvc }}</span></template></el-table-column>
+      <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.used_gpu }}/{{ scope.row.gpu }}</span></template></el-table-column>
       <el-table-column width="150" property="pvc_path" label="pvc路径"><template slot-scope="scope"><span>{{ scope.row.pvc_path }}</span></template></el-table-column>
 
       <!--      /* 2基本信息*/-->
@@ -193,11 +193,16 @@ export default {
           ],
 
           /* 3规格*/
-          cpu: '1',
-          memory: '2',
-          storage: '3',
-          pvc: '4',
-          gpu: '5',
+          cpu: '',
+          used_cpu: '',
+          memory: '',
+          used_memory: '',
+          storage: '',
+          used_storage: '',
+          pvc: '',
+          used_pvc: '',
+          gpu: '',
+          used_gpu: '',
           pvc_path: [
             '/data'
           ],

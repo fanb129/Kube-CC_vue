@@ -13,12 +13,11 @@
       <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
       <el-table-column width="120" property="status" label="状态"><template slot-scope="scope"><span>{{ scope.row.status }}</span></template></el-table-column>
       <el-table-column width="180" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.created_at }}</span></template></el-table-column>
-      <el-table-column width="80" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
-      <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
-      <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
-      <el-table-column width="80" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
-      <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
-      <el-table-column width="150" property="expired_time" label="过期时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.expired_time }}</span></template></el-table-column>
+      <el-table-column width="80" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span></template></el-table-column>
+      <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span></template></el-table-column>
+      <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.used_storage }}/{{ scope.row.storage }}</span></template></el-table-column>
+      <el-table-column width="80" property="pvc" label="持久存储"><template slot-scope="scope"><span>{{ scope.row.used_pvc }}/{{ scope.row.pvc }}</span></template></el-table-column>
+      <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.used_gpu }}/{{ scope.row.gpu }}</span></template></el-table-column>
 
       <!--      用户信息    -->
       <el-table-column label="用户信息" width="150">
@@ -58,11 +57,11 @@
                   <!--配置信息-->
                   <el-table-column width="200" property="image" label="映像"><template slot-scope="scope"><span>{{ scope.row.image }}</span></template></el-table-column>
                   <el-table-column width="100" property="ports" label="端口"><template slot-scope="scope"><span>{{ scope.row.ports }}</span></template></el-table-column>
-                  <el-table-column width="80" property="cpu" label="处理器"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
-                  <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
-                  <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
-                  <el-table-column width="80" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
-                  <el-table-column width="80" property="gpu" label="显卡"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
+                  <el-table-column width="80" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span></template></el-table-column>
+                  <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span></template></el-table-column>
+                  <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.used_storage }}/{{ scope.row.storage }}</span></template></el-table-column>
+                  <el-table-column width="80" property="pvc" label="持久存储"><template slot-scope="scope"><span>{{ scope.row.used_pvc }}/{{ scope.row.pvc }}</span></template></el-table-column>
+                  <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.used_gpu }}/{{ scope.row.gpu }}</span></template></el-table-column>
                   <el-table-column width="80" property="pvc_path" label="pvc路径"><template slot-scope="scope"><span>{{ scope.row.pvc_path }}</span></template></el-table-column>
                   <el-table-column width="200" property="volume" label="数据卷"><template slot-scope="scope"><span>{{ scope.row.volume }}</span></template></el-table-column>
                   <!--状态信息-->
@@ -175,19 +174,24 @@ export default {
       pagesize: 10,
       tableData: [
         {
-          name: 'spark1',
-          status: '活跃',
-          created_at: '2023-07-11',
-          username: 'ABdoge',
-          nickname: 'ABD',
-          u_id: 'ABD114',
+          name: '',
+          status: '',
+          created_at: '',
+          username: '',
+          nickname: '',
+          u_id: '',
           /* expired_time: null,*/
 
-          cpu: '1',
-          memory: '2',
-          storage: '3',
-          pvc: '4',
-          gpu: '5',
+          cpu: '',
+          used_cpu: '',
+          memory: '',
+          used_memory: '',
+          storage: '',
+          used_storage: '',
+          pvc: '',
+          used_pvc: '',
+          gpu: '',
+          used_gpu: '',
 
           deploy_list: [
             {
@@ -198,11 +202,16 @@ export default {
               /* 配置*/
               image: 'kubeguide/spark:latest',
               ports: null,
-              cpu: '1',
-              memory: '1Gi',
-              storage: '1Gi',
-              pvc: '1Gi',
+              cpu: '',
+              used_cpu: '',
+              memory: '',
+              used_memory: '',
+              storage: '',
+              used_storage: '',
+              pvc: '',
+              used_pvc: '',
               gpu: '',
+              used_gpu: '',
               pvc_path: [],
               volume: '',
               /* 状态*/
