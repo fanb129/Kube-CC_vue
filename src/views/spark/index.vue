@@ -17,7 +17,7 @@
       <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.used_memory }}/{{ scope.row.memory }}</span></template></el-table-column>
       <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.used_storage }}/{{ scope.row.storage }}</span></template></el-table-column>
       <el-table-column width="80" property="pvc" label="持久存储"><template slot-scope="scope"><span>{{ scope.row.used_pvc }}/{{ scope.row.pvc }}</span></template></el-table-column>
-<!--      <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.used_gpu }}/{{ scope.row.gpu }}</span></template></el-table-column>-->
+      <!--      <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.used_gpu }}/{{ scope.row.gpu }}</span></template></el-table-column>-->
 
       <!--      用户信息    -->
       <el-table-column label="用户信息" width="150">
@@ -37,7 +37,7 @@
       </el-table-column>
 
       <!--   deploy_list   -->
-      <el-table-column label="deply表单" width="150">
+      <el-table-column label="deploy表单" width="150">
         <template slot-scope="scope">
           <el-popover>
             <el-button slot="reference" size="mini" type="primary" style="margin-left: 16px;" @click="drawer = true">点我打开</el-button>
@@ -173,24 +173,24 @@ export default {
       pagesize: 10,
       tableData: [
         {
-          name: '',
-          status: '',
-          created_at: '',
-          username: '',
-          nickname: '',
+          name: 'apache.spark.sql.SparkSession',
+          status: 'Active',
+          created_at: '2020-07-10 12:35:06',
+          username: 'zhangsan',
+          nickname: '张三',
           u_id: '',
           /* expired_time: null,*/
 
-          cpu: '',
-          used_cpu: '',
-          memory: '',
-          used_memory: '',
-          storage: '',
-          used_storage: '',
-          pvc: '',
-          used_pvc: '',
-          gpu: '',
-          used_gpu: '',
+          cpu: '2',
+          used_cpu: '0',
+          memory: '2Gi',
+          used_memory: '0',
+          storage: '2Gi',
+          used_storage: '0',
+          pvc: '2Gi',
+          used_pvc: '0',
+          gpu: '0',
+          used_gpu: '0',
 
           deploy_list: [
             {
@@ -221,7 +221,7 @@ export default {
 
               pod_list: [
                 {
-                  name: 'hadoop-datanode-c944ddfb7-sxxcm',
+                  name: 'spark.sparkContext.setLogLevel',
                   namespace: '',
                   container: '',
                   phase: 'Running',
@@ -232,6 +232,50 @@ export default {
             }
           ],
           ingress_list: []
+        },
+        {
+          name: 'spark.sparkContext.textFile',
+          status: 'Active',
+          created_at: '2020-07-13 09:12:31',
+          username: 'zhangsan',
+          nickname: '张三',
+          u_id: '',
+          /* expired_time: null,*/
+
+          cpu: '2',
+          used_cpu: '0',
+          memory: '1Gi',
+          used_memory: '0',
+          storage: '1Gi',
+          used_storage: '0',
+          pvc: '1Gi',
+          used_pvc: '0',
+          gpu: '0',
+          used_gpu: '0',
+
+          deploy_list: []
+        },
+        {
+          name: 'spark.sparkContext.setLogLevel',
+          status: 'Active',
+          created_at: '2020-07-13 14:55:52',
+          username: 'zhangsan',
+          nickname: '张三',
+          u_id: '',
+          /* expired_time: null,*/
+
+          cpu: '2',
+          used_cpu: '0',
+          memory: '2Gi',
+          used_memory: '0',
+          storage: '2Gi',
+          used_storage: '0',
+          pvc: '1Gi',
+          used_pvc: '0',
+          gpu: '0',
+          used_gpu: '0',
+
+          deploy_list: []
         }
       ]
     }

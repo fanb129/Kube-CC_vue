@@ -139,7 +139,6 @@ import UserSelector from '@/components/Selector/UserSelector'
 import NsSelector from '@/components/Selector/NsSelectorNoNil'
 import AddStatefulSet from '@/components/AddStatefulSet/index.vue'
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
-import addStatefulSet from '@/components/AddStatefulSet/index.vue'
 import { podLog } from '@/api/pod'
 import UpdateDeploy from '@/components/AddDeploy/UpdateDeploy.vue'
 import UpdateStatefulSet from '@/components/AddStatefulSet/UpdateStatefulSet.vue'
@@ -178,14 +177,14 @@ export default {
       tableData: [
         {
           /* 1规格*/
-          name: '',
-          namespace: '',
-          created_at: '',
-          cpu: '',
-          memory: '',
-          storage: '',
-          pvc: '',
-          gpu: '',
+          name: '1100-ew2t-ada86-ara4-ad4846d8t47',
+          namespace: '3123-9689dc35-e2ec-483b-a7ce-e92efb5e1bf8',
+          created_at: '2023.7.13 17:08:33',
+          cpu: '2',
+          memory: '2Gi',
+          storage: '2Gi',
+          pvc: '2Gi',
+          gpu: '0',
           pvc_path: [
             '/data'
           ],
@@ -222,7 +221,32 @@ export default {
               container: ''
             }
           ]
-
+        },
+        {
+          /* 1规格*/
+          name: '3123-9689dc35-e2ec-483b-a7ce-e92efb5e1bf8',
+          namespace: '3123-9689dc35-e2ec-483b-a7ce-e92efb5e1bf8',
+          created_at: '2023.7.13 10:36:12',
+          cpu: '2',
+          memory: '2Gi',
+          storage: '2Gi',
+          pvc: '2Gi',
+          gpu: '0',
+          pvc_path: [
+            '/data'
+          ],
+          /* 2基本信息*/
+          replicas: 0,
+          image: '',
+          volume: 'w8d63f8e902086',
+          /* 3端口*/
+          ports: [],
+          /* 4状态*/
+          updated_replicas: 0,
+          ready_replicas: 1,
+          available_replicas: 1,
+          /* 5pod*/
+          pod_list: []
         }
       ]
     }
