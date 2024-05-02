@@ -53,10 +53,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column label='更新时间' width='200'>
+      <el-table-column label='过期时间' width='200'>
         <template slot-scope='scope'>
           <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.updated_at }}</span>
+          <span>{{ scope.row.expired_time }}</span>
         </template>
       </el-table-column>
 
@@ -277,7 +277,7 @@ export default {
 
       let t = new Date(row['expired_time'])
       //console.log(typeof(t))
- 
+
       //年
       var year = t.getFullYear();
       //月
@@ -290,15 +290,15 @@ export default {
       var minute = t.getMinutes();
       //秒
       var second = t.getSeconds();
-      
+
       month = month > 9 ? month : '0' + month
-      
+
       strDate = strDate > 9 ? strDate : '0' + strDate
-      
+
       hour = hour > 9 ? hour : '0' + hour
-      
+
       minute = minute > 9 ? minute : '0' + minute
-      
+
       second = second > 9 ? second : '0' + second
       this.inputexptime = year + '-' + month + '-' + strDate + ' ' + hour + ':' + minute + ':' + second
       console.log(this.inputexptime)
@@ -314,7 +314,7 @@ export default {
 
       let t = new Date(this.inputexptime)
       //console.log(typeof(t))
- 
+
       //年
       var year = t.getFullYear();
       //月
@@ -327,15 +327,15 @@ export default {
       var minute = t.getMinutes();
       //秒
       var second = t.getSeconds();
-      
+
       month = month > 9 ? month : '0' + month
-      
+
       strDate = strDate > 9 ? strDate : '0' + strDate
-      
+
       hour = hour > 9 ? hour : '0' + hour
-      
+
       minute = minute > 9 ? minute : '0' + minute
-      
+
       second = second > 9 ? second : '0' + second
       this.inputexptime = year + '-' + month + '-' + strDate + ' ' + hour + ':' + minute + ':' + second
       //console.log(this.inputexptime)

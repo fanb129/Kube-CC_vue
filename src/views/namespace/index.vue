@@ -36,7 +36,7 @@
               <el-table-column width="150" property="username" label="用户账号"><template slot-scope="scope"><span>{{ scope.row.username }}</span></template></el-table-column>
               <el-table-column width="150" property="nickname" label="用户昵称"><template slot-scope="scope"><span>{{ scope.row.nickname }}</span></template></el-table-column>
             </el-table>
-            <el-button slot="reference" size="mini">点击查看</el-button>
+            <el-button :data="tableData.slice((page - 1) * pagesize, page * pagesize)" slot="reference" size="mini">{{ scope.row.nickname }}</el-button>
           </el-popover>
         </template>
       </el-table-column>

@@ -79,7 +79,7 @@ export const constantRoutes = [
       path: '/index',
       name: 'Monitor',
       component: () => import('@/views/monitor/index'),
-      meta: { title: '监控', icon: 'dashboard' }
+      meta: { title: '资源监控', icon: 'dashboard' }
     }]
   },
 
@@ -87,10 +87,10 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/node',
     children: [{
-      path: 'node',
+      path: '/node',
       name: 'Node',
       component: () => import('@/views/node/index'),
-      meta: { title: ' 主机', icon: 'el-icon-s-platform' }
+      meta: { title: ' 主机管理', icon: 'el-icon-s-platform' }
     }]
   },
   { path: '/namespace',
@@ -101,6 +101,16 @@ export const constantRoutes = [
       name: 'Namespace',
       component: () => import('@/views/namespace/index'),
       meta: { title: ' 工作空间', icon: 'el-icon-s-help' }
+    }]
+  },
+  { path: '/storage',
+    component: Layout,
+    redirect: '/storage',
+    children: [{
+      path: '/storage',
+      name: 'Storage',
+      component: () => import('@/views/namespace/index'),
+      meta: { title: ' 存储管理', icon: 'el-icon-s-help' }
     }]
   },
   { path: '/docker',
@@ -116,64 +126,29 @@ export const constantRoutes = [
   {
     path: '/app',
     component: Layout,
-    redirect: '/app',
+    redirect: '/deployment',
     name: 'App',
-    meta: { title: ' 应用', icon: 'el-icon-s-grid' },
+    // meta: { title: ' 应用管理', icon: 'el-icon-s-grid' },
     children: [
       {
-        path: '/template',
-        component: () => import('@/layout/index2'),
-        redirect: '/template',
-        name: 'Template',
-        meta: { title: '内置模板', icon: 'el-icon-s-unfold' },
-        children: [
-          {
-            path: 'spark',
-            name: 'Spark',
-            component: () => import('@/views/spark/index'),
-            meta: { title: 'Spark', icon: 'el-icon-magic-stick' }
-          },
-          {
-            path: 'hadoop',
-            name: 'Hadoop',
-            component: () => import('@/views/hadoop/index'),
-            meta: { title: 'Hadoop', icon: 'el-icon-connection' }
-          },
-          {
-            path: 'linux',
-            name: 'Linux',
-            component: () => import('@/views/linux/index'),
-            meta: { title: '云主机', icon: 'el-icon-monitor' }
-          }
-        ]
+        path: '/deployment',
+        name: 'Deployment',
+        component: () => import('@/views/deploy/index'),
+        meta: { title: ' 应用管理', icon: 'el-icon-s-grid' },
+        // meta: { title: '无状态应用', icon: 'el-icon-data-line' }
       },
-      {
-        path: '/customize',
-        component: () => import('@/layout/index2'),
-        redirect: '/customize',
-        name: 'Customize',
-        meta: { title: '自定义应用', icon: 'el-icon-s-unfold' },
-        children: [
-          {
-            path: '/deployment',
-            name: 'Deployment',
-            component: () => import('@/views/deploy/index'),
-            meta: { title: '无状态应用', icon: 'el-icon-data-line' }
-          },
-          {
-            path: '/statefulSet',
-            name: 'StatefulSet',
-            component: () => import('@/views/statefulSet/index'),
-            meta: { title: '有状态应用', icon: 'el-icon-data-analysis' }
-          },
-          {
-            path: '/job',
-            name: 'Job',
-            component: () => import('@/views/job/index'),
-            meta: { title: '一次性任务', icon: 'el-icon-data-board' }
-          }
-        ]
-      }
+      // {
+      //   path: '/statefulSet',
+      //   name: 'StatefulSet',
+      //   component: () => import('@/views/statefulSet/index'),
+      //   meta: { title: '有状态应用', icon: 'el-icon-data-analysis' }
+      // },
+      // {
+      //   path: '/job',
+      //   name: 'Job',
+      //   component: () => import('@/views/job/index'),
+      //   meta: { title: '一次性任务', icon: 'el-icon-data-board' }
+      // }
     ]
   },
 
@@ -198,33 +173,34 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    path: '/log',
-    component: Layout,
-    redirect: '/log/login-log',
-    name: 'Log',
-    meta: { title: '日志管理', icon: 'tree' },
-    children: [
-      {
-        path: 'login-log',
-        name: 'Login-log',
-        component: () => import('@/views/sys-login-log/index'),
-        meta: { title: '登录日志', icon: '' }
-      },
-      {
-        path: 'oper-log',
-        name: 'Oper-log',
-        component: () => import('@/views/sys-login-log/index'),
-        meta: { title: '操作日志', icon: '' }
-      },
-      {
-        path: 'run-log',
-        name: 'Run-log',
-        component: () => import('@/views/user/index'),
-        meta: { title: '系统日志', icon: '' }
-      }
-    ]
-  },
+
+  // {
+  //   path: '/log',
+  //   component: Layout,
+  //   redirect: '/log/login-log',
+  //   name: 'Log',
+  //   meta: { title: '日志管理', icon: 'tree' },
+  //   children: [
+  //     {
+  //       path: 'login-log',
+  //       name: 'Login-log',
+  //       component: () => import('@/views/sys-login-log/index'),
+  //       meta: { title: '登录日志', icon: '' }
+  //     },
+  //     {
+  //       path: 'oper-log',
+  //       name: 'Oper-log',
+  //       component: () => import('@/views/sys-login-log/index'),
+  //       meta: { title: '操作日志', icon: '' }
+  //     },
+  //     {
+  //       path: 'run-log',
+  //       name: 'Run-log',
+  //       component: () => import('@/views/user/index'),
+  //       meta: { title: '系统日志', icon: '' }
+  //     }
+  //   ]
+  // },
 
   {
     path: '/terminal',

@@ -30,10 +30,17 @@
       </el-table-column>
 
       <el-table-column label='描述' width='120'>
-        <template slot-scope='scope'>
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.description }}</span>
-        </template>
+        <template slot-scope="scope">
+          <el-popover
+            placement="right"
+            width="725"
+            trigger="click"
+          >
+            <div style="white-space: pre-wrap; overflow-x: auto;">
+              {{ scope.row.description }}
+            </div>
+            <el-button slot="reference" size="mini">点击查看</el-button>
+          </el-popover></template>
       </el-table-column>
 
       <el-table-column label='创建时间' width='200'>

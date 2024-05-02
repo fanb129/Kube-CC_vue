@@ -21,7 +21,7 @@
       <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
       <el-table-column width="80" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
       <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
-      <el-table-column width="150" property="pvc_path" label="pvc路径"><template slot-scope="scope"><span>{{ scope.row.pvc_path }}</span></template></el-table-column>
+      <el-table-column width="80" property="pvc_path" label="副本数"><template slot-scope="scope"><span>{{ scope.row.replicas }}</span></template></el-table-column>
 
       <!--      /* 2基本信息*/-->
       <el-table-column label="基本信息" width="120">
@@ -32,7 +32,7 @@
             trigger="click"
           >
             <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
-              <el-table-column width="80" property="replicas" label="拷贝数"><template slot-scope="scope"><span>{{ scope.row.replicas }}</span></template></el-table-column>
+              <el-table-column width="200" property="replicas" label="挂载路径"><template slot-scope="scope"><span>{{ scope.row.pvc_path }}</span></template></el-table-column>
               <el-table-column width="200" property="image" label="映像文件"><template slot-scope="scope"><span>{{ scope.row.image }}</span></template></el-table-column>
               <el-table-column width="400" property="volume" label="数据卷"><template slot-scope="scope"><span>{{ scope.row.volume }}</span></template></el-table-column>
             </el-table>
@@ -92,6 +92,14 @@
               <template slot-scope="scope">
                 <el-button size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
                 <el-button size="mini" type="success" @click="podLog(scope.row)"> 日志</el-button>
+                <el-button
+                  :loading="loading"
+                  size="mini"
+                  type="danger"
+                  style="margin-top: 2px"
+                  @click="handlePodDelete(scope.row)"
+                >删除
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -139,7 +147,7 @@ import UserSelector from '@/components/Selector/UserSelector'
 import NsSelector from '@/components/Selector/NsSelectorNoNil'
 import AddStatefulSet from '@/components/AddStatefulSet/index.vue'
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
-import { podLog } from '@/api/pod'
+import { podLog, deletePod } from '@/api/pod'
 import UpdateDeploy from '@/components/AddDeploy/UpdateDeploy.vue'
 import UpdateStatefulSet from '@/components/AddStatefulSet/UpdateStatefulSet.vue'
 
@@ -177,20 +185,20 @@ export default {
       tableData: [
         {
           /* 1规格*/
-          name: '1100-ew2t-ada86-ara4-ad4846d8t47',
-          namespace: '3123-9689dc35-e2ec-483b-a7ce-e92efb5e1bf8',
-          created_at: '2023.7.13 17:08:33',
-          cpu: '2',
-          memory: '2Gi',
-          storage: '2Gi',
-          pvc: '2Gi',
-          gpu: '0',
+          name: '',
+          namespace: '',
+          created_at: '3',
+          cpu: '',
+          memory: '',
+          storage: '',
+          pvc: '',
+          gpu: '',
+          replicas: 0,
+
+          /* 2基本信息*/
           pvc_path: [
             '/data'
           ],
-
-          /* 2基本信息*/
-          replicas: 0,
           image: '',
           volume: '',
 
@@ -222,32 +230,6 @@ export default {
             }
           ]
         },
-        {
-          /* 1规格*/
-          name: '3123-9689dc35-e2ec-483b-a7ce-e92efb5e1bf8',
-          namespace: '3123-9689dc35-e2ec-483b-a7ce-e92efb5e1bf8',
-          created_at: '2023.7.13 10:36:12',
-          cpu: '2',
-          memory: '2Gi',
-          storage: '2Gi',
-          pvc: '2Gi',
-          gpu: '0',
-          pvc_path: [
-            '/data'
-          ],
-          /* 2基本信息*/
-          replicas: 0,
-          image: '',
-          volume: 'w8d63f8e902086',
-          /* 3端口*/
-          ports: [],
-          /* 4状态*/
-          updated_replicas: 0,
-          ready_replicas: 1,
-          available_replicas: 1,
-          /* 5pod*/
-          pod_list: []
-        }
       ]
     }
   },
@@ -303,6 +285,39 @@ export default {
         type: 'warning'
       }).then(() => {
         deleteStatefulSet(row['namespace'], row['name']).then((res) => {
+          if (res.code === 1) {
+            this.$message({
+              type: 'success',
+              message: res.msg
+            })
+            this.loading = true
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+              this.loading = false
+              this.getStatefulSetList()
+            }, 1000)
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.msg
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    handlePodDelete: function(row) {
+      /* 提示消息*/
+      this.$confirm('确认删除此pod', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deletePod(row['namespace'], row['name']).then((res) => {
           if (res.code === 1) {
             this.$message({
               type: 'success',
