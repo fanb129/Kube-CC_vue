@@ -56,9 +56,8 @@
                     class="icon"
                     :class="item.icon"
                     :style="{ background: item.color }"
-                    @click="push2(index)"
                   />
-                  <div class="detail" @click="push2(index)">
+                  <div class="detail" >
                     <p class="text">{{ item.name }}</p>
                     <p class="num">{{ item.value }}</p>
                   </div>
@@ -91,16 +90,16 @@
 <script>
 import { mapGetters } from 'vuex'
 import EditPwd from '@/components/EditPwd'
-import { updateUser, getUserList } from '@/api/user'
-import { getNodeList } from '@/api/node'
-import { getNsList } from '@/api/namespace'
+import { updateUser, getInfo } from '@/api/user'
+// import { getNodeList } from '@/api/node'
+// import { getNsList } from '@/api/namespace'
 // import { getDeployList } from '@/api/app/deploy'
 // import { getStatefulSetList } from '@/api/app/statefulSet'
 // import { getJobList } from '@/api/app/job'
 // import { getPodList } from '@/api/pod'
-import { getSparkList } from '@/api/app/spark'
-import { getHadoopList } from '@/api/app/hadoop'
-import { getLinuxList } from '@/api/app/linux'
+// import { getSparkList } from '@/api/app/spark'
+// import { getHadoopList } from '@/api/app/hadoop'
+// import { getLinuxList } from '@/api/app/linux'
 import { Message } from 'element-ui'
 
 export default {
@@ -129,17 +128,13 @@ export default {
       loading: false,
       saveLoading: false,
       dashboardData: [
-        { name: '系统User总数', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '系统物理主机个数', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '用户当前工作空间', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '有状态应用', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '无状态应用', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '一次性应用', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        // { name: 'Service', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        // { name: 'Pod', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: 'Spark', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: 'Hadoop', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '云主机', value: 0, icon: 'el-icon-success', color: '#2ec7c9' }
+        { name: 'CPU', value: '', icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: 'GPU', value: '', icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: '内存', value: '', icon: 'el-icon-success', color: '#2ec7c9' },
+
+        { name: '临时存储', value: '', icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: '持久存储', value: '', icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: '过期时间', value: '', icon: 'el-icon-success', color: '#2ec7c9' },
       ],
       editRules: {
         nickname: [{ required: true, trigger: 'blur', validator: validateNickname }]
@@ -152,73 +147,48 @@ export default {
     }
   },
   created() {
-    this.form = { nickname: this.name }
-    getUserList(1).then(res => {
-      this.dashboardData[0].value = res.total
-    })
-    getNodeList().then(res => {
-      this.dashboardData[1].value = res.length
-    })
-    getNsList(this.u_id).then(res => {
-      this.dashboardData[2].value = res.length
-    })
-    this.dashboardData[3].value = (Math.random() * 10).toFixed(0)
-    this.dashboardData[4].value = (Math.random() * 10).toFixed(0)
-    this.dashboardData[5].value = (Math.random() * 10).toFixed(0)
-    // getStatefulSetList(this.u_id, '').then(res => {
-    //   this.dashboardData[3].value = res.availableReplicas
-    // })
-    // getDeployList(this.u_id, '').then(res => {
-    //   this.dashboardData[4].value = res.length
-    // })
-    // getJobList(this.u_id, '').then(res => {
-    //   this.dashboardData[5].value = res.length
-    // })
-    getSparkList(this.u_id).then(res => {
-      this.dashboardData[6].value = res.length
-    })
-    getHadoopList(this.u_id).then(res => {
-      this.dashboardData[7].value = res.length
-    })
-    getLinuxList(this.u_id, 1).then(res => {
-      this.dashboardData[8].value = res.length
-    })
-    getLinuxList(this.u_id, 2).then(res => {
-      this.dashboardData[8].value += res.length
-    })
-  },
+    this.form = { nickname: this.name, email: this.email }
+    getInfo().then((res) => {
+      this.dashboardData[0].value = res.user_info.cpu;
+      this.dashboardData[1].value = res.user_info.gpu;
+      this.dashboardData[2].value = res.user_info.memory;
+
+      this.dashboardData[3].value = res.user_info.storage;
+      this.dashboardData[4].value = res.user_info.pvcstorage;
+      this.dashboardData[5].value = res.user_info.expired_time;
+    })},
   methods: {
-    push2(index) {
-      switch (index) {
-        case 0:
-          this.$router.push({ name: 'User' })
-          break
-        case 1:
-          this.$router.push({ name: 'Node' })
-          break
-        case 2:
-          this.$router.push({ name: 'Namespace' })
-          break
-        case 3:
-          this.$router.push({ name: 'Dashboard' })
-          break
-        case 4:
-          this.$router.push({ name: 'Dashboard' })
-          break
-        case 5:
-          this.$router.push({ name: 'Dashboard' })
-          break
-        case 6:
-          this.$router.push({ name: 'Spark' })
-          break
-        case 7:
-          this.$router.push({ name: 'Hadoop' })
-          break
-        case 8:
-          this.$router.push({ name: 'Linux' })
-          break
-      }
-    },
+    // push2(index) {
+    //   switch (index) {
+    //     case 0:
+    //       this.$router.push({ name: 'User' })
+    //       break
+    //     case 1:
+    //       this.$router.push({ name: 'Node' })
+    //       break
+    //     case 2:
+    //       this.$router.push({ name: 'Namespace' })
+    //       break
+    //     case 3:
+    //       this.$router.push({ name: 'Dashboard' })
+    //       break
+    //     case 4:
+    //       this.$router.push({ name: 'Dashboard' })
+    //       break
+    //     case 5:
+    //       this.$router.push({ name: 'Dashboard' })
+    //       break
+    //     case 6:
+    //       this.$router.push({ name: 'Spark' })
+    //       break
+    //     case 7:
+    //       this.$router.push({ name: 'Hadoop' })
+    //       break
+    //     case 8:
+    //       this.$router.push({ name: 'Linux' })
+    //       break
+    //   }
+    // },
     handleClick(tab, event) {
       if (tab.name === 'first') {
         // this.init()

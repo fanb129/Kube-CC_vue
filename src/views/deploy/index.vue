@@ -13,7 +13,7 @@
     <!--    1规格   -->
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
       <el-table-column label="编号" width="80"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.$index + 1 }}</span></template></el-table-column>
-      <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.name }}</span></template></el-table-column>
+      <el-table-column width="100" property="name" label="应用名称"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.name }}</span></template></el-table-column>
       <!--      <el-table-column width="120" property="namespace" label="命名空间"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.namespace }}</span></template></el-table-column>-->
       <el-table-column width="200" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span style="margin-left: 1%">{{ scope.row.created_at }}</span></template></el-table-column>
       <el-table-column width="80" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
@@ -21,7 +21,7 @@
       <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
       <el-table-column width="80" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
       <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
-      <el-table-column width="150" property="pvc_path" label="pvc路径"><template slot-scope="scope"><span>{{ scope.row.pvc_path }}</span></template></el-table-column>
+      <el-table-column width="90" property="pvc_path" label="开发环境数"><template slot-scope="scope"><span>{{ scope.row.replicas }}</span></template></el-table-column>
 
       <!--      /* 2基本信息*/-->
       <el-table-column label="基本信息" width="120">
@@ -31,8 +31,8 @@
             width="725"
             trigger="click"
           >
-            <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
-              <el-table-column width="80" property="replicas" label="拷贝数"><template slot-scope="scope"><span>{{ scope.row.replicas }}</span></template></el-table-column>
+            <el-table :data="scope.row" style="width: 100%">
+              <el-table-column width="200" property="replicas" label="挂载路径"><template slot-scope="scope"><span>{{ scope.row.pvc_path }}</span></template></el-table-column>
               <el-table-column width="200" property="image" label="映像文件"><template slot-scope="scope"><span>{{ scope.row.image }}</span></template></el-table-column>
               <el-table-column width="400" property="volume" label="数据卷"><template slot-scope="scope"><span>{{ scope.row.volume }}</span></template></el-table-column>
             </el-table>
@@ -52,46 +52,54 @@
               <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
               <el-table-column width="100" property="protocol" label="协议"><template slot-scope="scope"><span>{{ scope.row.protocol }}</span></template></el-table-column>
               <el-table-column width="150" property="port" label="本地端口"><template slot-scope="scope"><span>{{ scope.row.port }}</span></template></el-table-column>
-              <el-table-column width="150" property="targetPort" label="目的端口"><template slot-scope="scope"><span>{{ scope.row.targetPort }}</span></template></el-table-column>
-              <el-table-column width="150" property="nodePort" label="网络节点端口"><template slot-scope="scope"><span>{{ scope.row.nodePort }}</span></template></el-table-column>
+<!--              <el-table-column width="150" property="targetPort" label="目的端口"><template slot-scope="scope"><span>{{ scope.row.targetPort }}</span></template></el-table-column>-->
+              <el-table-column width="150" property="nodePort" label="映射端口"><template slot-scope="scope"><span>{{ scope.row.nodePort }}</span></template></el-table-column>
             </el-table>
             <el-button slot="reference" size="mini">点击查看</el-button>
           </el-popover></template>
       </el-table-column>
 
       <!--       4状态   -->
-      <el-table-column label="状态" width="120">不能为空
-        Port
-        22
+<!--      <el-table-column label="状态" width="120">不能为空-->
+<!--        Port-->
+<!--        22-->
 
-        <template slot-scope="scope">
-          <el-popover
-            placement="right"
-            width="500"
-            trigger="click"
-          >
-            <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
-              <el-table-column width="120" property="updated_replicas" label="更新副本"><template slot-scope="scope"><span>{{ scope.row.updated_replicas }}</span></template></el-table-column>
-              <el-table-column width="120" property="ready_replicas" label="就绪副本"><template slot-scope="scope"><span>{{ scope.row.ready_replicas }}</span></template></el-table-column>
-              <el-table-column width="120" property="available_replicas" label="可用副本"><template slot-scope="scope"><span>{{ scope.row.available_replicas }}</span></template></el-table-column>
-            </el-table>
-            <el-button slot="reference" size="mini">点击查看</el-button>
-          </el-popover></template>
-      </el-table-column>
+<!--        <template slot-scope="scope">-->
+<!--          <el-popover-->
+<!--            placement="right"-->
+<!--            width="500"-->
+<!--            trigger="click"-->
+<!--          >-->
+<!--            <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">-->
+<!--              <el-table-column width="120" property="updated_replicas" label="更新副本"><template slot-scope="scope"><span>{{ scope.row.updated_replicas }}</span></template></el-table-column>-->
+<!--              <el-table-column width="120" property="ready_replicas" label="就绪副本"><template slot-scope="scope"><span>{{ scope.row.ready_replicas }}</span></template></el-table-column>-->
+<!--              <el-table-column width="120" property="available_replicas" label="可用副本"><template slot-scope="scope"><span>{{ scope.row.available_replicas }}</span></template></el-table-column>-->
+<!--            </el-table>-->
+<!--            <el-button slot="reference" size="mini">点击查看</el-button>-->
+<!--          </el-popover></template>-->
+<!--      </el-table-column>-->
 
       <!--   5Pod_list   -->
       <el-table-column label="Pod表单" type="expand" width="150">
         <template slot-scope="scope">
           <el-table :data="scope.row.pod_list">
             <el-table-column label="序号" width="100" type="index" />
-            <el-table-column label="名称" width="200"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
-            <el-table-column label="阶段" width="200"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
-            <el-table-column label="主机Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
-            <el-table-column label="节点Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
+            <el-table-column label="开发环境名称" width="200"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+            <el-table-column label="状态" width="200"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
+            <el-table-column label="所在主机Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
+            <el-table-column label="自己Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
                 <el-button size="mini" type="success" @click="podLog(scope.row)"> 日志</el-button>
+                <el-button
+                  :loading="loading"
+                  size="mini"
+                  type="danger"
+                  style="margin-top: 2px"
+                  @click="handlePodDelete(scope.row)"
+                >删除
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -129,22 +137,24 @@
     </div>
     <AddDeploy ref="AddDeploy" :visible.sync="addDialog" />
     <UpdateDeploy ref="UpdateDeploy" :visible.sync="updateDialog" />
+    <PodLog ref="PodLog" :visible.sync="podLogDialog" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { deleteDeploy, getDeployList } from '@/api/app/deploy'
-import { podLog } from '@/api/pod'
+import {deletePod} from "@/api/pod";
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
 import UserSelector from '@/components/Selector/UserSelector'
 import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
 import AddDeploy from '@/components/AddDeploy/index'
 import UpdateDeploy from '@/components/AddDeploy/UpdateDeploy'
+import PodLog from '@/components/PodLog/index'
 
 export default {
   name: 'Deploy',
-  components: { UpdateDeploy, NsSelectorNoNil, UserSelector, GroupSelector, AddDeploy },
+  components: { UpdateDeploy, NsSelectorNoNil, UserSelector, GroupSelector, AddDeploy, PodLog },
   computed: {
     ...mapGetters([
       'role',
@@ -169,28 +179,29 @@ export default {
       createDialog: false,
       addDialog: false,
       updateDialog: false,
+      podLogDialog: false,
       page: 1,
       // total: 0,
       pagesize: 10,
       tableData: [
         {
           /* 1规格*/
-          name: 'default_dd-dfba-41bd-9674-a318ab2c1b732',
-          namespace: '11451-3de6b1d0-dfba-41bd-9674-e318a1c1b732',
-          created_at: '2023.7.15 16:17:08',
-          cpu: '2',
-          memory: '1Gi',
-          storage: '1Gi',
-          pvc: '1Gi',
-          gpu: '0',
+          name: '',
+          namespace: '',
+          created_at: '',
+          cpu: '',
+          memory: '',
+          storage: '',
+          pvc: '',
+          gpu: '',
+          replicas: 0,
+
+          /* 2基本信息*/
           pvc_path: [
             '/data'
           ],
-
-          /* 2基本信息*/
-          replicas: 0,
           image: '',
-          volume: 'e190868d63f8',
+          volume: '',
 
           /* 3端口*/
           ports: [
@@ -205,8 +216,8 @@ export default {
 
           /* 4状态*/
           updated_replicas: 0,
-          ready_replicas: 1,
-          available_replicas: 1,
+          ready_replicas: 0,
+          available_replicas: 0,
 
           /* 5pod*/
           pod_list: [
@@ -221,84 +232,6 @@ export default {
           ]
 
         },
-        {
-          /* 1规格*/
-          name: 'test1-8a12-r4f6-4566-r5fdf223a6jy11',
-          namespace: '11451-3de6b1d0-dfba-41bd-9674-e318a1c1b732',
-          created_at: '2023.7.15 16:47:51',
-          cpu: '2',
-          memory: '2Gi',
-          storage: '2Gi',
-          pvc: '2Gi',
-          gpu: '0',
-          pvc_path: [
-            '/data'
-          ],
-          /* 2基本信息*/
-          replicas: 0,
-          image: '',
-          volume: 'w8d63f8e902086',
-          /* 3端口*/
-          ports: [],
-          /* 4状态*/
-          updated_replicas: 0,
-          ready_replicas: 1,
-          available_replicas: 1,
-          /* 5pod*/
-          pod_list: []
-        },
-        {
-          /* 1规格*/
-          name: 'test2-4q6w-d88w-ad13-ad4w68a51h568f',
-          namespace: '11451-3de6b1d0-dfba-41bd-9674-e318a1c1b732',
-          created_at: '2023.7.16 14:58:11',
-          cpu: '2',
-          memory: '2Gi',
-          storage: '2Gi',
-          pvc: '2Gi',
-          gpu: '0',
-          pvc_path: [
-            '/data'
-          ],
-          /* 2基本信息*/
-          replicas: 0,
-          image: '',
-          volume: 'w8d63f8e902086',
-          /* 3端口*/
-          ports: [],
-          /* 4状态*/
-          updated_replicas: 0,
-          ready_replicas: 1,
-          available_replicas: 1,
-          /* 5pod*/
-          pod_list: []
-        },
-        {
-          /* 1规格*/
-          name: 'test3-daw5-t8a6-9s5u-hk1ak8a6a96a7',
-          namespace: '11451-3de6b1d0-dfba-41bd-9674-e318a1c1b732',
-          created_at: '2023.7.16 15:44:15',
-          cpu: '2',
-          memory: '2Gi',
-          storage: '2Gi',
-          pvc: '2Gi',
-          gpu: '0',
-          pvc_path: [
-            '/data'
-          ],
-          /* 2基本信息*/
-          replicas: 0,
-          image: '',
-          volume: 'w8d63f8e902086',
-          /* 3端口*/
-          ports: [],
-          /* 4状态*/
-          updated_replicas: 0,
-          ready_replicas: 1,
-          available_replicas: 1,
-          /* 5pod*/
-          pod_list: []
-        }
       ]
     }
   },
@@ -381,6 +314,41 @@ export default {
         })
       })
     },
+    handlePodDelete: function(row) {
+      /* 提示消息*/
+      this.$confirm('确认删除此pod', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deletePod(row['namespace'], row['name']).then((res) => {
+          if (res.code === 1) {
+            this.$message({
+              type: 'success',
+              message: res.msg
+            })
+            // location.reload()
+            this.loading = true
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+              this.loading = false
+              this.getDeployList()
+              // location.reload()
+            }, 1000)
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.msg
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
     pushTerminal: function(row) {
       console.log(row['namespace'])
       console.log(row['name'])
@@ -393,8 +361,10 @@ export default {
       })
     },
     podLog: function(row) {
-      podLog(row['namespace'], row['name']).then((res) => {
-        console.log(res.log)
+      this.podLogDialog = true
+      this.$nextTick(() => {
+        this.$refs.PodLog.init(row['namespace'], row['name'])
+        this.podLogDialog = true
       })
     }
     /*    pushTerminal: function(row) {
