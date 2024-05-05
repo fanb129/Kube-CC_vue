@@ -11,16 +11,16 @@
         <el-input v-model="form.cpu" placeholder="示例:5" style="width: 200px" />
       </el-form-item>
       <el-form-item label="内存" prop="memory">
-        <el-input v-model="form.memory" placeholder="示例:10Gi" style="width: 200px" /> Gi
+        <el-input v-model="form.memory" placeholder="示例:10Gi" style="width: 200px" />
       </el-form-item>
       <el-form-item label="存储" prop="storage">
-        <el-input v-model="form.storage" placeholder="示例:20Gi" style="width: 200px" /> Gi
+        <el-input v-model="form.storage" placeholder="示例:20Gi" style="width: 200px" />
       </el-form-item>
       <el-form-item label="持久存储" prop="pvc_storage">
-        <el-input v-model="form.pvc_storage" placeholder="示例:20Gi" style="width: 200px" /> Gi
+        <el-input v-model="form.pvc_storage" placeholder="示例:20Gi" style="width: 200px" />
       </el-form-item>
       <el-form-item label="Gpu" prop="gpu">
-        <el-input v-model="form.gpu" placeholder="示例:5Gi" style="width: 200px" /> Gi
+        <el-input v-model="form.gpu" placeholder="示例:5Gi" style="width: 200px" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即创建</el-button>

@@ -66,7 +66,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div style="position: absolute;bottom: 2%">
+    <div>
       <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="1" :total="total" @current-change="changePageNum"></el-pagination>
     </div>
     <!--  创建组弹窗-->
@@ -88,7 +88,7 @@
           <el-input v-model="inputgn" placeholder="请输入内容"></el-input>
         </el-form-item>
         <el-form-item label='组描述' :label-width='formLabelWidth'>
-          <el-input v-model="inputgd" placeholder="请输入内容"></el-input>
+          <el-input v-model="inputegd" type="textarea" :rows="2" placeholder="请输入内容" maxlength="256" show-word-limit></el-input>
         </el-form-item>
       </el-form>
       <div slot='footer' class='dialog-footer'>
@@ -115,7 +115,7 @@
           <el-input v-model="inputegn" placeholder="请输入内容"></el-input>
         </el-form-item>
         <el-form-item label='编辑描述' :label-width='formLabelWidth'>
-          <el-input v-model="inputegd" placeholder="请输入内容"></el-input>
+          <el-input v-model="inputegd" type="textarea" :rows="2" placeholder="请输入内容" maxlength="256" show-word-limit></el-input>
         </el-form-item>
       </el-form>
       <div slot='footer' class='dialog-footer'>

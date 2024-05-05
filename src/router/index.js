@@ -110,7 +110,7 @@ export const constantRoutes = [
       path: '/storage',
       name: 'Storage',
       component: () => import('@/views/namespace/index'),
-      meta: { title: ' 存储管理', icon: 'el-icon-s-help' }
+      meta: { title: ' 存储管理', icon: 'el-icon-upload' }
     }]
   },
   { path: '/docker',
@@ -120,7 +120,7 @@ export const constantRoutes = [
       path: '/docker',
       name: 'Docker',
       component: () => import('@/views/docker/index'),
-      meta: { title: ' 镜像管理', icon: 'el-icon-s-help' }
+      meta: { title: ' 镜像管理', icon: 'el-icon-s-shop' }
     }]
   },
   {
@@ -157,13 +157,13 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/users/user',
     name: 'Users',
-    meta: { title: '用户管理', icon: 'tree' },
+    meta: { title: '用户管理', icon: 'user' },
     children: [
       {
         path: 'group',
         name: 'Group',
         component: () => import('@/views/group/index'),
-        meta: { title: '分组', icon: 'user' }
+        meta: { title: '分组', icon: 'tree' }
       },
       {
         path: 'user',

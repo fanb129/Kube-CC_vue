@@ -34,6 +34,11 @@
                   <a @click="$refs.pass.dialog = true">修改密码</a>
                 </div>
               </li>
+<!--               是否过期-->
+<!--              <li><svg-icon icon-class="dept" /> 状态 <div class="user-right">-->
+<!--                <el-tag v-if="role === 1" size="mini">普通用户</el-tag>-->
+<!--                <el-tag v-else-if="role === 2" size="mini" type="success">管理员</el-tag>-->
+<!--              </div></li>-->
             </ul>
           </div>
         </el-card>

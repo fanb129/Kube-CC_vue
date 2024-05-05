@@ -36,7 +36,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label='权限' width='120'>
+      <el-table-column label='权限' width='120' sortable>
         <template slot-scope='scope'>
           <!-- <i class='el-icon-time'></i> -->
 
@@ -69,7 +69,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div style="position: absolute;bottom: 2%">
+    <div >
       <el-pagination background layout="prev, pager, next" :current-page="page" :page-size="1" :total="total" @current-change="changePageNum" :disabled="changepagebutton"></el-pagination>
     </div>
       <!--  权限修改弹窗-->

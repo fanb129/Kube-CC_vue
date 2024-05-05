@@ -32,21 +32,23 @@ export default {
   data: function() {
     return {
       descriptors: {
-        name: { type: 'string', disabled: true },
-        namespace: { type: 'string', disabled: true },
-        replicas: { type: 'integer', required: true, min: 1 },
-        image: { type: 'string', required: true },
-        command: { type: 'array', defaultField: { type: 'string' }},
-        args: { type: 'array', defaultField: { type: 'string' }},
-        ports: { type: 'array', defaultField: { type: 'integer' }},
+        name: { type: 'string', disabled: true, label: '应用名称' },
+        namespace: { type: 'string', disabled: true, label: '工作空间' },
+        image: { type: 'string', disabled: true, label: '镜像' },
+        replicas: { type: 'integer', required: true, min: 1, label: '开发环境数' },
+        // image: { type: 'string', required: true },
+        command: { type: 'array', defaultField: { type: 'string' }, label: '命令'},
+        args: { type: 'array', defaultField: { type: 'string' }, label: '参数'},
+        ports: { type: 'array', defaultField: { type: 'integer' }, label: '端口'},
         env: {
           type: 'object',
-          defaultField: { type: 'string', required: true }
+          defaultField: { type: 'string', required: true },
+          label: '环境变量'
         },
         cpu: { type: 'string', required: true },
-        memory: { type: 'string', required: true },
-        storage: { type: 'string', required: true },
-        pvc_storage: { type: 'string' },
+        memory: { type: 'string', required: true, label: '内存' },
+        storage: { type: 'string', required: true, label: '临时存储' },
+        pvc_storage: { type: 'string', label: '永久存储' },
         storage_class_name: { type: 'string' },
         gpu: { type: 'string' }
       },

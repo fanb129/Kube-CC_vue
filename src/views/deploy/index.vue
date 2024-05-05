@@ -31,11 +31,11 @@
             width="725"
             trigger="click"
           >
-            <el-table :data="scope.row" style="width: 100%">
-              <el-table-column width="200" property="replicas" label="挂载路径"><template slot-scope="scope"><span>{{ scope.row.pvc_path }}</span></template></el-table-column>
-              <el-table-column width="200" property="image" label="映像文件"><template slot-scope="scope"><span>{{ scope.row.image }}</span></template></el-table-column>
-              <el-table-column width="400" property="volume" label="数据卷"><template slot-scope="scope"><span>{{ scope.row.volume }}</span></template></el-table-column>
-            </el-table>
+            <div>
+              <div>挂载路径：{{ scope.row.pvc_path }}</div>
+              <div>镜像：{{ scope.row.image }}</div>
+              <div>数据卷：{{ scope.row.volume }}</div>
+            </div>
             <el-button slot="reference" size="mini">点击查看</el-button>
           </el-popover></template>
       </el-table-column>
@@ -51,9 +51,9 @@
             <el-table :data="scope.row.ports">
               <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
               <el-table-column width="100" property="protocol" label="协议"><template slot-scope="scope"><span>{{ scope.row.protocol }}</span></template></el-table-column>
-              <el-table-column width="150" property="port" label="本地端口"><template slot-scope="scope"><span>{{ scope.row.port }}</span></template></el-table-column>
-<!--              <el-table-column width="150" property="targetPort" label="目的端口"><template slot-scope="scope"><span>{{ scope.row.targetPort }}</span></template></el-table-column>-->
-              <el-table-column width="150" property="nodePort" label="映射端口"><template slot-scope="scope"><span>{{ scope.row.nodePort }}</span></template></el-table-column>
+<!--              <el-table-column width="150" property="port" label="本地端口"><template slot-scope="scope"><span>{{ scope.row.port }}</span></template></el-table-column>-->
+              <el-table-column width="150" property="targetPort" label="本地端口"><template slot-scope="scope"><span>{{ scope.row.targetPort }}</span></template></el-table-column>
+              <el-table-column width="150" property="nodePort" label="主机端口"><template slot-scope="scope"><span>{{ scope.row.nodePort }}</span></template></el-table-column>
             </el-table>
             <el-button slot="reference" size="mini">点击查看</el-button>
           </el-popover></template>
@@ -83,15 +83,17 @@
       <el-table-column label="Pod表单" type="expand" width="150">
         <template slot-scope="scope">
           <el-table :data="scope.row.pod_list">
-            <el-table-column label="序号" width="100" type="index" />
-            <el-table-column label="开发环境名称" width="200"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
-            <el-table-column label="状态" width="200"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
-            <el-table-column label="所在主机Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
-            <el-table-column label="自己Ip" width="200"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
+            <el-table-column label="序号" type="index" />
+            <el-table-column label="开发环境名称" width="220"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+            <el-table-column label="开发环境ID" width="120"><template slot-scope="scope"><span>{{ scope.row.container_id }}</span></template></el-table-column>
+            <el-table-column label="状态" width="80"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
+            <el-table-column label="所在主机Ip" width="150"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
+            <el-table-column label="自己Ip" width="150"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
                 <el-button size="mini" type="success" @click="podLog(scope.row)"> 日志</el-button>
+                <el-button size="mini" type="primary" @click="save(scope.row)"> 保存</el-button>
                 <el-button
                   :loading="loading"
                   size="mini"
@@ -125,7 +127,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div style="position: absolute;bottom: 2%">
+    <div>
       <el-pagination
         background
         layout="prev, pager, next"
@@ -138,6 +140,7 @@
     <AddDeploy ref="AddDeploy" :visible.sync="addDialog" />
     <UpdateDeploy ref="UpdateDeploy" :visible.sync="updateDialog" />
     <PodLog ref="PodLog" :visible.sync="podLogDialog" />
+    <SaveImage ref="SaveImage" :visible.sync="saveImageDialog" />
   </div>
 </template>
 
@@ -151,10 +154,10 @@ import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
 import AddDeploy from '@/components/AddDeploy/index'
 import UpdateDeploy from '@/components/AddDeploy/UpdateDeploy'
 import PodLog from '@/components/PodLog/index'
-
+import SaveImage from "@/components/DockerImage/SaveImage";
 export default {
   name: 'Deploy',
-  components: { UpdateDeploy, NsSelectorNoNil, UserSelector, GroupSelector, AddDeploy, PodLog },
+  components: { UpdateDeploy, NsSelectorNoNil, UserSelector, GroupSelector, AddDeploy, PodLog, SaveImage},
   computed: {
     ...mapGetters([
       'role',
@@ -180,6 +183,7 @@ export default {
       addDialog: false,
       updateDialog: false,
       podLogDialog: false,
+      saveImageDialog: false,
       page: 1,
       // total: 0,
       pagesize: 10,
@@ -227,7 +231,8 @@ export default {
               phase: '',
               host_ip: '',
               pod_ip: '',
-              container: ''
+              container: '',
+              container_id: ''
             }
           ]
 
@@ -353,12 +358,19 @@ export default {
       console.log(row['namespace'])
       console.log(row['name'])
       console.log(row['container'])
-      this.$router.push({
+      let page = this.$router.resolve({
         name: 'PodTerminal',
         query: {
           r: 'pod/ssh?podNs=' + row['namespace'] + '&podName=' + row['name'] + '&containerName=' + row['container']
         }
       })
+      window.open(page.href, '_blank');
+      // this.$router.push({
+      //   name: 'PodTerminal',
+      //   query: {
+      //     r: 'pod/ssh?podNs=' + row['namespace'] + '&podName=' + row['name'] + '&containerName=' + row['container']
+      //   }
+      // })
     },
     podLog: function(row) {
       this.podLogDialog = true
@@ -366,25 +378,14 @@ export default {
         this.$refs.PodLog.init(row['namespace'], row['name'])
         this.podLogDialog = true
       })
-    }
-    /*    pushTerminal: function(row) {
-      this.$router.push({
-        name: 'Terminal',
-        query: {
-          // r: 'node/ssh',
-          // user: 'root',
-          // pwd: '1234567890',
-          ip: row['ip'],
-          port: '22'
-        },
-        params: {
-          user: 'root',
-          pwd: '1234567890'
-          // ip: row['ip'],
-          // port: '22'
-        }
+    },
+    save: function(row) {
+      this.saveImageDialog = true
+      this.$nextTick(() => {
+        this.$refs.SaveImage.init(row['host_ip'], row['container_id'])
+        this.saveImageDialog = true
       })
-    }*/
+    }
   }
 }
 </script>

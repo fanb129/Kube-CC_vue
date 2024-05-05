@@ -11,7 +11,7 @@
     <!--    基本信息    -->
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
       <el-table-column label="ID" width="50" type="index" />
-      <el-table-column width="120" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+      <el-table-column width="200" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
       <el-table-column width="80" property="status" label="状态"><template slot-scope="scope"><span>{{ scope.row.status }}</span></template></el-table-column>
       <el-table-column width="115" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.created_at }}</span></template></el-table-column>
       <!--    基本信息end-->
@@ -32,11 +32,11 @@
             width="350"
             trigger="click"
           >
-            <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
-              <el-table-column width="150" property="username" label="用户账号"><template slot-scope="scope"><span>{{ scope.row.username }}</span></template></el-table-column>
-              <el-table-column width="150" property="nickname" label="用户昵称"><template slot-scope="scope"><span>{{ scope.row.nickname }}</span></template></el-table-column>
-            </el-table>
-            <el-button :data="tableData.slice((page - 1) * pagesize, page * pagesize)" slot="reference" size="mini">{{ scope.row.nickname }}</el-button>
+            <div>
+              <div>用户名：{{ scope.row.username }}</div>
+              <div>昵称：{{ scope.row.nickname }}</div>
+            </div>
+            <el-button slot="reference" size="mini">{{ scope.row.nickname }}</el-button>
           </el-popover>
         </template>
       </el-table-column>
@@ -64,7 +64,7 @@
     </el-table>
     <!--    显示页end    -->
 
-    <div style="position: absolute;bottom: 2%">
+    <div>
       <el-pagination
         background
         layout="prev, pager, next"
