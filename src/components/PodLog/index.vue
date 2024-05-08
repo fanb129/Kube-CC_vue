@@ -2,11 +2,11 @@
   <el-drawer
     :title="title"
     :visible.sync="open"
-    direction="btt"
+    direction="ltr"
   >
-    <div class="drawer-content">
+    <p class="drawer-content">
       {{ log }}
-    </div>
+    </p>
   </el-drawer>
 </template>
 
@@ -50,7 +50,11 @@ export default {
 <style>
 .drawer-content {
   overflow-y: auto;
+  overflow-x: auto;
   white-space: pre-wrap;
-  height: 400px;
+  max-height: 98vh;
+  /*max-width: 50vh;*/
+  width: auto;
+  margin-bottom: 2vh;
 }
 </style>

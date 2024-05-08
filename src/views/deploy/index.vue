@@ -6,7 +6,7 @@
       <NsSelectorNoNil ref="NsSelectorNoNil" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
 
       <el-button style="margin-left: 100px" type="primary" @click="addDeploy">
-        新增无状态应用
+        新增应用
       </el-button>
 
     </div>
@@ -24,7 +24,7 @@
       <el-table-column width="90" property="pvc_path" label="开发环境数"><template slot-scope="scope"><span>{{ scope.row.replicas }}</span></template></el-table-column>
 
       <!--      /* 2基本信息*/-->
-      <el-table-column label="基本信息" width="120">
+      <el-table-column label="基本信息" width="100">
         <template slot-scope="scope">
           <el-popover
             placement="right"
@@ -41,7 +41,7 @@
       </el-table-column>
 
       <!--   3Ports   -->
-      <el-table-column label="端口" width="120">
+      <el-table-column label="端口" width="100">
         <template slot-scope="scope">
           <el-popover
             placement="right"
@@ -80,7 +80,7 @@
 <!--      </el-table-column>-->
 
       <!--   5Pod_list   -->
-      <el-table-column label="Pod表单" type="expand" width="150">
+      <el-table-column label="Pod表单" type="expand" width="100">
         <template slot-scope="scope">
           <el-table :data="scope.row.pod_list">
             <el-table-column label="序号" type="index" />
@@ -89,6 +89,22 @@
             <el-table-column label="状态" width="80"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
             <el-table-column label="所在主机Ip" width="150"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
             <el-table-column label="自己Ip" width="150"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
+            <el-table-column label="启动时间" width="200"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.start_time }}</span></template></el-table-column>
+            <el-table-column label="SSH信息" width="120">
+              <template slot-scope="scope">
+                <el-popover
+                  placement="right"
+                  width="700"
+                  trigger="click"
+                >
+                  <div>
+                    <div>SSH地址：{{ scope.row.ssh }}</div>
+                    <div>用户名：{{ scope.row.user }}</div>
+                    <div>密码：{{ scope.row.password }}</div>
+                  </div>
+                  <el-button slot="reference" size="mini">点击查看</el-button>
+                </el-popover></template>
+            </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
@@ -110,6 +126,16 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
+          <el-popover
+            placement="right"
+            width="800"
+            trigger="click"
+          >
+            <div style="white-space: pre-wrap; overflow-x: auto;">
+              {{ scope.row.log }}
+            </div>
+            <el-button slot="reference" size="mini" type="success">日志</el-button>
+          </el-popover>
           <el-button
             size="mini"
             type="warning"
@@ -232,7 +258,12 @@ export default {
               host_ip: '',
               pod_ip: '',
               container: '',
-              container_id: ''
+              container_id: '',
+              image_name: '',
+              ssh: 'ssh 192.168.139.143 -p 32486',
+              user: 'root',
+              password: 'root123',
+              start_time: ''
             }
           ]
 
@@ -382,7 +413,7 @@ export default {
     save: function(row) {
       this.saveImageDialog = true
       this.$nextTick(() => {
-        this.$refs.SaveImage.init(row['host_ip'], row['container_id'])
+        this.$refs.SaveImage.init(row['host_ip'], row['container_id'], row['image_name'])
         this.saveImageDialog = true
       })
     }

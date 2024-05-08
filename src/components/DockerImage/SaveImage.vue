@@ -4,6 +4,9 @@
       <el-form-item label="开发环境" prop="container_id">
         <el-input v-model="form.container_id" style="width: 400px" disabled="true" />
       </el-form-item>
+      <el-form-item label="镜像">
+        <el-input v-model="image_name" style="width: 400px" disabled="true" />
+      </el-form-item>
       <div>
         <p>另存为</p>
       </div>
@@ -50,6 +53,7 @@ export default {
   },
   data() {
     return {
+      image_name: '',
       sealosHub: 'sealos.hub:5000/',
       // 弹出层标题
       title: '保存镜像',
@@ -77,12 +81,13 @@ export default {
     }
   },
   methods: {
-    init(nodeIp,containerId) {
+    init(nodeIp,containerId,image_name) {
+      this.image_name = image_name
       this.form.node_ip = nodeIp
       this.form.container_id = containerId
       this.open = true
       this.$nextTick(() => {
-        // this.getUserList()
+        this.image_name = image_name
         this.form.node_ip = nodeIp
         this.form.container_id = containerId
         this.open = true

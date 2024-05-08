@@ -41,7 +41,7 @@ export default {
     }
     const confirmOldPass = (rule, value, callback) => {
       if (value.length >= 6 && value.length <= 16) {
-        checkPass({ username: this.defaultUsername, password: value }).then(res => {
+        checkPass({ usernameoremail: this.username, password: value }).then(res => {
           if (res.code === 1) {
             callback()
           } else {
@@ -55,8 +55,6 @@ export default {
       }
     }
     return {
-      defaultUsername: this.username,
-      defaultUid: this.u_id,
       loading: false,
       dialog: false,
       title: '修改密码',
@@ -83,7 +81,7 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           this.loading = true
-          resetPass(this.defaultUid, { password: this.form.confirmPass }).then(res => {
+          resetPass(this.u_id, { password: this.form.confirmPass }).then(res => {
             this.resetForm()
             this.$notify({
               title: '密码修改成功，请重新登录',

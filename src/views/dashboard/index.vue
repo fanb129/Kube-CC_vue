@@ -20,9 +20,13 @@
               </div>
             </div>
             <ul class="user-info">
-              <li><div style="height: 100%"><svg-icon icon-class="login" /> 登录账号<div class="user-right">{{ username }}</div></div></li>
-              <li> <div class="el-icon-message" /> 邮箱 <div class="user-right">{{ email }}</div></li>
-              <li><svg-icon icon-class="user1" /> 用户昵称 <div class="user-right">{{ name }}</div></li>
+              <li><div style="height: 100%"><svg-icon icon-class="login" /> 登录账号<div class="user-right">{{ form.username }}</div></div></li>
+              <li> <div class="el-icon-message" /> 邮箱
+                <div v-if="form.email != ''" class="user-right">{{ form.email }}<a @click="$refs.email.dialog = true">换绑</a></div>
+                <div v-else class="user-right"><a @click="$refs.email.dialog = true">绑定邮箱</a></div>
+              </li>
+              <li><svg-icon icon-class="user1" /> 用户昵称 <div class="user-right">{{ form.nickname }}</div></li>
+              <li  v-if="role === 1"><div class="el-icon-user" /> 所属组 <div class="user-right">{{ form.group }}</div></li>
               <li><svg-icon icon-class="dept" /> 权限 <div class="user-right">
                 <el-tag v-if="role === 1" size="mini">普通用户</el-tag>
                 <el-tag v-else-if="role === 2" size="mini" type="success">管理员</el-tag>
@@ -75,10 +79,10 @@
                   <el-input v-model="form.nickname" style="width: 35%" />
                   <span style="color: #C0C0C0;margin-left: 10px;">用户昵称不作为登录使用</span>
                 </el-form-item>
-                <el-form-item label="邮箱" prop="nickname">
-                  <el-input v-model="form.email" style="width: 35%" />
-                  <span style="color: #C0C0C0;margin-left: 10px;">暂不支持更改登录邮箱</span>
-                </el-form-item>
+<!--                <el-form-item label="邮箱" prop="nickname">-->
+<!--                  <el-input v-model="form.email" style="width: 35%" />-->
+<!--                  <span style="color: #C0C0C0;margin-left: 10px;">暂不支持更改登录邮箱</span>-->
+<!--                </el-form-item>-->
                 <el-form-item label="">
                   <el-button :loading="saveLoading" size="mini" type="primary" @click="doSubmit">保存配置</el-button>
                 </el-form-item>
@@ -88,13 +92,14 @@
         </el-card>
       </el-col>
     </el-row>
-    <EditPwd ref="pass" :u_id="this.u_id" :username="this.username" />
+    <EditPwd ref="pass" :u_id="this.form.id" :username="this.form.username" />
+    <SetEmail ref="email" :u_id="this.form.id" />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import EditPwd from '@/components/EditPwd'
+import SetEmail from '@/components/SetEmail'
 import { updateUser, getInfo } from '@/api/user'
 // import { getNodeList } from '@/api/node'
 // import { getNsList } from '@/api/namespace'
@@ -106,21 +111,17 @@ import { updateUser, getInfo } from '@/api/user'
 // import { getHadoopList } from '@/api/app/hadoop'
 // import { getLinuxList } from '@/api/app/linux'
 import { Message } from 'element-ui'
+import {mapGetters} from "vuex";
 
 export default {
   name: 'Dashboard',
-  components: { EditPwd },
+  components: { EditPwd, SetEmail },
   computed: {
     ...mapGetters([
-      'name',
       'avatar',
-      'role',
-      'username',
-      'u_id',
-      'email'
+      'role'
     ])
   },
-
   data() {
     const validateNickname = (rule, value, callback) => {
       if (value.length < 1 || value.length > 16) {
@@ -145,15 +146,13 @@ export default {
         nickname: [{ required: true, trigger: 'blur', validator: validateNickname }]
       },
       activeName: 'second',
-      form: {
-        nickname: '',
-        email: ''
-      }
+      form: {}
     }
   },
   created() {
     this.form = { nickname: this.name, email: this.email }
     getInfo().then((res) => {
+      this.form = res.user_info
       this.dashboardData[0].value = res.user_info.cpu;
       this.dashboardData[1].value = res.user_info.gpu;
       this.dashboardData[2].value = res.user_info.memory;
@@ -204,7 +203,7 @@ export default {
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.saveLoading = true
-            updateUser(this.u_id, this.form).then(() => {
+            updateUser(this.form.id, {nickname: this.form.nickname}).then(() => {
               Message({
                 message: '修改成功',
                 type: 'success',

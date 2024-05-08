@@ -66,6 +66,7 @@
             size="mini"
             type="warning"
             style="margin-left: 10px"
+            :disabled="u_id != scope.row.u_id"
             @click="updateImage(scope.row)"
           >编辑</el-button>
           <el-button
@@ -73,6 +74,7 @@
             size="mini"
             type="danger"
             style="margin-top: 2px"
+            :disabled="u_id != scope.row.u_id"
             @click="handleDelete(scope.row)"
           >删除
           </el-button>
@@ -155,7 +157,6 @@ export default {
     },
     changePageNum: function(val) {
       this.page = val
-      // this.getUserList()
     },
     getImageList: function() {
       getImageList(this.uid, this.gid).then((res) => {
@@ -209,31 +210,6 @@ export default {
           type: 'info',
           message: '已取消删除'
         })
-      })
-    },
-    getUserList: function() {
-      getUserList(this.page).then((res) => {
-        // this.page = res.page
-        // this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
-        this.tData = []
-        this.tData = res.user_list
-        for (let i = 0; i < this.tData.length; i++) {
-          if (this.tData[i].role === 3) {
-            this.tempData.push(this.tData[i])
-          }
-        }
-        for (let i = 0; i < this.tData.length; i++) {
-          if (this.tData[i].role === 2) {
-            this.tempData.push(this.tData[i])
-          }
-        }
-        for (let i = 0; i < this.tData.length; i++) {
-          if (this.tData[i].role === 1) {
-            this.tempData.push(this.tData[i])
-          }
-        }
-        // this.tableData.sort(function(a,b){return a.role > b.role})
-        // console.log(this.total)
       })
     }
   }

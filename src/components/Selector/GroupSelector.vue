@@ -1,5 +1,5 @@
 <template>
-  <div style="display: inline">
+  <div style="display: inline" v-if="role > 1">
     <span>所属组：</span>
     <el-select v-model="g_id" filterable placeholder="请选择" :disabled="role < 2" >
       <el-option
@@ -18,7 +18,7 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import { getUserList } from '@/api/user'
-import { viewGroupByAd } from '@/api/group'
+import {getGroupListByUid, viewGroupByAd} from '@/api/group'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -66,7 +66,7 @@ export default {
     //     })
     //   },
     viewGroupByAd: function() {
-      viewGroupByAd(this.u_id).then((res) => {
+      getGroupListByUid().then((res) => {
         //this.tagroup = res.group_list
         this.options=[]
         //this.tt=[]
@@ -85,7 +85,7 @@ export default {
           // })
           if(this.role == 3){
             this.options.push({
-            "value" : '',
+            "value" : 0,
             "label" : '所有用户'
           })
           //this.options.push({id:'999999',nickname:'请选择', role: 1})

@@ -7,7 +7,7 @@
     <!--      </el-form-item>-->
     <!--    &lt;!&ndash;      <el-form-item label="Namespace">&ndash;&gt;-->
     <div style="margin-bottom: 10px">
-      <NsSelectorNoNil ref="NsSelector" v-model="form.namespace" :default-uid="uid" :default-ns="ns" @nsList="changeNs" style="margin-right: 50px"/>
+      <NsSelectorNoNil ref="NsSelector" v-model="form.namespace" :default-uid="u_id" :default-ns="ns" @nsList="changeNs" style="margin-right: 50px"/>
       <ImageSelector ref="ImageSelector" v-model="form.image" @nsList="changeImage" />
     </div>
     <dynamic-form

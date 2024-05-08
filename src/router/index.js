@@ -32,35 +32,6 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
-    path: '/podterminal',
-    component: Layout,
-    // hidden: true,
-    children: [{
-      path: 'index',
-      name: 'PodTerminal',
-      component: () => import('@/components/Terminal/PodTerminal')
-      // meta: { title: 'Terminal', icon: 'dashboard' }
-    }]
-  },
-  {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
-
-  {
-    path: '/register',
-    component: () => import('@/views/login/register'),
-    hidden: true
-  },
-
-  {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
-  },
-
-  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
@@ -70,6 +41,52 @@ export const constantRoutes = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: ' 首页', icon: 'el-icon-s-home' }
     }]
+  },
+  { path: '/config',
+    hidden: true,
+    component: Layout,
+    redirect: '/config',
+    children: [{
+      path: '/config',
+      name: 'Config',
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: ' 系统配置', icon: 'el-icon-s-tools' }
+    }]
+  },
+
+  { path: '/node',
+    hidden: true,
+    component: Layout,
+    redirect: '/node',
+    children: [{
+      path: '/node',
+      name: 'Node',
+      component: () => import('@/views/node/index'),
+      meta: { title: ' 主机管理', icon: 'el-icon-s-platform' }
+    }]
+  },
+
+  {
+    path: '/users',
+    hidden: true,
+    component: Layout,
+    redirect: '/users/user',
+    name: 'Users',
+    meta: { title: '用户管理', icon: 'user' },
+    children: [
+      {
+        path: 'group',
+        name: 'Group',
+        component: () => import('@/views/group/index'),
+        meta: { title: '分组', icon: 'tree'}
+      },
+      {
+        path: 'user',
+        name: 'User',
+        component: () => import('@/views/user/index'),
+        meta: { title: '用户', icon: 'user' }
+      }
+    ]
   },
 
   {
@@ -83,16 +100,6 @@ export const constantRoutes = [
     }]
   },
 
-  { path: '/node',
-    component: Layout,
-    redirect: '/node',
-    children: [{
-      path: '/node',
-      name: 'Node',
-      component: () => import('@/views/node/index'),
-      meta: { title: ' 主机管理', icon: 'el-icon-s-platform' }
-    }]
-  },
   { path: '/namespace',
     component: Layout,
     redirect: '/namespace',
@@ -103,16 +110,18 @@ export const constantRoutes = [
       meta: { title: ' 工作空间', icon: 'el-icon-s-help' }
     }]
   },
-  { path: '/storage',
-    component: Layout,
-    redirect: '/storage',
-    children: [{
-      path: '/storage',
-      name: 'Storage',
-      component: () => import('@/views/namespace/index'),
-      meta: { title: ' 存储管理', icon: 'el-icon-upload' }
-    }]
-  },
+
+  // { path: '/storage',
+  //   component: Layout,
+  //   redirect: '/storage',
+  //   children: [{
+  //     path: '/storage',
+  //     name: 'Storage',
+  //     component: () => import('@/views/namespace/index'),
+  //     meta: { title: ' 存储管理', icon: 'el-icon-upload' }
+  //   }]
+  // },
+
   { path: '/docker',
     component: Layout,
     redirect: '/docker',
@@ -123,6 +132,7 @@ export const constantRoutes = [
       meta: { title: ' 镜像管理', icon: 'el-icon-s-shop' }
     }]
   },
+
   {
     path: '/app',
     component: Layout,
@@ -149,28 +159,6 @@ export const constantRoutes = [
       //   component: () => import('@/views/job/index'),
       //   meta: { title: '一次性任务', icon: 'el-icon-data-board' }
       // }
-    ]
-  },
-
-  {
-    path: '/users',
-    component: Layout,
-    redirect: '/users/user',
-    name: 'Users',
-    meta: { title: '用户管理', icon: 'user' },
-    children: [
-      {
-        path: 'group',
-        name: 'Group',
-        component: () => import('@/views/group/index'),
-        meta: { title: '分组', icon: 'tree' }
-      },
-      {
-        path: 'user',
-        name: 'User',
-        component: () => import('@/views/user/index'),
-        meta: { title: '用户', icon: 'user' }
-      }
     ]
   },
 
@@ -232,7 +220,41 @@ export const constantRoutes = [
   },
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '*', redirect: '/404', hidden: true },
+  {
+    path: '/podterminal',
+    component: Layout,
+    // hidden: true,
+    children: [{
+      path: 'index',
+      name: 'PodTerminal',
+      component: () => import('@/components/Terminal/PodTerminal')
+      // meta: { title: 'Terminal', icon: 'dashboard' }
+    }]
+  },
+  {
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+
+  // {
+  //   path: '/register',
+  //   component: () => import('@/views/login/register'),
+  //   hidden: true
+  // },
+
+  {
+    path: '/findPass',
+    component: () => import('@/views/login/findPass'),
+    hidden: true
+  },
+
+  {
+    path: '/404',
+    component: () => import('@/views/404'),
+    hidden: true
+  },
 ]
 
 const createRouter = () => new Router({
