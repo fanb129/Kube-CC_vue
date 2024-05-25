@@ -45,12 +45,12 @@ export function totalNs(u_id) {
   })
 }
 
-export function allkindNs(u_id) {
-  return request({
-    url: '/ns/allkind',
-    method: 'get',
-    params: {
-      'u_id': u_id
-    }
-  })
-}
+// export function allkindNs(u_id) {
+//   return request({
+//     url: '/ns/allkind',
+//     method: 'get',
+//     params: {
+//       'u_id': u_id
+//     }
+//   })
+// }

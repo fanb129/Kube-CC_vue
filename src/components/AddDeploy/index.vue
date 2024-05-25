@@ -54,12 +54,13 @@ export default {
           defaultField: { type: 'string', required: true },
           label: '环境变量'
         },
-        cpu: { type: 'string', required: true },
-        memory: { type: 'string', required: true, label: '内存' },
-        storage: { type: 'string', required: true, label: '临时存储' },
-        pvc_storage: { type: 'string', label: '永久存储' },
-        storage_class_name: { type: 'string' },
-        gpu: { type: 'string' }
+        cpu: { type: 'string', required: true, placeholder: '示例：1' },
+        memory: { type: 'string', required: true, label: '内存', placeholder: '示例：1Gi' },
+        storage: { type: 'string', required: true, label: '临时存储', placeholder: '示例：10Gi' },
+        pvc_storage: { type: 'string', label: '永久存储', placeholder: '示例：10Gi' },
+        pvc_path: { type: 'array', defaultField: { type: 'string', placeholder: '示例：/data' }, label: '永久存储路径'},
+        // storage_class_name: { type: 'string' },
+        gpu: { type: 'string', placeholder: '示例：1Gi' }
       },
       ns: '',
       uid: '',
@@ -80,6 +81,7 @@ export default {
         memory: '',
         storage: '',
         pvc_storage: '',
+        pvc_path: [],
         storage_class_name: '',
         gpu: ''
       }

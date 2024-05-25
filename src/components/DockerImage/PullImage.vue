@@ -6,10 +6,10 @@
         <p>拉取源镜像</p>
       </div>
       <el-form-item label="镜像名" prop="pull_image.name">
-        <el-input v-model="form.pull_image.name" style="width: 400px" />
+        <el-input v-model="form.pull_image.name" style="width: 400px" placeholder="示例:registry.cn-shanghai.aliyuncs.com/fanb/mycentos" />
       </el-form-item>
       <el-form-item label="标签" prop="pull_image.tag">
-        <el-input v-model="form.pull_image.tag" style="width: 400px" />
+        <el-input v-model="form.pull_image.tag" style="width: 400px" placeholder="示例:7" />
       </el-form-item>
       <el-form-item label="账号" prop="pull_image.username">
         <el-input v-model="form.pull_image.username" style="width: 400px" />

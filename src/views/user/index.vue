@@ -159,6 +159,16 @@
         <el-form-item label="密码" prop="password" :label-width="formLabelWidth">
           <el-input v-model="addUserForm.password" />
         </el-form-item>
+        <el-form-item label="分组" :label-width="formLabelWidth">
+          <el-select v-model="addUserForm.gid" :disabled="role <= 1" placeholder="请选择">
+            <el-option
+              v-for="item in groupListOption"
+              :key="item.groupid"
+              :label="item.name"
+              :value="item.groupid"
+            />
+          </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addUserVisible = false">取 消</el-button>
@@ -192,7 +202,8 @@ export default {
       addUserForm: {
         username: '',
         nickname: '',
-        password: ''
+        password: '',
+        gid: ''
       },
       addUserFormRules: {
         username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -200,6 +211,7 @@ export default {
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       },
       groupList: [],
+      groupListOption: [],
       page: 1,
       total: 0,
       pagesize: 10,
@@ -456,6 +468,9 @@ export default {
     },
     getGroupList: function() {
       getGroupListByUid().then((res) => {
+        for (const i in res.group_list) {
+          this.groupListOption.push(res.group_list[i])
+        }
         this.total = res.length
         this.groupList = res.group_list
         if (this.role == 3) {
