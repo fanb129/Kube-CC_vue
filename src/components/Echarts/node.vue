@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div id="cpu" :style="{width: '900px', height: '300px'}"></div>
-    <div id="memory" :style="{width: '900px', height: '300px'}"></div>
-    <div id="storage" :style="{width: '900px', height: '300px'}"></div>
+    <div id="cpu" :style="{width: '900px', height: '300px'}" />
+    <div id="memory" :style="{width: '900px', height: '300px'}" />
+    <div id="storage" :style="{width: '900px', height: '300px'}" />
   </div>
 </template>
 
@@ -11,7 +11,7 @@ export default {
   data() {
     return {
       x: ['master', 'node01', 'node02'],
-      legend: ['Allocatable','Capacity'],
+      legend: ['Allocatable', 'Capacity'],
       yCpu: [
         {
           name: 'Allocatable',

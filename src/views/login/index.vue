@@ -6,15 +6,15 @@
         <h3 class="title">Kube-CC</h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="usernameoremail">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
+          ref="usernameoremail"
+          v-model="loginForm.usernameoremail"
+          placeholder="账号or邮箱"
+          name="usernameoremail"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -30,7 +30,7 @@
           ref="password"
           v-model="loginForm.password"
           :type="passwordType"
-          placeholder="Password"
+          placeholder="密码"
           name="password"
           tabindex="2"
           auto-complete="on"
@@ -41,22 +41,23 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width: 30%" @click.native.prevent="handleLogin">登录</el-button>
-      <el-button type="primary" style="width: 30%; float: right" @click="register">注册</el-button>
+      <el-button :loading="loading" type="primary" style="width: 30%;float: left" @click.native.prevent="handleLogin">登录</el-button>
+<!--      <el-button type="primary" style="width: 30%; float: right" @click="register">注册</el-button>-->
+      <el-button type="primary" style="width: 30%; float: right" @click="findPass">找回密码</el-button>
     </el-form>
   </div>
 </template>
 
 <script>
 import { validUsername } from '@/utils/validate'
-import {Message} from "element-ui";
+import{Message}from "element-ui";
 
 export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (value.length < 3 || value.length > 16) {
-        callback(new Error('T用户名长度必须在3~16字符之间'))
+      if (value.length < 1) {
+        callback(new Error('请输入用户名或者邮箱'))
       } else {
         callback()
       }
@@ -70,11 +71,11 @@ export default {
     }
     return {
       loginForm: {
-        username: 'zhangsan',
-        password: '123456'
+        usernameoremail: '',
+        password: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        usernameoremail: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
@@ -113,6 +114,7 @@ export default {
             })
             this.$router.push({ path: '/' })
             this.loading = false
+            location.reload()
           }).catch(() => {
             this.loading = false
           })
@@ -122,8 +124,11 @@ export default {
         }
       })
     },
-    register() {
-      this.$router.push({ path: '/register' })
+    // register() {
+    //   this.$router.push({ path: '/register' })
+    // }
+    findPass() {
+      this.$router.push({ path: '/findPass' })
     }
   }
 }

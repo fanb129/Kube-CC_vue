@@ -1,96 +1,159 @@
 <template>
   <div>
     <div style="margin-left: 10%; margin-top: 1%">
-      <UserSelector :default-uid="uid" @nsList="changeUid" ref="UserSelector"></UserSelector>
-      <NsSelector :default-uid="uid" :default-ns="ns" @nsList="changeNs" ref="NsSelector"></NsSelector>
-<!--      <el-button style="margin-left: 30%" type="primary" icon="el-icon-edit" @click="addDeploy">Add-->
-<!--        Deploy-->
-<!--      </el-button>-->
+      <GroupSelector ref="GroupSelector" :default-uid="adid" style="margin-right: 50px" @nsList="changeGid" />
+      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-right: 50px" @nsList="changeUid" />
+      <NsSelectorNoNil ref="NsSelectorNoNil" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
 
-      <el-dropdown split-button trigger="click" @command="handleCommand" style="margin-left: 30%" type="primary" @click="addDeploy">
-        Add Deploy
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="a">Form</el-dropdown-item>
-          <el-dropdown-item command="b">Yaml</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+      <el-button style="margin-left: 100px" type="primary" @click="addDeploy">
+        新增应用
+      </el-button>
+
     </div>
+    <!--    1规格   -->
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
-      <!-- <el-table :data='tableData' style='width: 100%'> -->
-      <!--      <el-table-column fixed type='selection' width='55'></el-table-column>-->
+      <el-table-column label="编号" width="80"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.$index + 1 }}</span></template></el-table-column>
+      <el-table-column width="100" property="name" label="应用名称"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.name }}</span></template></el-table-column>
+      <!--      <el-table-column width="120" property="namespace" label="命名空间"><template slot-scope="scope"><span style="margin-left: 1%">{{ scope.row.namespace }}</span></template></el-table-column>-->
+      <el-table-column width="200" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span style="margin-left: 1%">{{ scope.row.created_at }}</span></template></el-table-column>
+      <el-table-column width="80" property="cpu" label="cpu"><template slot-scope="scope"><span>{{ scope.row.cpu }}</span></template></el-table-column>
+      <el-table-column width="80" property="memory" label="内存"><template slot-scope="scope"><span>{{ scope.row.memory }}</span></template></el-table-column>
+      <el-table-column width="80" property="storage" label="临时存储"><template slot-scope="scope"><span>{{ scope.row.storage }}</span></template></el-table-column>
+      <el-table-column width="80" property="pvc" label="永久存储"><template slot-scope="scope"><span>{{ scope.row.pvc }}</span></template></el-table-column>
+      <el-table-column width="80" property="gpu" label="gpu"><template slot-scope="scope"><span>{{ scope.row.gpu }}</span></template></el-table-column>
+      <el-table-column width="90" property="pvc_path" label="开发环境数"><template slot-scope="scope"><span>{{ scope.row.replicas }}</span></template></el-table-column>
 
-      <el-table-column label="ID" width="80">
+      <!--      /* 2基本信息*/-->
+      <el-table-column label="基本信息" width="100">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>
-        </template>
+          <el-popover
+            placement="right"
+            width="725"
+            trigger="click"
+          >
+            <div>
+              <div>挂载路径：{{ scope.row.pvc_path }}</div>
+              <div>镜像：{{ scope.row.image }}</div>
+              <div>数据卷：{{ scope.row.volume }}</div>
+            </div>
+            <el-button slot="reference" size="mini">点击查看</el-button>
+          </el-popover></template>
       </el-table-column>
 
-      <el-table-column label="Name" width="250">
+      <!--   3Ports   -->
+      <el-table-column label="端口" width="100">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.name }}</span>
-        </template>
+          <el-popover
+            placement="right"
+            width="700"
+            trigger="click"
+          >
+            <el-table :data="scope.row.ports">
+              <el-table-column width="100" property="name" label="名称"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+              <el-table-column width="100" property="protocol" label="协议"><template slot-scope="scope"><span>{{ scope.row.protocol }}</span></template></el-table-column>
+<!--              <el-table-column width="150" property="port" label="本地端口"><template slot-scope="scope"><span>{{ scope.row.port }}</span></template></el-table-column>-->
+              <el-table-column width="150" property="targetPort" label="本地端口"><template slot-scope="scope"><span>{{ scope.row.targetPort }}</span></template></el-table-column>
+              <el-table-column width="150" property="nodePort" label="主机端口"><template slot-scope="scope"><span>{{ scope.row.nodePort }}</span></template></el-table-column>
+            </el-table>
+            <el-button slot="reference" size="mini">点击查看</el-button>
+          </el-popover></template>
       </el-table-column>
 
-      <el-table-column label="Namespace" width="250">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.namespace }}</span>
-        </template>
-      </el-table-column>
+      <!--       4状态   -->
+<!--      <el-table-column label="状态" width="120">不能为空-->
+<!--        Port-->
+<!--        22-->
 
-      <el-table-column label="created_at" width="200">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.created_at }}</span>
-        </template>
-      </el-table-column>
+<!--        <template slot-scope="scope">-->
+<!--          <el-popover-->
+<!--            placement="right"-->
+<!--            width="500"-->
+<!--            trigger="click"-->
+<!--          >-->
+<!--            <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">-->
+<!--              <el-table-column width="120" property="updated_replicas" label="更新副本"><template slot-scope="scope"><span>{{ scope.row.updated_replicas }}</span></template></el-table-column>-->
+<!--              <el-table-column width="120" property="ready_replicas" label="就绪副本"><template slot-scope="scope"><span>{{ scope.row.ready_replicas }}</span></template></el-table-column>-->
+<!--              <el-table-column width="120" property="available_replicas" label="可用副本"><template slot-scope="scope"><span>{{ scope.row.available_replicas }}</span></template></el-table-column>-->
+<!--            </el-table>-->
+<!--            <el-button slot="reference" size="mini">点击查看</el-button>-->
+<!--          </el-popover></template>-->
+<!--      </el-table-column>-->
 
-      <el-table-column label="Replicas" width="80">
+      <!--   5Pod_list   -->
+      <el-table-column label="Pod表单" type="expand" width="100">
         <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.replicas }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="Updated" width="80">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.updated_replicas }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="Ready" width="80">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.ready_replicas }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="Available" width="85">
-        <template slot-scope="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.available_replicas }}</span>
+          <el-table :data="scope.row.pod_list">
+            <el-table-column label="序号" type="index" />
+            <el-table-column label="开发环境名称" width="220"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
+            <el-table-column label="开发环境ID" width="120"><template slot-scope="scope"><span>{{ scope.row.container_id }}</span></template></el-table-column>
+            <el-table-column label="状态" width="80"><template slot-scope="scope"><span>{{ scope.row.phase }}</span></template></el-table-column>
+            <el-table-column label="所在主机Ip" width="150"><template slot-scope="scope"><span>{{ scope.row.host_ip }}</span></template></el-table-column>
+            <el-table-column label="自己Ip" width="150"><template slot-scope="scope"><span>{{ scope.row.pod_ip }}</span></template></el-table-column>
+            <el-table-column label="启动时间" width="200"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.start_time }}</span></template></el-table-column>
+            <el-table-column label="SSH信息" width="120">
+              <template slot-scope="scope">
+                <el-popover
+                  placement="right"
+                  width="700"
+                  trigger="click"
+                >
+                  <div>
+                    <div>SSH地址：{{ scope.row.ssh }}</div>
+                    <div>用户名：{{ scope.row.user }}</div>
+                    <div>密码：{{ scope.row.password }}</div>
+                  </div>
+                  <el-button slot="reference" size="mini">点击查看</el-button>
+                </el-popover></template>
+            </el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button size="mini" type="success" @click="pushTerminal(scope.row)"> 终端</el-button>
+                <el-button size="mini" type="success" @click="podLog(scope.row)"> 日志</el-button>
+                <el-button size="mini" type="primary" @click="save(scope.row)"> 保存</el-button>
+                <el-button
+                  :loading="loading"
+                  size="mini"
+                  type="danger"
+                  style="margin-top: 2px"
+                  @click="handlePodDelete(scope.row)"
+                >删除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </template>
       </el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-<!--          <el-button size="mini" type="primary" @click="pushTerminal(scope.row)">pod</el-button>-->
+          <el-popover
+            placement="right"
+            width="800"
+            trigger="click"
+          >
+            <div style="white-space: pre-wrap; overflow-x: auto;">
+              {{ scope.row.log }}
+            </div>
+            <el-button slot="reference" size="mini" type="success">日志</el-button>
+          </el-popover>
           <el-button
-            size="mini" type="warning" @click="editDeploy(scope.row)">编辑</el-button>
+            size="mini"
+            type="warning"
+            style="margin-left: 10px"
+            @click="editDeploy(scope.row)"
+          >编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
             type="danger"
+            style="margin-top: 2px"
             @click="handleDelete(scope.row)"
           >删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
-    <div style="position: absolute;bottom: 2%">
+    <div>
       <el-pagination
         background
         layout="prev, pager, next"
@@ -100,24 +163,27 @@
         @current-change="changePageNum"
       />
     </div>
-    <YamlApply :visible.sync="applyDialog" ref="YamlApply" :kind="kind" :name="yamlName" :ns="yamlNs"/>
-    <YamlCreate :visible.sync="createDialog" ref="YamlCreate" :kind="kind"/>
-    <AddDeploy :visible.sync="addDialog" ref="AddDeploy"/>
+    <AddDeploy ref="AddDeploy" :visible.sync="addDialog" />
+    <UpdateDeploy ref="UpdateDeploy" :visible.sync="updateDialog" />
+    <PodLog ref="PodLog" :visible.sync="podLogDialog" />
+    <SaveImage ref="SaveImage" :visible.sync="saveImageDialog" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { deleteDeploy, getDeployList } from '@/api/deploy'
-import UserSelector from "@/components/Selector/UserSelector";
-import NsSelector from "@/components/Selector/NsSelector";
-import YamlApply from '@/components/YamlEditor/apply'
-import YamlCreate from '@/components/YamlEditor/create'
-import AddDeploy from '@/components/AddDeploy'
-
+import { deleteDeploy, getDeployList } from '@/api/app/deploy'
+import {deletePod} from "@/api/pod";
+import GroupSelector from '@/components/Selector/GroupSelector.vue'
+import UserSelector from '@/components/Selector/UserSelector'
+import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
+import AddDeploy from '@/components/AddDeploy/index'
+import UpdateDeploy from '@/components/AddDeploy/UpdateDeploy'
+import PodLog from '@/components/PodLog/index'
+import SaveImage from "@/components/DockerImage/SaveImage";
 export default {
   name: 'Deploy',
-  components: { NsSelector, UserSelector, YamlApply, YamlCreate, AddDeploy },
+  components: { UpdateDeploy, NsSelectorNoNil, UserSelector, GroupSelector, AddDeploy, PodLog, SaveImage},
   computed: {
     ...mapGetters([
       'role',
@@ -125,61 +191,110 @@ export default {
     ])
   },
   created() {
-    this.uid = this.$route.query.u_id || this.u_id
-    this.getDeployList()
+    this.uid = this.u_id
+    this.adid = this.u_id
+    // this.getDeployList()
   },
   data() {
     return {
-      kind: 'Deploy',
-      yamlName: '',
-      yamlNs: '',
+      myuid: this.u_id,
+      uid: '',
+      gid: '',
+      adid: '',
+      ns: '',
       timer: null,
       loading: false,
       applyDialog: false,
       createDialog: false,
       addDialog: false,
-      ns: this.$route.query.ns,
-      uid: '',
+      updateDialog: false,
+      podLogDialog: false,
+      saveImageDialog: false,
       page: 1,
-      total: 0,
+      // total: 0,
       pagesize: 10,
       tableData: [
         {
+          /* 1规格*/
           name: '',
           namespace: '',
           created_at: '',
-          replicas: '',
-          updated_replicas: '',
-          ready_replicas: '',
-          available_replicas: '',
-          u_id: ''
-        }
+          cpu: '',
+          memory: '',
+          storage: '',
+          pvc: '',
+          gpu: '',
+          replicas: 0,
+
+          /* 2基本信息*/
+          pvc_path: [
+            '/data'
+          ],
+          image: '',
+          volume: '',
+
+          /* 3端口*/
+          ports: [
+            {
+              name: '',
+              protocol: '',
+              port: '',
+              targetPort: '',
+              nodePort: ''
+            }
+          ],
+
+          /* 4状态*/
+          updated_replicas: 0,
+          ready_replicas: 0,
+          available_replicas: 0,
+
+          /* 5pod*/
+          pod_list: [
+            {
+              name: '',
+              namespace: '',
+              phase: '',
+              host_ip: '',
+              pod_ip: '',
+              container: '',
+              container_id: '',
+              image_name: '',
+              ssh: 'ssh 192.168.139.143 -p 32486',
+              user: 'root',
+              password: 'root123',
+              start_time: ''
+            }
+          ]
+
+        },
       ]
     }
   },
   methods: {
-    handleCommand(command) {
-      if (command === 'a') {
-        this.addDeploy()
-      } else {
-        this.yamlCreate()
-      }
+    changeGid: function(g_id) {
+      this.gid = g_id
+      this.$refs.UserSelector.uid = ''
+      this.$refs.UserSelector.g_id = this.gid
+      this.$refs.UserSelector.getAllUser()
     },
-    changeUid: function (u_id){
+    changeUid: function(u_id) {
       this.uid = u_id
-      this.$refs.NsSelector.u_id = this.uid
-      this.$refs.NsSelector.getNsList()
-      this.getDeployList()
+      this.$refs.NsSelectorNoNil.u_id = this.uid
+      this.$refs.NsSelectorNoNil.getNsList()
+      // this.getDeployList()
     },
-    changeNs: function (ns){
-      this.ns = ns
-      this.getDeployList()
+    changeNs: function(ns) {
+      if (ns !== '') {
+        this.ns = ns
+        this.getDeployList()
+      }
     },
     changePageNum: function(val) {
       this.page = val
     },
     getDeployList: function() {
-      getDeployList(this.uid,this.ns).then((res) => {
+      getDeployList(this.ns).then((res) => {
         this.total = res.length
         this.tableData = res.deploy_list
         console.log(res)
@@ -188,21 +303,16 @@ export default {
     addDeploy: function() {
       this.addDialog = true
       this.$nextTick(() => {
-        this.$refs.AddDeploy.init()
+        this.myuid = this.u_id
+        this.addDialog = true
+        this.$refs.AddDeploy.init(this.myuid)
       })
     },
-    yamlCreate: function() {
-      this.createDialog = true
+    editDeploy: function(row) {
+      this.updateDialog = true
       this.$nextTick(() => {
-        this.$refs.YamlCreate.init()
-      })
-    },
-    editDeploy: function(row){
-      this.yamlName = row['name']
-      this.yamlNs = row['namespace']
-      this.applyDialog = true
-      this.$nextTick(() => {
-        this.$refs.YamlApply.init()
+        this.$refs.UpdateDeploy.init(row['namespace'], row['name'])
+        this.updateDialog = true
       })
     },
     handleDelete: function(row) {
@@ -238,6 +348,73 @@ export default {
           type: 'info',
           message: '已取消删除'
         })
+      })
+    },
+    handlePodDelete: function(row) {
+      /* 提示消息*/
+      this.$confirm('确认删除此pod', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deletePod(row['namespace'], row['name']).then((res) => {
+          if (res.code === 1) {
+            this.$message({
+              type: 'success',
+              message: res.msg
+            })
+            // location.reload()
+            this.loading = true
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+              this.loading = false
+              this.getDeployList()
+              // location.reload()
+            }, 1000)
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.msg
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    pushTerminal: function(row) {
+      console.log(row['namespace'])
+      console.log(row['name'])
+      console.log(row['container'])
+      let page = this.$router.resolve({
+        name: 'PodTerminal',
+        query: {
+          r: 'pod/ssh?podNs=' + row['namespace'] + '&podName=' + row['name'] + '&containerName=' + row['container']
+        }
+      })
+      window.open(page.href, '_blank');
+      // this.$router.push({
+      //   name: 'PodTerminal',
+      //   query: {
+      //     r: 'pod/ssh?podNs=' + row['namespace'] + '&podName=' + row['name'] + '&containerName=' + row['container']
+      //   }
+      // })
+    },
+    podLog: function(row) {
+      this.podLogDialog = true
+      this.$nextTick(() => {
+        this.$refs.PodLog.init(row['namespace'], row['name'])
+        this.podLogDialog = true
+      })
+    },
+    save: function(row) {
+      this.saveImageDialog = true
+      this.$nextTick(() => {
+        this.$refs.SaveImage.init(row['host_ip'], row['container_id'], row['image_name'])
+        this.saveImageDialog = true
       })
     }
   }

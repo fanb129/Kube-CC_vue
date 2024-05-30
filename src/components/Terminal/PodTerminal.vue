@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="ssh-container" ref="terminal"></div>
+    <div ref="terminal" class="ssh-container" />
   </div>
 </template>
 
@@ -66,20 +66,20 @@ export default {
   },
   methods: {
     utf8_to_b64(rawString) {
-      return btoa(unescape(encodeURIComponent(rawString)));
+      return btoa(unescape(encodeURIComponent(rawString)))
     },
     b64_to_utf8(encodeString) {
-      return decodeURIComponent(escape(atob(encodeString)));
+      return decodeURIComponent(escape(atob(encodeString)))
     },
     bytesHuman(bytes, precision) {
       if (!/^([-+])?|(\.\d+)(\d+(\.\d+)?|(\d+\.)|Infinity)$/.test(bytes)) {
         return '-'
       }
-      if (bytes === 0) return '0';
-      if (typeof precision === 'undefined') precision = 1;
-      const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'];
-      const num = Math.floor(Math.log(bytes) / Math.log(1024));
-      const value = (bytes / Math.pow(1024, Math.floor(num))).toFixed(precision);
+      if (bytes === 0) return '0'
+      if (typeof precision === 'undefined') precision = 1
+      const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB']
+      const num = Math.floor(Math.log(bytes) / Math.log(1024))
+      const value = (bytes / Math.pow(1024, Math.floor(num))).toFixed(precision)
       return `${value} ${units[num]}`
     },
     isWsOpen() {
@@ -93,7 +93,7 @@ export default {
       // this.fitAddon.fit() // 初始化的时候不要使用fit
       setTimeout(() => {
         this.fitAddon.fit()
-      }, 500); // 必须延时处理
+      }, 500) // 必须延时处理
     },
     onTerminalKeyPress() {
       this.term.onData(data => {
@@ -111,7 +111,7 @@ export default {
       // 调整后端终端大小 使后端与前端终端大小一致
       this.isWsOpen() && this.ws.send(packResize(cols, rows))
     },
-    onResize: debounce(function () {
+    onResize: debounce(function() {
       this.fitAddon.fit()
     }, 500),
     onTerminalResize() {
@@ -151,7 +151,7 @@ export default {
     onCloseSocket() {
       this.ws.onclose = () => {
         console.log('关闭连接')
-        this.term.write("未连接， 刷新后重连...\r\n");
+        this.term.write('未连接， 刷新后重连...\r\n')
         // setTimeout(() => {
         //   this.initSocket();
         // }, 3000)

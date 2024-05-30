@@ -1,11 +1,12 @@
 import request from '@/utils/request'
 
-export function getNsList(u_id) {
+export function getNsList(g_id, u_id) {
   return request({
     url: '/ns',
-    methd: 'get',
+    method: 'get',
     params: {
-      'u_id': u_id
+      'u_id': u_id,
+      'g_id': g_id
     }
   })
 }
@@ -32,3 +33,24 @@ export function updateNs(data) {
     data
   })
 }
+
+// 用于监控
+export function totalNs(u_id) {
+  return request({
+    url: '/ns/total',
+    method: 'get',
+    params: {
+      'u_id': u_id
+    }
+  })
+}
+
+// export function allkindNs(u_id) {
+//   return request({
+//     url: '/ns/allkind',
+//     method: 'get',
+//     params: {
+//       'u_id': u_id
+//     }
+//   })
+// }

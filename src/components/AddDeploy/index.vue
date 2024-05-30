@@ -5,21 +5,11 @@
     <!--      <el-form-item label="Name">-->
     <!--        <el-input v-model="service.metadata.name"></el-input>-->
     <!--      </el-form-item>-->
-    <!--      <el-form-item label="Namespace">-->
-    <div>
-      <UserSelectorNoNil ref="UserSelector" :default-uid="uid" @nsList="changeUid" />
-      <NsSelectorNoNil ref="NsSelector" v-model="form.metadata.namespace" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
+    <!--    &lt;!&ndash;      <el-form-item label="Namespace">&ndash;&gt;-->
+    <div style="margin-bottom: 10px">
+      <NsSelectorNoNil ref="NsSelector" v-model="form.namespace" :default-uid="u_id" :default-ns="ns" @nsList="changeNs" style="margin-right: 50px"/>
+      <ImageSelector ref="ImageSelector" v-model="form.image" @nsList="changeImage" />
     </div>
-    <!--      </el-form-item>-->
-    <!--      <el-form-item label="Labels">-->
-    <!--        <el-input v-model="service.metadata.labels"></el-input>-->
-    <!--      </el-form-item>-->
-    <!--    </el-form>-->
-    <!--    <div>-->
-    <!--      <el-button type="primary" @click="createYaml">Create</el-button>-->
-    <!--      <el-button @click="cancel">Cancel</el-button>-->
-    <!--    </div>-->
-
     <dynamic-form
       ref="dynamic-form"
       v-model="form"
@@ -36,14 +26,14 @@
 
 <script>
 import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
-import UserSelectorNoNil from '@/components/Selector/UserSelectorNoNil'
+import ImageSelector from '@/components/Selector/ImageSelector';
+// import UserSelectorNoNil from '@/components/Selector/UserSelectorNoNil'
 import { mapGetters } from 'vuex'
-import { createYaml } from '@/api/yaml'
-import { yaml2json } from '@/utils/yaml'
+import { addDeploy } from '@/api/app/deploy'
 
 export default {
   name: 'AddDeploy',
-  components: { UserSelectorNoNil, NsSelectorNoNil },
+  components: { NsSelectorNoNil,ImageSelector },
   computed: {
     ...mapGetters([
       'role',
@@ -53,137 +43,47 @@ export default {
   data: function() {
     return {
       descriptors: {
-        metadata: {
+        name: { type: 'string', required: true, label: '应用名称' },
+        replicas: { type: 'integer', required: true, min: 1, label: '开发环境数' },
+        // image: { type: 'string', required: true },
+        command: { type: 'array', defaultField: { type: 'string' }, label: '命令'},
+        args: { type: 'array', defaultField: { type: 'string' }, label: '参数'},
+        ports: { type: 'array', defaultField: { type: 'integer' }, label: '端口'},
+        env: {
           type: 'object',
-          fields: {
-            name: { type: 'string', required: true },
-            // namespace: { type: 'string', required: true },
-            labels: {
-              type: 'object',
-              defaultField: { type: 'string', required: true }
-            }
-          }
+          defaultField: { type: 'string', required: true },
+          label: '环境变量'
         },
-        spec: {
-          type: 'object',
-          fields: {
-            replicas: { type: 'integer', required: true, min: 1 },
-            selector: {
-              type: 'object',
-              defaultField: { type: 'string', required: true }
-            },
-            template: {
-              type: 'object',
-              fields: {
-                metadata: {
-                  type: 'object',
-                  fields: {
-                    // name: { type: 'string', required: true },
-                    // namespace: { type: 'string', required: true },
-                    labels: {
-                      type: 'object',
-                      defaultField: { type: 'string', required: true }
-                    }
-                  }
-                },
-                spec: {
-                  type: 'object',
-                  fields: {
-                    containers: {
-                      type: 'array',
-                      required: true,
-                      defaultField: {
-                        type: 'object',
-                        fields: {
-                          name: { type: 'string', required: true },
-                          image: { type: 'string', required: true },
-                          command: { type: 'array', defaultField: { type: 'string', required: true }},
-                          args: { type: 'array', defaultField: { type: 'string', required: true }},
-                          ports: { type: 'array', defaultField: {
-                            type: 'object',
-                            fields: {
-                              name: { type: 'string', required: true },
-                              containerPort: { type: 'integer', required: true },
-                              protocol: {
-                                type: 'enum',
-                                required: true,
-                                enum: ['TCP', 'UDP', 'SCTP'],
-                                options: [
-                                  { label: 'TCP', value: 'TCP' },
-                                  { label: 'UDP', value: 'UDP' },
-                                  { label: 'SCTP', value: 'SCTP' }
-                                ]
-                              }
-                            }
-                          }},
-                          imagePullPolicy: {
-                            type: 'enum',
-                            required: true,
-                            enum: ['Always', 'Never', 'IfNotPresent'],
-                            options: [
-                              { label: 'Always', value: 'Always' },
-                              { label: 'Never', value: 'Never' },
-                              { label: 'IfNotPresent', value: 'IfNotPresent' }
-                            ]
-                          }
-                        }
-                      }
-                    },
-                    restartPolicy: {
-                      type: 'enum',
-                      required: true,
-                      enum: ['Always', 'OnFailure', 'Never'],
-                      options: [
-                        { label: 'Always', value: 'Always' },
-                        { label: 'OnFailure', value: 'OnFailure' },
-                        { label: 'Never', value: 'Never' }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+        cpu: { type: 'string', required: true, placeholder: '示例：1' },
+        memory: { type: 'string', required: true, label: '内存', placeholder: '示例：1Gi' },
+        storage: { type: 'string', required: true, label: '临时存储', placeholder: '示例：10Gi' },
+        pvc_storage: { type: 'string', label: '永久存储', placeholder: '示例：10Gi' },
+        pvc_path: { type: 'array', defaultField: { type: 'string', placeholder: '示例：/data' }, label: '永久存储路径'},
+        // storage_class_name: { type: 'string' },
+        gpu: { type: 'string', placeholder: '示例：1Gi' }
       },
-      uid: '',
       ns: '',
+      uid: '',
       // 弹出层标题
-      title: 'Add Deploy Form',
+      title: '无状态应用',
       // 是否显示弹出层
       open: false,
       form: {
-        kind: 'deploy',
-        metadata: {
-          name: '',
-          namespace: '',
-          labels: {} // map
-        },
-        spec: {
-          replicas: 0,
-          selector: {},
-          template: {
-            metadata: {
-              labels: {} // map
-            },
-            spec: {
-              containers: [{
-                name: '',
-                image: '',
-                command: [],
-                args: [],
-                ports: [{
-                  name: '',
-                  hostPort: 0,
-                  containerPort: 0,
-                  protocol: ''
-                }],
-                imagePullPolicy: ''
-              }],
-              restartPolicy: ''
-            }
-          }
-        }
+        name: '',
+        namespace: '',
+        replicas: 0,
+        image: '',
+        command: [],
+        args: [],
+        ports: [],
+        env: {},
+        cpu: '',
+        memory: '',
+        storage: '',
+        pvc_storage: '',
+        pvc_path: [],
+        storage_class_name: '',
+        gpu: ''
       }
     }
   },
@@ -193,8 +93,8 @@ export default {
     },
     async validate() {
       const valid = await this.$refs['dynamic-form'].validate()
-      if (this.form.metadata.namespace !== '' && valid) {
-        createYaml({ yaml: this.form, kind: 'pod', ns: this.ns }).then(res => {
+      if (this.form.namespace !== '' && valid) {
+        addDeploy(this.form).then(res => {
           if (res.code === 1) {
             this.$message({
               type: 'success',
@@ -203,30 +103,27 @@ export default {
             this.open = false
             // 调用主页面的方法刷新主页面
             // this.$parent.get()
-            this.$parent.getPodList()
+            this.$parent.getDeployList()
           }
         })
       } else {
         this.$message.error('请完整填写表单')
       }
     },
-    changeUid: function(u_id) {
-      this.uid = u_id
-      this.$refs.NsSelector.u_id = this.uid
-      this.$refs.NsSelector.getNsList()
-      this.ns = ''
-      this.form.metadata.namespace = ''
-    },
     changeNs: function(ns) {
       this.ns = ns
-      this.form.metadata.namespace = ns
+      this.form.namespace = ns
+    },
+    changeImage: function(image) {
+      this.form.image = image
     },
     init() {
-      this.uid = this.u_id
       this.open = true
-      // this.$nextTick(() => {
-      //   this.open = true
-      // })
+      this.$nextTick(() => {
+        this.$refs.NsSelector.u_id = this.u_id
+        this.$refs.NsSelector.getNsList()
+        this.open = true
+      })
     },
     // 取消按钮
     cancel() {

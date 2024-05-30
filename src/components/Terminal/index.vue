@@ -1,20 +1,20 @@
 <template>
   <div>
-    <el-tabs v-model="activeName" @tab-click="handleClick" style="margin-left: 1vh; margin-right: 1vh">
+    <el-tabs v-model="activeName" style="margin-left: 1vh; margin-right: 1vh" @tab-click="handleClick">
       <el-tab-pane name="first" label="SSH">
         <div style="text-align: center">
           <el-form ref="form" :model="form" status-icon :rules="rules" label-position="left" label-width="80px" style="margin-left: 50vh; width: 50vh">
             <el-form-item label="Ip" prop="ip">
-              <el-input v-model="form.ip"/>
+              <el-input v-model="form.ip" />
             </el-form-item>
             <el-form-item label="Port" prop="port">
-              <el-input v-model="form.port"/>
+              <el-input v-model="form.port" />
             </el-form-item>
             <el-form-item label="User" prop="user">
-              <el-input v-model="form.user"/>
+              <el-input v-model="form.user" />
             </el-form-item>
             <el-form-item label="Password" prop="pwd">
-              <el-input v-model="form.pwd" type="password"/>
+              <el-input v-model="form.pwd" type="password" />
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('form')">连接</el-button>
@@ -24,7 +24,7 @@
         </div>
       </el-tab-pane>
       <el-tab-pane name="second" label="Terminal">
-        <div class="ssh-container" ref="terminal"></div>
+        <div ref="terminal" class="ssh-container" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -44,32 +44,28 @@ const packResize = (cols, rows) =>
   })
 export default {
   name: 'MyTerminal',
-  created() {
-    this.form.ip = this.$route.query.ip || ''
-    this.form.port = this.$route.query.port || ''
-  },
   data() {
     var validate = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('不能为空'));
+        callback(new Error('不能为空'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       rules: {
         ip: [
-          {validator: validate, trigger: 'blur'}
+          { validator: validate, trigger: 'blur' }
         ],
         port: [
-          {validator: validate, trigger: 'blur'}
+          { validator: validate, trigger: 'blur' }
         ],
         user: [
-          {validator: validate, trigger: 'blur'}
+          { validator: validate, trigger: 'blur' }
         ],
         pwd: [
-          {validator: validate, trigger: 'blur'}
-        ],
+          { validator: validate, trigger: 'blur' }
+        ]
       },
       activeName: 'first',
       initText: '连接中...\r\n',
@@ -82,7 +78,7 @@ export default {
         user: '',
         pwd: '',
         ip: '',
-        port: '',
+        port: ''
       },
       option: {
         lineHeight: 1.0,
@@ -112,6 +108,10 @@ export default {
       }
     }
   },
+  created() {
+    this.form.ip = this.$route.query.ip || ''
+    this.form.port = this.$route.query.port || ''
+  },
   // mounted() {
   //   this.initTerm()
   //   this.initSocket()
@@ -128,7 +128,7 @@ export default {
     }))
   },
   methods: {
-    destroyed(){
+    destroyed() {
       this.ws.send(JSON.stringify({
         type: 'stdin',
         data: this.utf8_to_b64('exit')
@@ -146,13 +146,13 @@ export default {
           this.activeName = 'second'
           this.initWs()
         } else {
-          console.log('error submit!!');
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     handleClick(tab, event) {
       if (tab.name === 'second') {
@@ -160,20 +160,20 @@ export default {
       }
     },
     utf8_to_b64(rawString) {
-      return btoa(unescape(encodeURIComponent(rawString)));
+      return btoa(unescape(encodeURIComponent(rawString)))
     },
     b64_to_utf8(encodeString) {
-      return decodeURIComponent(escape(atob(encodeString)));
+      return decodeURIComponent(escape(atob(encodeString)))
     },
     bytesHuman(bytes, precision) {
       if (!/^([-+])?|(\.\d+)(\d+(\.\d+)?|(\d+\.)|Infinity)$/.test(bytes)) {
         return '-'
       }
-      if (bytes === 0) return '0';
-      if (typeof precision === 'undefined') precision = 1;
-      const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'];
-      const num = Math.floor(Math.log(bytes) / Math.log(1024));
-      const value = (bytes / Math.pow(1024, Math.floor(num))).toFixed(precision);
+      if (bytes === 0) return '0'
+      if (typeof precision === 'undefined') precision = 1
+      const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB']
+      const num = Math.floor(Math.log(bytes) / Math.log(1024))
+      const value = (bytes / Math.pow(1024, Math.floor(num))).toFixed(precision)
       return `${value} ${units[num]}`
     },
     isWsOpen() {
@@ -187,7 +187,7 @@ export default {
       // this.fitAddon.fit() // 初始化的时候不要使用fit
       setTimeout(() => {
         this.fitAddon.fit()
-      }, 500); // 必须延时处理
+      }, 500) // 必须延时处理
     },
     onTerminalKeyPress() {
       this.term.onData(data => {
@@ -204,7 +204,7 @@ export default {
       // 调整后端终端大小 使后端与前端终端大小一致
       this.isWsOpen() && this.ws.send(packResize(cols, rows))
     },
-    onResize: debounce(function () {
+    onResize: debounce(function() {
       this.fitAddon.fit()
     }, 500),
     onTerminalResize() {
@@ -218,7 +218,7 @@ export default {
     initSocket() {
       this.term.write(this.initText)
       console.log(this.socketUrl)
-      this.ws = new WebSocket(this.socketUrl,['webssh'])
+      this.ws = new WebSocket(this.socketUrl, ['webssh'])
       this.onOpenSocket()
       this.onCloseSocket()
       this.onErrorSocket()
@@ -229,10 +229,10 @@ export default {
     onOpenSocket() {
       this.ws.onopen = () => {
         console.log('websocket 已连接')
-        this.ws.send(JSON.stringify({ type: "addr", data: this.utf8_to_b64(this.form.ip + ':' + this.form.port) }));
+        this.ws.send(JSON.stringify({ type: 'addr', data: this.utf8_to_b64(this.form.ip + ':' + this.form.port) }))
         // socket.send(JSON.stringify({ type: "term", data: utf8_to_b64("linux") }));
-        this.ws.send(JSON.stringify({ type: "login", data: this.utf8_to_b64(this.form.user) }));
-        this.ws.send(JSON.stringify({ type: "password", data: this.utf8_to_b64(this.form.pwd) }));
+        this.ws.send(JSON.stringify({ type: 'login', data: this.utf8_to_b64(this.form.user) }))
+        this.ws.send(JSON.stringify({ type: 'password', data: this.utf8_to_b64(this.form.pwd) }))
         this.term.reset()
         setTimeout(() => {
           this.resizeRemoteTerminal()
@@ -244,7 +244,7 @@ export default {
     onCloseSocket() {
       this.ws.onclose = () => {
         console.log('关闭连接')
-        this.term.write('未连接， 刷新后重连...\r\n');
+        this.term.write('未连接， 刷新后重连...\r\n')
         // setTimeout(() => {
         //   this.initSocket();
         // }, 3000)
