@@ -20,9 +20,13 @@
               </div>
             </div>
             <ul class="user-info">
-              <li><div style="height: 100%"><svg-icon icon-class="login" /> 登录账号<div class="user-right">{{ username }}</div></div></li>
-              <li> <div class="el-icon-message" /> 邮箱 <div class="user-right">{{ email }}</div></li>
-              <li><svg-icon icon-class="user1" /> 用户昵称 <div class="user-right">{{ name }}</div></li>
+              <li><div style="height: 100%"><svg-icon icon-class="login" /> 登录账号<div class="user-right">{{ form.username }}</div></div></li>
+              <li> <div class="el-icon-message" /> 邮箱
+                <div v-if="form.email != ''" class="user-right">{{ form.email }}<a @click="$refs.email.dialog = true">换绑</a></div>
+                <div v-else class="user-right"><a @click="$refs.email.dialog = true">绑定邮箱</a></div>
+              </li>
+              <li><svg-icon icon-class="user1" /> 用户昵称 <div class="user-right">{{ form.nickname }}</div></li>
+              <li  v-if="role === 1"><div class="el-icon-user" /> 所属组 <div class="user-right">{{ form.group }}</div></li>
               <li><svg-icon icon-class="dept" /> 权限 <div class="user-right">
                 <el-tag v-if="role === 1" size="mini">普通用户</el-tag>
                 <el-tag v-else-if="role === 2" size="mini" type="success">管理员</el-tag>
@@ -34,6 +38,11 @@
                   <a @click="$refs.pass.dialog = true">修改密码</a>
                 </div>
               </li>
+<!--               是否过期-->
+<!--              <li><svg-icon icon-class="dept" /> 状态 <div class="user-right">-->
+<!--                <el-tag v-if="role === 1" size="mini">普通用户</el-tag>-->
+<!--                <el-tag v-else-if="role === 2" size="mini" type="success">管理员</el-tag>-->
+<!--              </div></li>-->
             </ul>
           </div>
         </el-card>
@@ -56,9 +65,8 @@
                     class="icon"
                     :class="item.icon"
                     :style="{ background: item.color }"
-                    @click="push2(index)"
                   />
-                  <div class="detail" @click="push2(index)">
+                  <div class="detail" >
                     <p class="text">{{ item.name }}</p>
                     <p class="num">{{ item.value }}</p>
                   </div>
@@ -71,10 +79,10 @@
                   <el-input v-model="form.nickname" style="width: 35%" />
                   <span style="color: #C0C0C0;margin-left: 10px;">用户昵称不作为登录使用</span>
                 </el-form-item>
-                <el-form-item label="邮箱" prop="nickname">
-                  <el-input v-model="form.email" style="width: 35%" />
-                  <span style="color: #C0C0C0;margin-left: 10px;">暂不支持更改登录邮箱</span>
-                </el-form-item>
+<!--                <el-form-item label="邮箱" prop="nickname">-->
+<!--                  <el-input v-model="form.email" style="width: 35%" />-->
+<!--                  <span style="color: #C0C0C0;margin-left: 10px;">暂不支持更改登录邮箱</span>-->
+<!--                </el-form-item>-->
                 <el-form-item label="">
                   <el-button :loading="saveLoading" size="mini" type="primary" @click="doSubmit">保存配置</el-button>
                 </el-form-item>
@@ -84,39 +92,36 @@
         </el-card>
       </el-col>
     </el-row>
-    <EditPwd ref="pass" :u_id="this.u_id" :username="this.username" />
+    <EditPwd ref="pass" :u_id="this.form.id" :username="this.form.username" />
+    <SetEmail ref="email" :u_id="this.form.id" />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import EditPwd from '@/components/EditPwd'
-import { updateUser, getUserList } from '@/api/user'
-import { getNodeList } from '@/api/node'
-import { getNsList } from '@/api/namespace'
+import SetEmail from '@/components/SetEmail'
+import { updateUser, getInfo } from '@/api/user'
+// import { getNodeList } from '@/api/node'
+// import { getNsList } from '@/api/namespace'
 // import { getDeployList } from '@/api/app/deploy'
 // import { getStatefulSetList } from '@/api/app/statefulSet'
 // import { getJobList } from '@/api/app/job'
 // import { getPodList } from '@/api/pod'
-import { getSparkList } from '@/api/app/spark'
-import { getHadoopList } from '@/api/app/hadoop'
-import { getLinuxList } from '@/api/app/linux'
+// import { getSparkList } from '@/api/app/spark'
+// import { getHadoopList } from '@/api/app/hadoop'
+// import { getLinuxList } from '@/api/app/linux'
 import { Message } from 'element-ui'
+import {mapGetters} from "vuex";
 
 export default {
   name: 'Dashboard',
-  components: { EditPwd },
+  components: { EditPwd, SetEmail },
   computed: {
     ...mapGetters([
-      'name',
       'avatar',
-      'role',
-      'username',
-      'u_id',
-      'email'
+      'role'
     ])
   },
-
   data() {
     const validateNickname = (rule, value, callback) => {
       if (value.length < 1 || value.length > 16) {
@@ -129,96 +134,65 @@ export default {
       loading: false,
       saveLoading: false,
       dashboardData: [
-        { name: '系统User总数', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '系统物理主机个数', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '用户当前工作空间', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '有状态应用', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '无状态应用', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '一次性应用', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        // { name: 'Service', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        // { name: 'Pod', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: 'Spark', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: 'Hadoop', value: 0, icon: 'el-icon-success', color: '#2ec7c9' },
-        { name: '云主机', value: 0, icon: 'el-icon-success', color: '#2ec7c9' }
+        { name: 'CPU', value: '', icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: 'GPU', value: '', icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: '内存', value: '', icon: 'el-icon-success', color: '#2ec7c9' },
+
+        { name: '临时存储', value: '', icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: '持久存储', value: '', icon: 'el-icon-success', color: '#2ec7c9' },
+        { name: '过期时间', value: '', icon: 'el-icon-success', color: '#2ec7c9' },
       ],
       editRules: {
         nickname: [{ required: true, trigger: 'blur', validator: validateNickname }]
       },
       activeName: 'second',
-      form: {
-        nickname: '',
-        email: ''
-      }
+      form: {}
     }
   },
   created() {
-    this.form = { nickname: this.name }
-    getUserList(1).then(res => {
-      this.dashboardData[0].value = res.total
-    })
-    getNodeList().then(res => {
-      this.dashboardData[1].value = res.length
-    })
-    getNsList(this.u_id).then(res => {
-      this.dashboardData[2].value = res.length
-    })
-    this.dashboardData[3].value = (Math.random() * 10).toFixed(0)
-    this.dashboardData[4].value = (Math.random() * 10).toFixed(0)
-    this.dashboardData[5].value = (Math.random() * 10).toFixed(0)
-    // getStatefulSetList(this.u_id, '').then(res => {
-    //   this.dashboardData[3].value = res.availableReplicas
-    // })
-    // getDeployList(this.u_id, '').then(res => {
-    //   this.dashboardData[4].value = res.length
-    // })
-    // getJobList(this.u_id, '').then(res => {
-    //   this.dashboardData[5].value = res.length
-    // })
-    getSparkList(this.u_id).then(res => {
-      this.dashboardData[6].value = res.length
-    })
-    getHadoopList(this.u_id).then(res => {
-      this.dashboardData[7].value = res.length
-    })
-    getLinuxList(this.u_id, 1).then(res => {
-      this.dashboardData[8].value = res.length
-    })
-    getLinuxList(this.u_id, 2).then(res => {
-      this.dashboardData[8].value += res.length
-    })
-  },
+    this.form = { nickname: this.name, email: this.email }
+    getInfo().then((res) => {
+      this.form = res.user_info
+      this.dashboardData[0].value = res.user_info.cpu;
+      this.dashboardData[1].value = res.user_info.gpu;
+      this.dashboardData[2].value = res.user_info.memory;
+
+      this.dashboardData[3].value = res.user_info.storage;
+      this.dashboardData[4].value = res.user_info.pvcstorage;
+      this.dashboardData[5].value = res.user_info.expired_time;
+    })},
   methods: {
-    push2(index) {
-      switch (index) {
-        case 0:
-          this.$router.push({ name: 'User' })
-          break
-        case 1:
-          this.$router.push({ name: 'Node' })
-          break
-        case 2:
-          this.$router.push({ name: 'Namespace' })
-          break
-        case 3:
-          this.$router.push({ name: 'Dashboard' })
-          break
-        case 4:
-          this.$router.push({ name: 'Dashboard' })
-          break
-        case 5:
-          this.$router.push({ name: 'Dashboard' })
-          break
-        case 6:
-          this.$router.push({ name: 'Spark' })
-          break
-        case 7:
-          this.$router.push({ name: 'Hadoop' })
-          break
-        case 8:
-          this.$router.push({ name: 'Linux' })
-          break
-      }
-    },
+    // push2(index) {
+    //   switch (index) {
+    //     case 0:
+    //       this.$router.push({ name: 'User' })
+    //       break
+    //     case 1:
+    //       this.$router.push({ name: 'Node' })
+    //       break
+    //     case 2:
+    //       this.$router.push({ name: 'Namespace' })
+    //       break
+    //     case 3:
+    //       this.$router.push({ name: 'Dashboard' })
+    //       break
+    //     case 4:
+    //       this.$router.push({ name: 'Dashboard' })
+    //       break
+    //     case 5:
+    //       this.$router.push({ name: 'Dashboard' })
+    //       break
+    //     case 6:
+    //       this.$router.push({ name: 'Spark' })
+    //       break
+    //     case 7:
+    //       this.$router.push({ name: 'Hadoop' })
+    //       break
+    //     case 8:
+    //       this.$router.push({ name: 'Linux' })
+    //       break
+    //   }
+    // },
     handleClick(tab, event) {
       if (tab.name === 'first') {
         // this.init()
@@ -229,7 +203,7 @@ export default {
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.saveLoading = true
-            updateUser(this.u_id, this.form).then(() => {
+            updateUser(this.form.id, {nickname: this.form.nickname}).then(() => {
               Message({
                 message: '修改成功',
                 type: 'success',

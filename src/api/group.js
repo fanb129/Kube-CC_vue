@@ -1,37 +1,36 @@
 import request from '@/utils/request'
 
-export function getGroupInfo() {
+export function getGroupListByUid() {
   return request({
-    url: '/group/info',
-    method: 'get'
-    // params: { token }
-  })
-}
-
-export function getGroupList(page) {
-  return request({
-    url: '/group/' + page,
+    url: '/group/index',
     method: 'get'
   })
 }
 
-export function viewGroupUser(g_id) {
+export function getAllGroupList() {
   return request({
-    url: '/group/view/' + g_id,
+    url: '/group/all',
     method: 'get'
   })
 }
 
-export function viewGroupByAd(u_id) {
+export function getOkUser() {
   return request({
-    url: '/group/vgbyad/' + u_id,
+    url: '/group/okuser',
     method: 'get'
   })
 }
 
-export function creatGroup(ad_id,data) {
+// export function viewGroupUser(g_id) {
+//   return request({
+//     url: '/group/view/' + g_id,
+//     method: 'get'
+//   })
+// }
+
+export function creatGroup(data) {
   return request({
-    url: '/group/creat/' + ad_id,
+    url: '/group/creat',
     method: 'post',
     data
   })

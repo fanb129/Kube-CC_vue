@@ -1,20 +1,13 @@
 <template>
-  <div style="display: inline; margin-left: 2%">
-    <span>Image：</span>
-    <el-select v-model="image_id" filterable placeholder="请选择" @change="change">
+  <div style="display: inline;width: auto">
+    <span>可用镜像：</span>
+    <el-select v-model="image_name" filterable placeholder="请选择" >
       <el-option
-        v-for="item, index in options"
+        v-for="item,index in options"
         :key="index"
-        :label="item.image_name"
-        :value="item.image_id"
-      />
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :current-page="Page"
-        :page-size="1"
-        :total="Total"
-        @current-change="changeImagePageNum"
+        :label="item.image_name+':'+item.tag"
+        :value="item.image_name+':'+item.tag"
+        @click.native="change(item.value)"
       />
     </el-select>
   </div>
@@ -22,44 +15,33 @@
 
 <script>
 
-import { getImageList } from '@/api/docker'
+import { getOkImageList } from '@/api/docker'
+import {mapGetters} from "vuex";
 
 export default {
   name: 'ImageSelector',
-  props: ['defaultImageId', 'defaultUid'],
-  data() {
-    return {
-      user_id: this.defaultUid,
-      image_id: this.defaultImageId,
-      Page: 1,
-      Total: 0,
-      options: [{
-        id: '',
-        image_name: '',
-        uid: ''
-      }]
-    }
+  computed: {
+    ...mapGetters([
+      'u_id'
+    ])
   },
   created() {
-    this.getImageList()
+    this.getOkImageList()
+  },
+  data() {
+    return {
+      image_name: '',
+      options: []
+    }
   },
   methods: {
     change() {
       this.$forceUpdate()
-      this.$emit('ImageList', this.image_id)
+      this.$emit('nsList', this.image_name)
     },
-    changeImagePageNum: function(val) {
-      this.Page = val
-      this.getImageList()
-    },
-    getImageList: function() {
-      getImageList(this.Page).then((res) => {
-        this.Page = res.page
-        console.log(this.Page)
-        this.Total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
-        this.options = res.image_list_all
-        this.options.push({ id: '', image_name: 'All Images' })
-        console.log(this.options)
+    getOkImageList: function() {
+      getOkImageList().then((res) => {
+        this.options = res.image_list
       })
     }
   }

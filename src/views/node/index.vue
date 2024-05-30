@@ -8,8 +8,7 @@
       </el-tab-pane>-->
       <div>
         <div style="margin-left: 10%; margin-top: 1%; flex: auto">
-          <el-button :disabled="role < 3" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addNode">Add
-            Node
+          <el-button :disabled="role < 3" style="margin-left: 50%" type="primary" icon="el-icon-edit" @click="addNode">添加主机
           </el-button>
         </div>
         <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
@@ -17,6 +16,7 @@
           <el-table-column label="ID" width="60" type="index" />
           <el-table-column label="主机名" width="100"><template slot-scope="scope"><span>{{ scope.row.name }}</span></template></el-table-column>
           <el-table-column label="ip地址" width="130"><template slot-scope="scope"><span>{{ scope.row.ip }}</span></template></el-table-column>
+          <el-table-column label="角色" width="100"><template slot-scope="scope"><span>{{ scope.row.role }}</span></template></el-table-column>
           <el-table-column label="就绪" width="100"><template slot-scope="scope"><span>{{ scope.row.ready }}</span></template></el-table-column>
           <el-table-column label="创建时间" width="150"><template slot-scope="scope"><span>{{ scope.row.created_at }}</span></template></el-table-column>
           <el-table-column label="CPU" width="80"><template slot-scope="scope"><span>{{ scope.row.used_cpu }}/{{ scope.row.cpu }}</span></template></el-table-column>
@@ -28,7 +28,7 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button :disabled="role <= 2 " size="mini" type="success" style="margin-left: 10px" @click="pushTerminal(scope.row)"> 终端</el-button>
-              <el-button :disabled="role <= 2 || scope.row.name === 'master'" size="mini" type="danger" style="margin-top: 2px" @click="deleteNode(scope.row.name)">删除</el-button>
+              <el-button :disabled="role <= 2 || scope.row.role === 'master'" size="mini" type="danger" style="margin-top: 2px" @click="deleteNode(scope.row.ip)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -70,6 +70,7 @@ export default {
       tableData: [
         {
           name: '',
+          role: '',
           ip: '',
           ready: '',
           create_at: '',
@@ -156,22 +157,31 @@ export default {
       })
     },
     pushTerminal: function(row) {
-      this.$router.push({
+      let page = this.$router.resolve({
         name: 'Terminal',
         query: {
-          // r: 'node/ssh',
-          // user: 'root',
-          // pwd: '1234567890',
           ip: row['ip'],
           port: '22'
         },
-        params: {
-          user: 'root',
-          pwd: '1234567890'
-          // ip: row['ip'],
-          // port: '22'
-        }
       })
+      window.open(page.href, '_blank');
+
+      // this.$router.push({
+      //   name: 'Terminal',
+      //   query: {
+      //     // r: 'node/ssh',
+      //     // user: 'root',
+      //     // pwd: '1234567890',
+      //     ip: row['ip'],
+      //     port: '22'
+      //   },
+      //   params: {
+      //     user: 'root',
+      //     pwd: '1234567890'
+      //     // ip: row['ip'],
+      //     // port: '22'
+      //   }
+      // })
     }
   }
 }

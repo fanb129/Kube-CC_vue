@@ -1,49 +1,50 @@
 import request from '@/utils/request'
 
-export function getImageList(u_id, page) {
+export function getImageList(u_id,g_id) {
   return request({
-    url: '/docker/' + page,
+    url: '/docker',
     method: 'get',
     params: {
-      'u_id': u_id
+      'u_id': u_id,
+      'g_id': g_id,
     }
   })
 }
 
-export function RemoveImageById(image_id) {
+export function getOkImageList() {
   return request({
-    url: '/docker/remove/' + image_id,
+    url: '/docker/ok',
+    method: 'get',
+  })
+}
+
+export function deleteImageById(id) {
+  return request({
+    url: '/docker/delete/' + id,
     method: 'get'
   })
 }
 
-export function PullPublic(data) {
+export function pullImage(data) {
   return request({
-    url: '/docker/pullpublic',
+    url: '/docker/pull',
     method: 'post',
     data
   })
 }
 
-export function CreateImageByTag(data) {
+export function saveImage(data) {
   return request({
-    url: '/docker/tagadd',
+    url: '/docker/save',
     method: 'post',
     data
   })
 }
-export function PullPrivate(data) {
+export function updateImage(data) {
   return request({
-    url: '/docker/pullprivate',
+    url: '/docker/update',
     method: 'post',
     data
   })
 }
 
-export function CreateImageById(data) {
-  return request({
-    url: `/docker/createimagebyid`,
-    method: 'post',
-    data
-  })
-}

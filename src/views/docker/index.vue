@@ -1,134 +1,116 @@
 <template>
   <div>
-    <div style="margin-left: 10%; margin-top: 1%">
+    <div style="margin-left: 10%; margin-top: 1%; flex: auto">
       <GroupSelector ref="GroupSelector" :default-uid="adid" @nsList="changeGid" />
-      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" @nsList="changeUid" />
-    </div>
-
-    <div style="margin-left: 66%; margin-top: 1%">
-      <el-button :disabled="role < 2" style="display: inline-block" type="primary" icon="el-icon-edit" @click="PullPublic">Pull
-        PublicImage
-      </el-button>
-      <el-button :disabled="role < 2" style="display: inline-block" type="primary" icon="el-icon-edit" @click="PullPrivate">Pull
-        PrivateImage
+      <UserSelector ref="UserSelector" :default-gid="gid" :default-uid="uid" style="margin-left: 100px" @nsList="changeUid" />
+      <el-button style="margin-left: 100px" type="primary" icon="el-icon-edit" @click="pullImage">
+        拉取镜像
       </el-button>
     </div>
+    <!--    显示页   -->
+    <!--    基本信息    -->
+    <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
+      <el-table-column label="ID" width="50" type="index" />
+      <el-table-column width="180" property="name" label="镜像名"><template slot-scope="scope"><span>{{ scope.row.image_name }}</span></template></el-table-column>
+      <el-table-column width="80" property="status" label="标签"><template slot-scope="scope"><span>{{ scope.row.tag }}</span></template></el-table-column>
+      <el-table-column width="80" property="status" label="类型" sortable><template slot-scope="scope">
+        <el-tag v-if="scope.row.kind === 1" type="danger">公共</el-tag>
+        <el-tag v-else-if="scope.row.kind === 2" type="success">私有</el-tag>
+      </template></el-table-column>
+      <el-table-column width="80" property="status" label="状态" sortable><template slot-scope="scope">
+        <el-tag v-if="scope.row.status === 1" type="success">就绪</el-tag>
+        <el-tag v-else-if="scope.row.status === 2">长传中</el-tag>
+        <el-tag v-else-if="scope.row.status === 3" type="danger">上传失败</el-tag>
+      </template></el-table-column>
+      <el-table-column width="80" property="status" label="空间"><template slot-scope="scope"><span>{{ scope.row.size }}</span></template></el-table-column>
+      <el-table-column width="120" property="status" label="镜像ID"><template slot-scope="scope"><span>{{ scope.row.image_id }}</span></template></el-table-column>
+      <el-table-column width="115" property="created_at" label="创建时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.created_at }}</span></template></el-table-column>
+      <el-table-column width="115" property="created_at" label="更新时间"><template slot-scope="scope"><i class="el-icon-time" /><span>{{ scope.row.updated_at }}</span></template></el-table-column>
+      <!--    基本信息end-->
 
-    <el-table :data="tableDataImage" style="width: 100%">
-      <el-table-column label="ID" width="80">
-        <template v-slot="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span style="margin-left: 1%">{{ scope.$index + 1 }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="Name" width="370">
-        <template v-slot="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.image_name }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="Size" width="100">
-        <template v-slot="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.size }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="ImageID" width="150" property="image_id">
-        <template v-slot="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.image_id }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Created_at" width="245">
-        <template v-slot="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.created_at }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Founder" width="100">
-        <template v-slot="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.user_id }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Tag" width="175">
-        <template v-slot="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.tag }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Kind" width="100">
-        <template v-slot="scope">
-          <!-- <i class='el-icon-time'></i> -->
-          <span>{{ scope.row.kind }}</span>
+      <!--      用户信息    -->
+      <el-table-column label="用户信息" width="120">
+        <template slot-scope="scope">
+          <el-popover
+            placement="right"
+            width="350"
+            trigger="click"
+          >
+            <div>
+              <div>用户名：{{ scope.row.username }}</div>
+              <div>昵称：{{ scope.row.nickname }}</div>
+            </div>
+            <el-button slot="reference" size="mini">{{ scope.row.nickname }}</el-button>
+          </el-popover>
         </template>
       </el-table-column>
 
-      <!--      <el-table-column label="Details" type="expand" width="80">-->
-      <!--        <template v-slot="scope">-->
-      <!--          <el-table :data="scope.row.ImageDetail">-->
-      <!--            <el-table-column label="CPU" width="105"><template><span>{{ scope.row.dt_ImageCPU }}</span></template></el-table-column>-->
-      <!--            <el-table-column label="MemUsage/Limit" width="130"><template><span>{{ scope.row.dt_MemUsageAndLimit }}</span></template></el-table-column>-->
-      <!--            <el-table-column label="NET I/O" width="105"><template><span>{{ scope.row.dt_NETAndIO }}</span></template></el-table-column>-->
-      <!--            <el-table-column label="Block I/O" width="105"><template><span>{{ scope.row.dt_BLOCKAndIO }}</span></template></el-table-column>-->
-      <!--          </el-table>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
+      <el-table-column label="描述" width="120">
+        <template slot-scope="scope">
+          <el-popover
+            placement="right"
+            width="725"
+            trigger="click"
+          >
+            <div style="white-space: pre-wrap; overflow-x: auto;">
+              {{ scope.row.description }}
+            </div>
+            <el-button slot="reference" size="mini">点击查看</el-button>
+          </el-popover></template>
+      </el-table-column>
+
+      <!--      操作     -->
       <el-table-column label="操作">
-        <template v-slot="scope">
+        <template slot-scope="scope">
           <el-button
-            :disabled="role < 2"
             size="mini"
             type="warning"
-            @click="CreateImageByTag"
+            style="margin-left: 10px"
+            :disabled="u_id != scope.row.u_id"
+            @click="updateImage(scope.row)"
           >编辑</el-button>
           <el-button
             :loading="loading"
             size="mini"
             type="danger"
+            style="margin-top: 2px"
+            :disabled="u_id != scope.row.u_id"
             @click="handleDelete(scope.row)"
           >删除
           </el-button>
         </template>
       </el-table-column>
+      <!--      操作end     -->
     </el-table>
-    <div style="position: absolute;bottom: 2%">
+    <!--    显示页end    -->
+
+    <div>
       <el-pagination
         background
         layout="prev, pager, next"
         :current-page="page"
-        :page-size="1"
+        :page-size="pagesize"
         :total="total"
-        :disabled="changepagebutton"
         @current-change="changePageNum"
       />
     </div>
-    <CreateImage ref="CreateImage" :visible.sync="openDialog" />
+    <PullImage ref="PullImage" :visible.sync="openDialog" />
     <UpdateImage ref="UpdateImage" :visible.sync="updateDialog" />
-    <PullPrivate ref="PullPrivate" :visible.sync="openDialog" />
-    <PullPublic ref="PullPublic" :visible.sync="openDialog" />
-    <UpdateImage ref="UpdateImage" :visible.sync="openDialog" />
-
   </div>
 </template>
 
 <script>
 
-import UserSelector from '@/components/Selector/UserSelector'
 import { mapGetters } from 'vuex'
-import UpdateImage from '@/components/AddDockerImage/UpdateImage'
-import { getImageList, RemoveImageById } from '@/api/docker'
-import CreateImage from '@/components/AddDockerImage/CreateImageById'
-import PullPrivate from '@/components/AddDockerImage/PullPrivate'
-import PullPublic from '@/components/AddDockerImage/PullPublic'
+import UserSelector from '@/components/Selector/UserSelector'
 import GroupSelector from '@/components/Selector/GroupSelector.vue'
-import ImageSelector from '@/components/Selector/ImageSelector.vue'
+import PullImage from '@/components/DockerImage/PullImage'
+import UpdateImage from '@/components/DockerImage/UpdateImage'
+import { getUserList } from '@/api/user'
+import { deleteImageById, getImageList } from '@/api/docker'
 
 export default {
-  name: 'Image',
-  components: { GroupSelector, PullPublic, PullPrivate, CreateImage, UpdateImage, UserSelector },
+  components: { UserSelector, GroupSelector, PullImage, UpdateImage },
   computed: {
     ...mapGetters([
       'role',
@@ -136,84 +118,73 @@ export default {
     ])
   },
   created() {
-    this.uid = this.$route.query.u_id || this.u_id
+    this.uid = this.u_id
+    this.gid = ''
     this.adid = this.u_id
+    // this.GroupSelector.change()
+    // this.changeGid(GroupSelector.g_id)
+    // this.uid = '1'
+    // this.$refs.UserSelector.g_id = ''
+    // this.$refs.UserSelector.u_id = this.adid
+    // this.$refs.UserSelector.getAllUser()
     this.getImageList()
   },
   data() {
     return {
-      Kind: 'Image',
-      image_id: '',
-      image_name: '',
-      adid: '',
-      gid: '',
       uid: '',
+      gid: '',
+      adid: '',
       timer: null,
       loading: false,
       openDialog: false,
       updateDialog: false,
-      image: this.$route.query.image,
       page: 1,
       total: 0,
-      pagesize: 1,
-      changepagebutton: false,
-      tableDataImage: [
-        {
-          created_at: '',
-          id: '',
-          image_id: '',
-          image_name: '',
-          kind: '',
-          size: '',
-          tag: '',
-          updated_at: '',
-          user_id: ''
-          // ImageDetail: [
-          //   {
-          //     dt_ImageCPU: '',
-          //     dt_MemUsageAndLimit: '',
-          //     dt_NETAndIO: '',
-          //     dt_BLOCKAndIO: ''
-          //   }
-          // ]
-        }
-      ],
-      tData: [],
-      tableData: [],
-      tagroup: [
-      ]
+      pagesize: 10,
+      tableData: []
     }
   },
   methods: {
-    change() {
-      this.$forceUpdate()
+    changeUid: function(u_id) {
+      this.uid = u_id
+      this.getImageList()
     },
-    PullPublic: function() {
-      this.openDialog = true
-      this.$nextTick(() => {
-        this.$refs.PullPublic.init()
+    changeGid: function(g_id) {
+      this.gid = g_id
+      this.$refs.UserSelector.uid = ''
+      this.$refs.UserSelector.g_id = this.gid
+      this.$refs.UserSelector.getAllUser()
+    },
+    changePageNum: function(val) {
+      this.page = val
+    },
+    getImageList: function() {
+      getImageList(this.uid, this.gid).then((res) => {
+        this.total = res.length
+        this.tableData = res.image_list
+        console.log(res)
       })
     },
-    PullPrivate: function() {
+    pullImage: function() {
       this.openDialog = true
       this.$nextTick(() => {
-        this.$refs.PullPrivate.init()
+        this.$refs.PullImage.init()
       })
     },
-    CreateImageByTag: function() {
-      this.openDialog = true
+    updateImage: function(row) {
+      this.updateDialog = true
       this.$nextTick(() => {
-        this.$refs.UpdateImage.init()
+        this.$refs.UpdateImage.init(row['id'],row['kind'],row['description'],row['image_name'],row['tag'])
       })
     },
     handleDelete: function(row) {
       /* 提示消息*/
-      this.$confirm('确认永久删除此镜像', '提示', {
+      this.$confirm('确认删除此镜像', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        RemoveImageById(row['image_id']).then((res) => {
+        deleteImageById(row['id']).then((res) => {
           if (res.code === 1) {
             this.$message({
               type: 'success',
@@ -239,28 +210,6 @@ export default {
           type: 'info',
           message: '已取消删除'
         })
-      })
-    },
-    changeUid: function(u_id) {
-      this.uid = u_id
-      this.getImageList()
-      this.$forceUpdate()
-    },
-    changeGid: function(g_id) {
-      this.gid = g_id
-      this.$refs.UserSelector.uid = ''
-      this.$refs.UserSelector.g_id = this.gid
-      this.$refs.UserSelector.getAllUser()
-    },
-    changePageNum: function(val) {
-      this.page = val
-      this.getImageList()
-    },
-    getImageList: function() {
-      getImageList(this.uid,this.page).then((res) => {
-        this.page = res.page
-        this.total = parseInt(res.total / 10) + (res.total % 10 === 0 ? 0 : 1)
-        this.tableDataImage = res.image_list_all
       })
     }
   }

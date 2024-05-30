@@ -6,20 +6,10 @@
     <!--        <el-input v-model="service.metadata.name"></el-input>-->
     <!--      </el-form-item>-->
     <!--    &lt;!&ndash;      <el-form-item label="Namespace">&ndash;&gt;-->
-    <div>
-      <!--      <UserSelectorNoNil ref="UserSelector" :default-uid="uid" @nsList="changeUid" />-->
-      <NsSelectorNoNil ref="NsSelector" v-model="form.namespace" :default-uid="uid" :default-ns="ns" @nsList="changeNs" />
+    <div style="margin-bottom: 10px">
+      <NsSelectorNoNil ref="NsSelector" v-model="form.namespace" :default-uid="u_id" :default-ns="ns" @nsList="changeNs" style="margin-right: 50px"/>
+      <ImageSelector ref="ImageSelector" v-model="form.image" @nsList="changeImage" />
     </div>
-    <!--      </el-form-item>-->
-    <!--      <el-form-item label="Labels">-->
-    <!--        <el-input v-model="service.metadata.labels"></el-input>-->
-    <!--      </el-form-item>-->
-    <!--    </el-form>-->
-    <!--    <div>-->
-    <!--      <el-button type="primary" @click="createYaml">Create</el-button>-->
-    <!--      <el-button @click="cancel">Cancel</el-button>-->
-    <!--    </div>-->
-
     <dynamic-form
       ref="dynamic-form"
       v-model="form"
@@ -36,13 +26,14 @@
 
 <script>
 import NsSelectorNoNil from '@/components/Selector/NsSelectorNoNil'
+import ImageSelector from '@/components/Selector/ImageSelector';
 // import UserSelectorNoNil from '@/components/Selector/UserSelectorNoNil'
 import { mapGetters } from 'vuex'
 import { addDeploy } from '@/api/app/deploy'
 
 export default {
   name: 'AddDeploy',
-  components: { NsSelectorNoNil },
+  components: { NsSelectorNoNil,ImageSelector },
   computed: {
     ...mapGetters([
       'role',
@@ -52,22 +43,24 @@ export default {
   data: function() {
     return {
       descriptors: {
-        name: { type: 'string', required: true },
-        replicas: { type: 'integer', required: true, min: 1 },
-        image: { type: 'string', required: true },
-        command: { type: 'array', defaultField: { type: 'string' }},
-        args: { type: 'array', defaultField: { type: 'string' }},
-        ports: { type: 'array', defaultField: { type: 'integer' }},
+        name: { type: 'string', required: true, label: '应用名称' },
+        replicas: { type: 'integer', required: true, min: 1, label: '开发环境数' },
+        // image: { type: 'string', required: true },
+        command: { type: 'array', defaultField: { type: 'string' }, label: '命令'},
+        args: { type: 'array', defaultField: { type: 'string' }, label: '参数'},
+        ports: { type: 'array', defaultField: { type: 'integer' }, label: '端口'},
         env: {
           type: 'object',
-          defaultField: { type: 'string', required: true }
+          defaultField: { type: 'string', required: true },
+          label: '环境变量'
         },
-        cpu: { type: 'string', required: true },
-        memory: { type: 'string', required: true },
-        storage: { type: 'string', required: true },
-        pvc_storage: { type: 'string' },
-        storage_class_name: { type: 'string' },
-        gpu: { type: 'string' }
+        cpu: { type: 'string', required: true, placeholder: '示例：1' },
+        memory: { type: 'string', required: true, label: '内存', placeholder: '示例：1Gi' },
+        storage: { type: 'string', required: true, label: '临时存储', placeholder: '示例：10Gi' },
+        pvc_storage: { type: 'string', label: '永久存储', placeholder: '示例：10Gi' },
+        pvc_path: { type: 'array', defaultField: { type: 'string', placeholder: '示例：/data' }, label: '永久存储路径'},
+        // storage_class_name: { type: 'string' },
+        gpu: { type: 'string', placeholder: '示例：1Gi' }
       },
       ns: '',
       uid: '',
@@ -88,6 +81,7 @@ export default {
         memory: '',
         storage: '',
         pvc_storage: '',
+        pvc_path: [],
         storage_class_name: '',
         gpu: ''
       }
@@ -119,6 +113,9 @@ export default {
     changeNs: function(ns) {
       this.ns = ns
       this.form.namespace = ns
+    },
+    changeImage: function(image) {
+      this.form.image = image
     },
     init() {
       this.open = true
