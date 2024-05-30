@@ -134,6 +134,14 @@ export function addRegisterUser(data) {
   })
 }
 
+export function addRegisterUserByFile(data) {
+  return request({
+    url: '/user/addbyfile',
+    method: 'post',
+    data
+  })
+}
+
 export function findPass(data) {
   return request({
     url: '/findpass',

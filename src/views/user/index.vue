@@ -12,7 +12,7 @@
       </el-select>
 
       <el-button style="position:relative;left: 56%;" :disabled="role <= 1" size="middle" type="warning" @click="addUserVisible = true">添加用户</el-button>
-      <el-button style="position:relative;left: 56%;" :disabled="role <= 1" size="middle" type="warning" @click="addUserVisible = true">批量导入</el-button>
+      <el-button style="position:relative;left: 56%;" :disabled="role <= 1" size="middle" type="warning" @click="addUserByFileVisible = true">批量导入</el-button>
     </div>
 
     <el-table :data="tableData.slice((page - 1) * pagesize, page * pagesize)" style="width: 100%">
@@ -175,13 +175,63 @@
         <el-button type="primary" @click="handleAddUser()">确 定</el-button>
       </div>
     </el-dialog>
+    <!--  批量添加用户弹窗-->
+    <el-dialog title="批量添加用户" :visible.sync="addUserByFileVisible">
+      <el-form ref="addUserByFileForm" :model="addUserByFileForm" :rules="addUserByFileFormRules">
+        <el-form-item label="分组" :label-width="formLabelWidth">
+          <el-select v-model="addUserByFileForm.gid" :disabled="role <= 1" placeholder="请选择">
+            <el-option
+              v-for="item in groupListOption"
+              :key="item.groupid"
+              :label="item.name"
+              :value="item.groupid"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="文件" prop="file" :label-width="formLabelWidth">
+          <el-upload
+            accept=".csv"
+            class="upload-demo"
+            ref="upload"
+            action=""
+            :on-change="handleFileChange"
+            :file-list="fileList"
+            :limit="fileLimit"
+            :on-exceed="handleExceed"
+            :auto-upload="false">
+            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            <span slot="tip" class="el-upload__tip">&nbsp（只能上传一个csv文件）</span>
+            <a
+              slot="tip"
+              class="el-upload__tip"
+              style="color: red; text-decoration: underline; cursor: pointer;"
+              @click="downloadTemplate"
+            >下载模板</a>
+<!--            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addUserByFileVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleAddUserByFile()">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 
 import {getGroupListByUid} from '@/api/group'
-import { addRegisterUser, allocationUser, deleteUser, editUser, getUserList, resetPass } from '@/api/user'
+import {
+  addRegisterUser,
+  addRegisterUserByFile,
+  allocationUser,
+  deleteUser,
+  editUser,
+  getUserList,
+  resetPass
+} from '@/api/user'
 import { mapGetters } from 'vuex'
 var new_id
 var tu_id
@@ -205,10 +255,20 @@ export default {
         password: '',
         gid: ''
       },
+      addUserByFileForm: {
+        file: null,
+        gid: ''
+      },
+      file: null,
+      fileLimit: 1, // 限制文件上传数量为1
+      fileList: [],
       addUserFormRules: {
         username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
         nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+      },
+      addUserByFileFormRules: {
+        file: [{ required: true, message: '请选择文件', trigger: 'blur' }]
       },
       groupList: [],
       groupListOption: [],
@@ -219,6 +279,7 @@ export default {
       statusDialogVisible: false,
       statusDialogPVisible: false,
       addUserVisible: false,
+      addUserByFileVisible: false,
       inputcpu: '',
       inputmemory: '',
       inputstorage: '',
@@ -240,7 +301,61 @@ export default {
     }
   },
   methods: {
+    downloadTemplate() {
+      const a = document.createElement('a');
+      a.href = '/add_user.csv'; // 根据文件实际位置使用相对路径
+      a.download = 'add_user.csv';
+      a.click();
+      a.remove();
+    },
+    handleFileChange(file, fileList) {
+      // 超过限制的文件数量,只保留最后一个文件
+      if (fileList.length > this.fileLimit) {
+        this.$set(this, 'fileList', [fileList[fileList.length - 1]])
+        this.$set(this, 'file', fileList[fileList.length - 1].raw)
+      } else {
+        this.$set(this, 'fileList', fileList)
+        this.$set(this, 'file', file.raw)
+      }
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`当前限制选择 ${this.fileLimit} 个文件`);
+    },
+    handleAddUserByFile: function() {
+      if(this.addUserByFileForm.gid == ''){
+        this.addUserByFileForm.gid = 0
+      }
+      // 在这里使用 this.file 发送文件
+      this.addUserByFileForm.file = this.file
+      this.$refs.addUserByFileForm.validate(valid => {
+        if (valid) {
+          let form = new FormData();
+          form.append('file',this.file)
+          form.append('gid',this.addUserByFileForm.gid)
+          addRegisterUserByFile(form).then((res) => {
+            if (res.code === 1) {
+              this.$message({
+                type: 'success',
+                message: res.msg
+              })
+              this.addUserByFileVisible = false
+              location.reload()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.msg
+              })
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
     handleAddUser: function() {
+      if(this.addUserForm.gid == ''){
+        this.addUserForm.gid = 0
+      }
       this.$refs.addUserForm.validate(valid => {
         if (valid) {
           addRegisterUser(this.addUserForm).then((res) => {
